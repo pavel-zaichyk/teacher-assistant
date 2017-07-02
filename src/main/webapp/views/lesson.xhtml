@@ -1,0 +1,325 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:h="http://xmlns.jcp.org/jsf/html"
+				xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+				xmlns:f="http://xmlns.jcp.org/jsf/core"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:pe="http://primefaces.org/ui/extensions"
+>
+	<h:form id="lessonForm">
+		<p:socket channel="/register">
+			<p:ajax event="message" update="lastVisitInfo attendanceInfo presentStudents absentStudents"/>
+		</p:socket>
+
+		<p:panelGrid id="lessonInfo" columns="2" styleClass="noBorder lesson-info">
+			<p:panel id="lastVisitInfo" styleClass="visit-info">
+				<p:panelGrid columns="2">
+					<p:panel styleClass="image">
+						<p:graphicImage value="#{imageBean.getImagePath(lessonBean.processedStudent.cardUid)}"/>
+					</p:panel>
+					<p:panel rendered="#{lessonBean.processedStudent eq null}">
+						<p:outputLabel value="#{msg['lesson.visit.noData']}"/>
+					</p:panel>
+					<p:panel rendered="#{lessonBean.processedStudent ne null}" styleClass="visit-label">
+						<p:outputLabel id="visitLastName" value="#{lessonBean.processedStudent.lastName}"/>
+						<p:outputLabel id="visitFirstName" value="#{lessonBean.processedStudent.firstName}"/>
+						<p:outputLabel id="visitGroup" escape="false"
+									   styleClass="font-size-20pt margin-top-20px margin-bottom-20px"
+									   value="#{lessonBean.processedStudent.groupNames}"/>
+						<p:outputLabel styleClass="lowercase" escape="false"
+									   value="#{lessonBean.getStudentSkip(lessonBean.processedStudent)}"/>
+					</p:panel>
+				</p:panelGrid>
+			</p:panel>
+			<p:panel styleClass="right">
+				<p:panelGrid columns="1" styleClass="inline">
+					<p:panel id="lessonButtons" styleClass="lesson-buttons">
+						<p:commandButton title="#{msg['btn.startRecord']}" icon="fa fa-fw fa-play"
+										 update=":lessonForm:lessonButtons"
+										 actionListener="#{serialBean.startRecord}"
+										 rendered="#{not serialBean.recordStarted}"/>
+						<p:commandButton title="#{msg['btn.stopRecord']}" icon="fa fa-fw fa-stop"
+										 update=":lessonForm:lessonButtons"
+										 actionListener="#{serialBean.stopRecord}"
+										 rendered="#{serialBean.recordStarted}"/>
+
+						<p:commandButton title="#{msg['btn.enableSound']}" icon="fa fa-fw fa-volume-up"
+										 update=":lessonForm:lessonButtons"
+										 actionListener="#{serialBean.enableSound}"
+										 rendered="#{serialBean.recordStarted and not serialBean.soundEnabled}"/>
+						<p:commandButton title="#{msg['btn.disableSound']}" icon="fa fa-fw fa-volume-off"
+										 update=":lessonForm:lessonButtons"
+										 actionListener="#{serialBean.disableSound}"
+										 rendered="#{serialBean.recordStarted and serialBean.soundEnabled}"/>
+
+						<p:commandButton title="#{msg[lessonBean.camera ? 'btn.camera.turnOff' : 'btn.camera.turnOn']}"
+										 styleClass="#{lessonBean.camera ? 'red' : ''}"
+										 icon="fa fa-fw fa-video-camera"
+										 update=":lessonForm:lessonButtons :lessonForm:additions"
+										 actionListener="#{lessonBean.setCamera(!lessonBean.camera)}"
+						/>
+
+						<p:commandButton title="#{msg['btn.addVisit']}" icon="fa fa-fw fa-plus"
+										 actionListener="#{lessonBean.initAllStudents}"
+										 oncomplete="PF('addStudentsDialog').show()"
+										 update=":addStudentsForm:studentDetail"/>
+
+						<p:commandButton title="#{msg['btn.openLessonMode']}"
+										 icon="fa fa-fw fa-list"
+										 update="@([id$=wrapper])"
+										 actionListener="#{lessonBean.openLessonMode}">
+							<f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+						</p:commandButton>
+
+						<p:commandButton title="#{msg['btn.backToLessons']}"
+										 icon="fa fa-fw fa-arrow-left"
+										 actionListener="#{lessonBean.returnToLessons}"
+										 update="@([id$=wrapper])">
+							<f:setPropertyActionListener value="#{true}" target="#{menuBean.showMenu}"/>
+						</p:commandButton>
+
+						<p:commandButton title="#{msg['btn.hide.menu']}" icon="fa fa-fw fa-align-center"
+										 update=":menuForm :lessonForm:lessonButtons"
+										 actionListener="#{menuBean.hideMenu}"
+										 rendered="#{menuBean.showMenu}"/>
+						<p:commandButton title="#{msg['btn.show.menu']}" icon="fa fa-fw fa-align-justify"
+										 update=":menuForm :lessonForm:lessonButtons"
+										 actionListener="#{menuBean.showMenu}"
+										 rendered="#{not menuBean.showMenu}"/>
+
+						<p:commandButton id="modeBtn" icon="fa fa-fw fa-forward"/>
+						<p:overlayPanel for="modeBtn" showEvent="mouseover"
+						                hideEvent="mousedown"
+						                style="position: fixed;"
+						                dismissable="false" showCloseIcon="true">
+							<p:commandButton title="#{msg['btn.studentMode']}" value="#{msg['btn.studentMode']}"
+							                 update="@([id$=views])"
+							                 styleClass="block w100pc margin-bottom-10px"
+							                 actionListener="#{studentModeBean.initStudentMode(null, lessonModeBean.stream)}">
+								<f:setPropertyActionListener value="studentMode" target="#{sessionBean.activeView}"/>
+								<f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+								<f:setPropertyActionListener value="#{lessonBean.selectedLesson.stream}" target="#{lessonModeBean.stream}"/>
+								<f:setPropertyActionListener value="#{lessonBean.selectedLesson}" target="#{lessonModeBean.lesson}"/>
+							</p:commandButton>
+							<p:commandButton title="#{msg['btn.photoMode']}" value="#{msg['btn.photoMode']}"
+							                 actionListener="#{lessonBean.openPhotoMode}"
+							                 update="@([id$=views])"
+							                 styleClass="block w100pc margin-bottom-10px">
+								<f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+							</p:commandButton>
+							<p:commandButton title="#{msg['btn.lessonMode']}"
+							                 value="#{msg['btn.lessonMode']}"
+							                 update="@([id$=wrapper])"
+							                 actionListener="#{lessonBean.openLessonMode}"
+							                 styleClass="block w100pc margin-bottom-10px">
+								<f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+							</p:commandButton>
+							<p:commandButton title="#{msg['btn.lessons']}"
+							                 value="#{msg['btn.lessons']}"
+							                 update="@([id$=views])"
+							                 styleClass="block w100pc margin-bottom-10px">
+								<f:setPropertyActionListener value="#{true}" target="#{menuBean.showMenu}"/>
+								<f:setPropertyActionListener value="lessons" target="#{sessionBean.activeView}"/>
+							</p:commandButton>
+						</p:overlayPanel>
+					</p:panel>
+					<p:panelGrid columns="2" styleClass="lesson-text left">
+						<p:panelGrid columns="2" id="attendanceInfo" styleClass="bold">
+							<h:outputText value="#{msg['lesson.students.all']}"/>
+							<h:outputText value="#{lessonBean.lessonStudents.size()}"/>
+
+							<h:outputText value="#{msg['lesson.students.present']}"/>
+							<h:outputText
+									value="#{lessonBean.presentStudents.size() - lessonBean.additionalStudents.size()}"/>
+
+							<h:outputText value="#{msg['lesson.students.absent']}"/>
+							<h:outputText value="#{lessonBean.absentStudents.size()}"/>
+
+							<h:outputText rendered="#{lessonBean.additionalStudents.size() gt 0}"
+										  value="#{msg['lesson.students.additional']}"/>
+							<h:outputText rendered="#{lessonBean.additionalStudents.size() gt 0}"
+										  value="#{lessonBean.additionalStudents.size()}"/>
+						</p:panelGrid>
+						<p:panel>
+							<p:outputLabel value="#{lessonBean.selectedLesson.stream.name}"/>
+							<p:outputLabel rendered="#{lessonBean.selectedLesson.group ne null}"
+										   value="#{lessonBean.selectedLesson.group.name}"/>
+							<p:outputLabel value="#{msg[lessonBean.selectedLesson.type.key]}"/>
+							<p:outputLabel value="#{lessonBean.selectedLesson.clazz.date}"
+										   converter="localDateConverter"/>
+							<p:outputLabel value="#{lessonBean.selectedLesson.clazz.schedule.caption}"/>
+						</p:panel>
+					</p:panelGrid>
+				</p:panelGrid>
+			</p:panel>
+		</p:panelGrid>
+
+		<p:panelGrid id="lessonTables" columns="3" styleClass="noBorder v-align-top lesson-tables"
+					 columnClasses=",,w100pc">
+			<p:dataTable id="presentStudents"
+						 var="pStudent"
+						 widgetVar="pStudentsTable"
+						 value="#{lessonBean.presentStudentsLazyModel}"
+						 sortBy="#{pStudent.registrationTime}"
+						 sortOrder="descending"
+						 resizableColumns="true"
+						 selection="#{lessonBean.selectedPresentStudents}"
+						 rowKey="#{pStudent.id}"
+						 paginator="true"
+						 rows="15"
+						 paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+						 rowsPerPageTemplate="10,11,12,13,14,15,16,17,18,19,20"
+						 paginatorPosition="bottom"
+						 lazy="true">
+
+				<p:ajax event="rowSelectCheckbox" update="removePresentStudentsBtn"/>
+				<p:ajax event="rowUnselectCheckbox" update="removePresentStudentsBtn"/>
+				<p:ajax event="toggleSelect" update="removePresentStudentsBtn"
+						listener="#{lessonBean.onPresentStudentsSelect}"/>
+
+				<p:ajax event="rowSelect" listener="#{lessonBean.onStudentRowSelect}"
+						update=":lessonForm:lastVisitInfo :lessonForm:additionalInfo"/>
+
+				<p:column selectionMode="multiple" styleClass="w16px center"/>
+
+				<p:column styleClass="transparent-button w20px center">
+					<f:facet name="header">
+						<p:commandButton id="removePresentStudentsBtn"
+										 update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:attendanceInfo"
+										 styleClass="w25px"
+										 icon="fa fa-fw fa-angle-double-right" title="Remove"
+										 actionListener="#{lessonBean.removePresentStudents}"
+										 disabled="#{lessonBean.selectedPresentStudents eq null or lessonBean.selectedPresentStudents.size() eq 0}"/>
+					</f:facet>
+					<p:commandButton
+							update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:attendanceInfo"
+							icon="fa fa-fw fa-angle-right" title="Remove"
+							styleClass="w25px"
+							actionListener="#{lessonBean.removeLessonStudent(pStudent)}"/>
+				</p:column>
+
+				<p:column sortBy="#{pStudent.name}"
+						  filterBy="#{pStudent.name}"
+						  filterMatchMode="startsWith"
+						  styleClass="bold w210px">
+					<h:outputText value="#{pStudent.name}"/>
+				</p:column>
+
+				<p:column headerText="#{msg['total.skip']}"
+						  styleClass="center w30px bold"
+						  sortBy="#{pStudent.totalSkip}">
+					<h:outputText value="#{pStudent.totalSkip}"/>
+				</p:column>
+				<p:column headerText="#{msg['skip.header']}"
+						  styleClass="center w55px">
+					<h:outputText value="#{pStudent.skips}"/>
+				</p:column>
+
+
+				<p:column
+						sortBy="#{pStudent.registrationTime}"
+						styleClass="center w70px">
+					<h:outputText
+							value="#{pStudent.registrationTime}"
+							converter="localTimeConverter"/>
+				</p:column>
+			</p:dataTable>
+
+			<p:dataTable id="absentStudents"
+						 var="aStudent"
+						 widgetVar="aStudentsTable"
+						 value="#{lessonBean.absentStudentsLazyModel}"
+						 sortBy="#{aStudent.totalSkip}"
+						 sortOrder="descending"
+						 resizableColumns="true"
+						 selection="#{lessonBean.selectedAbsentStudents}"
+						 rowKey="#{aStudent.id}"
+						 paginator="true"
+						 rows="15"
+						 paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+						 rowsPerPageTemplate="10,11,12,13,14,15,16,17,18,19,20"
+						 paginatorPosition="bottom"
+						 lazy="true">
+				<p:ajax event="rowSelectCheckbox" update="addAbsentStudentsBtn"/>
+				<p:ajax event="rowUnselectCheckbox" update="addAbsentStudentsBtn"/>
+				<p:ajax event="toggleSelect" update="addAbsentStudentsBtn"
+						listener="#{lessonBean.onAbsentStudentsSelect}"/>
+
+				<p:ajax event="rowSelect" listener="#{lessonBean.onStudentRowSelect}"
+						update=":lessonForm:lastVisitInfo :lessonForm:additionalInfo"/>
+
+				<p:column selectionMode="multiple" styleClass="w16px center"/>
+
+				<p:column styleClass="transparent-button w20px center">
+					<f:facet name="header">
+						<p:commandButton id="addAbsentStudentsBtn"
+										 update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:lastVisitInfo :lessonForm:attendanceInfo"
+										 icon="fa fa-angle-double-left" title="Add"
+										 styleClass="w25px"
+										 actionListener="#{lessonBean.addAbsentStudents}"
+										 disabled="#{lessonBean.selectedAbsentStudents eq null or lessonBean.selectedAbsentStudents.size() eq 0}"/>
+					</f:facet>
+					<p:commandButton
+							update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:lastVisitInfo :lessonForm:attendanceInfo"
+							icon="fa fa-fw fa-angle-left" title="Add"
+							styleClass="w25px"
+							actionListener="#{lessonBean.addLessonStudent(aStudent)}"/>
+				</p:column>
+
+				<p:column sortBy="#{aStudent.name}"
+						  filterBy="#{aStudent.name}"
+						  filterMatchMode="startsWith"
+						  styleClass="bold  w210px">
+					<h:outputText value="#{aStudent.name}"/>
+				</p:column>
+
+				<p:column headerText="#{msg['total.skip']}"
+						  styleClass="center w30px bold"
+						  sortBy="#{aStudent.totalSkip}">
+					<h:outputText value="#{aStudent.totalSkip}"/>
+				</p:column>
+				<p:column headerText="#{msg['skip.header']}"
+						  styleClass="center w55px">
+					<h:outputText value="#{aStudent.skips}"/>
+				</p:column>
+
+			</p:dataTable>
+
+			<p:panel id="additions" styleClass="additions">
+				<p:panel id="timer" styleClass="time ui-widget-header">
+					<pe:timer
+							widgetVar="timer"
+							rendered="#{lessonBean.timer ne 0}"
+							format="HH:mm:ss"
+							timeout="#{lessonBean.timer}"
+							listener="#{lessonBean.calculateTimer}"
+							singleRun="false"
+							update="timer"/>
+					<h:outputText value="00:00:00" rendered="#{lessonBean.timer eq 0}"/>
+					/
+					<p:clock pattern="HH:mm:ss"/>
+				</p:panel>
+
+				<p:panel styleClass="ui-widget-header margin-bottom-10px margin-top-10px h30px">
+
+				</p:panel>
+
+				<p:photoCam id="camera"
+							widgetVar="camera"
+							styleClass="camera"
+							rendered="#{lessonBean.camera}"/>
+				<p:panel id="additionalInfo"
+						 rendered="#{not lessonBean.camera}"
+						 header="#{msg['label.additional.info']}"
+						 styleClass="additional-info h200px">
+					<h:outputLabel value="#{lessonBean.processedStudent.fullName}" styleClass="bold"/>
+					<ui:repeat id="noteInfo" var="note" value="#{lessonBean.notes}">
+						<h:panelGrid columns="2" columnClasses="w300px, w20px" styleClass="w100pc">
+							<h:outputText value="#{note.description}"/>
+							<h:outputText value="#{note.createDate}" converter="localDateConverter"/>
+						</h:panelGrid>
+					</ui:repeat>
+				</p:panel>
+			</p:panel>
+		</p:panelGrid>
+	</h:form>
+</ui:composition>

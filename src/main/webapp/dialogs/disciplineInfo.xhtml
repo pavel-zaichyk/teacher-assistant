@@ -1,0 +1,42 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+>
+    <h:form id="disciplineInfoForm">
+        <p:dialog header="#{msg['discipline.info']}" widgetVar="disciplineDialog" position="center" draggable="false"
+                  modal="true" showEffect="fade" hideEffect="fade" resizable="false" fitViewport="true"
+                  onHide="PF('disciplineDialog').content.empty()">
+
+            <p:ajax event="close" listener="#{disciplineBean.exit}"/>
+
+            <p:outputPanel id="disciplineDetail">
+                <p:commandButton value="#{msg['btn.delete']}" icon="fa fa-fw fa-remove"
+                                 rendered="#{disciplineBean.selectedDiscipline != null
+                                             and disciplineBean.selectedDiscipline.id != 0}"
+                                 actionListener="#{disciplineBean.delete}"/>
+
+                <p:panelGrid columns="2" rendered="#{not empty disciplineBean.selectedDiscipline}"
+                             columnClasses="label,value">
+
+                    <p:outputLabel for="name" value="#{msg['discipline.name']}:"/>
+                    <p:inputText id="name" value="#{disciplineBean.selectedDiscipline.name}" required="true">
+                        <p:ajax update=":disciplineInfoForm:disciplineDetail"/>
+                    </p:inputText>
+
+                    <p:outputLabel for="description" value="#{msg['discipline.description']}:"/>
+                    <p:inputTextarea id="description" value="#{disciplineBean.selectedDiscipline.description}">
+                        <p:ajax update=":disciplineInfoForm:disciplineDetail"/>
+                    </p:inputTextarea>
+                </p:panelGrid>
+
+                <p:outputPanel rendered="#{disciplineBean.infoChanged}">
+                    <p:commandButton value="#{msg['btn.save.exit']}" icon="fa fa-fw fa-save"
+                                     actionListener="#{disciplineBean.saveAndExit}"
+                                     update=":disciplineInfoForm:disciplineDetail"/>
+                </p:outputPanel>
+            </p:outputPanel>
+        </p:dialog>
+    </h:form>
+</ui:composition>

@@ -1,0 +1,45 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+>
+    <h:form id="groupInfoForm">
+        <p:dialog header="#{msg['group.info']}" widgetVar="groupInfoDialog" position="center" draggable="false"
+                  modal="true" showEffect="fade" hideEffect="fade" resizable="false" fitViewport="true"
+                  onHide="PF('groupInfoDialog').content.empty()">
+
+            <p:ajax event="close" listener="#{groupBean.exitInfo}"/>
+
+            <p:outputPanel id="groupInfoDetail">
+                <p:commandButton value="#{msg['btn.delete']}" icon="fa fa-fw fa-remove"
+                                 rendered="#{groupBean.selectedGroup != null
+                                             and groupBean.selectedGroup.id != 0}"
+                                 actionListener="#{groupBean.deleteGroup}"/>
+
+                <p:panelGrid columns="2" rendered="#{not empty groupBean.selectedGroup}"
+                             columnClasses="label,value">
+
+					<p:outputLabel for="department" value="#{msg['group.info.department']}"/>
+					<p:selectOneMenu id="department" value="#{groupBean.selectedGroup.department}" converter="entityConverter">
+						<f:selectItem itemValue="#{null}" itemLabel="#{msg['select.department']}"/>
+						<f:selectItems value="#{sessionBean.departments}" var="department"
+									   itemLabel="#{department.name}" itemValue="#{department}"/>
+						<p:ajax update=":groupInfoForm:groupInfoDetail"/>
+					</p:selectOneMenu>
+
+                    <p:outputLabel for="name" value="#{msg['group.name']}:"/>
+                    <p:inputText id="name" value="#{groupBean.selectedGroup.name}" required="true">
+                        <p:ajax update=":groupInfoForm:groupInfoDetail"/>
+                    </p:inputText>
+                </p:panelGrid>
+
+                <p:outputPanel rendered="#{groupBean.infoChanged}">
+                    <p:commandButton value="#{msg['btn.save.exit']}" icon="fa fa-fw fa-save"
+                                     actionListener="#{groupBean.saveAndExit}"
+                                     update=":groupInfoForm:groupInfoDetail"/>
+                </p:outputPanel>
+            </p:outputPanel>
+        </p:dialog>
+    </h:form>
+</ui:composition>

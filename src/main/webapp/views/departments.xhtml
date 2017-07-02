@@ -1,0 +1,25 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+>
+    <h:form id="departmentsForm">
+        <p:dataTable var="department" value="#{sessionBean.departments}">
+            <f:facet name="header">
+                #{msg['departments']}
+            </f:facet>
+            <p:column headerText="#{msg['department.name']}">
+                <h:outputText value="#{department.name}"/>
+            </p:column>
+            <p:column styleClass="options">
+                <p:commandButton update=":departmentInfoForm" oncomplete="PF('departmentDialog').show()"
+                                 icon="fa fa-fw fa-search" title="View">
+                    <f:setPropertyActionListener value="#{department}" target="#{departmentBean.selectedDepartment}"/>
+                    <p:resetInput target=":departmentInfoForm:departmentDetail"/>
+                </p:commandButton>
+            </p:column>
+        </p:dataTable>
+
+    </h:form>
+</ui:composition>

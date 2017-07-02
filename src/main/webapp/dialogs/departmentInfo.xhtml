@@ -1,0 +1,37 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:h="http://xmlns.jcp.org/jsf/html"
+				xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+				xmlns:f="http://xmlns.jcp.org/jsf/core"
+				xmlns:p="http://primefaces.org/ui"
+>
+	<h:form id="departmentInfoForm">
+		<p:dialog header="#{msg['department.info']}" widgetVar="departmentDialog" position="center" draggable="false"
+				  modal="true" showEffect="fade" hideEffect="fade" resizable="false" fitViewport="true"
+				  onHide="PF('departmentDialog').content.empty()">
+
+			<p:ajax event="close" listener="#{departmentBean.exit}"/>
+
+			<p:outputPanel id="departmentDetail">
+
+				<p:panelGrid columns="2" rendered="#{not empty departmentBean.selectedDepartment}"
+							 columnClasses="label,value">
+
+					<p:outputLabel for="name" value="#{msg['department.name']}:"/>
+					<p:inputText id="name" value="#{departmentBean.selectedDepartment.name}" required="true">
+						<p:ajax update=":departmentInfoForm:departmentDetail"/>
+					</p:inputText>
+					<p:outputLabel for="abbreviation" value="#{msg['department.abbreviation']}:"/>
+					<p:inputText id="abbreviation" value="#{departmentBean.selectedDepartment.abbreviation}">
+						<p:ajax update=":departmentInfoForm:departmentDetail"/>
+					</p:inputText>
+				</p:panelGrid>
+
+				<p:outputPanel>
+					<p:commandButton value="#{msg['btn.save.exit']}" icon="fa fa-fw fa-save"
+									 actionListener="#{departmentBean.saveAndExit}"
+									 update=":departmentInfoForm:departmentDetail"/>
+				</p:outputPanel>
+			</p:outputPanel>
+		</p:dialog>
+	</h:form>
+</ui:composition>

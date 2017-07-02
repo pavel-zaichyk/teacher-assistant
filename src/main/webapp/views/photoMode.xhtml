@@ -1,0 +1,65 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:h="http://xmlns.jcp.org/jsf/html"
+				xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+				xmlns:f="http://xmlns.jcp.org/jsf/core"
+				xmlns:p="http://primefaces.org/ui"
+>
+	<h:form id="photoModeForm" styleClass="photo-mode">
+		<p:commandButton title="#{msg['btn.backToLessons']}"
+						 icon="fa fa-fw fa-arrow-left"
+						 actionListener="#{menuBean.changeView('lessonMode')}"
+						 update="@([id$=views])">
+		</p:commandButton>
+		<p:commandButton id="modeBtn" icon="fa fa-fw fa-forward"/>
+		<p:overlayPanel for="modeBtn" showEvent="mouseover"
+		                hideEvent="mousedown"
+		                style="position: fixed;"
+		                dismissable="false" showCloseIcon="true">
+			<p:commandButton title="#{msg['btn.studentMode']}" value="#{msg['btn.studentMode']}"
+			                 update="@([id$=views])"
+			                 styleClass="block w100pc margin-bottom-10px"
+			                 actionListener="#{studentModeBean.initStudentMode(null, lessonModeBean.stream)}">
+				<f:setPropertyActionListener value="studentMode" target="#{sessionBean.activeView}"/>
+			</p:commandButton>
+			<p:commandButton title="#{msg['btn.lessonMode']}" value="#{msg['btn.lessonMode']}"
+			                 actionListener="#{menuBean.changeView('lessonMode')}"
+			                 styleClass="block w100pc margin-bottom-10px"
+			                 update="@([id$=views])">
+			</p:commandButton>
+			<p:commandButton title="#{msg['btn.registerMode']}"
+			                 value="#{msg['btn.registerMode']}"
+			                 actionListener="#{lessonBean.initLesson(lessonBean.selectedLesson)}"
+			                 styleClass="block w100pc margin-bottom-10px"
+			                 update="@([id$=views])">
+				<f:setPropertyActionListener value="lesson" target="#{sessionBean.activeView}"/>
+				<f:ajax event="click" listener="#{lessonModeBean.clear}"/>
+			</p:commandButton>
+			<p:commandButton title="#{msg['btn.lessons']}"
+			                 value="#{msg['btn.lessons']}"
+			                 update="@([id$=views])"
+			                 styleClass="block w100pc margin-bottom-10px">
+				<f:setPropertyActionListener value="#{true}" target="#{menuBean.showMenu}"/>
+				<f:setPropertyActionListener value="lessons" target="#{sessionBean.activeView}"/>
+			</p:commandButton>
+		</p:overlayPanel>
+
+		<h:panelGroup styleClass="lesson-info">
+			<p:outputLabel value="#{lessonModeBean.lesson.stream.name}"/>
+			<p:outputLabel rendered="#{lessonModeBean.lesson.group ne null}"
+						   value="#{lessonModeBean.lesson.group.name}"/>
+			<p:outputLabel value="#{msg[lessonModeBean.lesson.type.key]}"/>
+			<p:outputLabel value="#{lessonModeBean.lesson.clazz.date}"
+						   converter="localDateConverter"/>
+			<p:outputLabel value="#{lessonModeBean.lesson.clazz.schedule.caption}"/>
+		</h:panelGroup>
+
+		<p:dataGrid var="student" value="#{lessonModeBean.students}" columns="7" layout="grid">
+			<h:panelGroup styleClass="center bold student">
+				<p:graphicImage value="#{imageBean.getImagePath(student.student.cardUid)}"/>
+				<p:outputLabel value="#{student.name}" styleClass="name #{student.additional ? 'blue' : ''} #{student.student.studentClasses[lessonModeBean.lesson.id].registered eq false ? 'skip' : ''}"/>
+			</h:panelGroup>
+		</p:dataGrid>
+
+	</h:form>
+
+</ui:composition>

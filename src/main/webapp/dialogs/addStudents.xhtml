@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:h="http://xmlns.jcp.org/jsf/html"
+				xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+				xmlns:f="http://xmlns.jcp.org/jsf/core"
+				xmlns:p="http://primefaces.org/ui"
+>
+	<h:form id="addStudentsForm">
+		<p:dialog header="#{msg['students']}" widgetVar="addStudentsDialog" position="center" draggable="false"
+				  modal="true" showEffect="fade" hideEffect="fade" resizable="false" fitViewport="true"
+				  onHide="PF('addStudentsDialog').content.empty()" width="75%">
+
+			<p:ajax event="close" listener="#{lessonBean.exitStudents}"/>
+
+			<p:scrollPanel id="studentDetail" mode="native" styleClass="noBorder">
+				<p:dataTable var="student" value="#{lessonBean.allStudents}"
+							 sortBy="#{student.fullName}" filteredValue="#{lessonBean.filteredAllStudents}">
+					<p:column headerText="#{msg['student.name']}" sortBy="#{student.fullName}"
+							  filterBy="#{student.fullName}" filterMatchMode="startsWith">
+						<h:outputText value="#{student.fullName}"/>
+					</p:column>
+					<p:column headerText="#{msg['student.groups']}" sortBy="#{student.groupNames}"
+							  filterBy="#{student.groupNames}" filterMatchMode="contains">
+						<h:outputText value="#{student.groupNames}" escape="false"/>
+					</p:column>
+					<p:column styleClass="groupOptions">
+						<p:commandButton update=":addStudentsForm:studentDetail"
+										 icon="fa fa-fw fa-plus" title="Add"
+										 styleClass="green"
+										 actionListener="#{lessonBean.addStudent(student)}"/>
+					</p:column>
+				</p:dataTable>
+			</p:scrollPanel>
+		</p:dialog>
+	</h:form>
+</ui:composition>

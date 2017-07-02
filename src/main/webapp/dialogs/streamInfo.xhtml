@@ -1,0 +1,80 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+>
+    <h:form id="streamInfoForm" styleClass="edit-form">
+        <p:dialog header="#{msg['stream.info']}" widgetVar="streamDialog" position="center" draggable="false"
+                  modal="true" showEffect="fade" hideEffect="fade" resizable="false" fitViewport="true"
+                  onHide="PF('streamDialog').content.empty()">
+
+            <p:ajax event="close" listener="#{streamBean.exit}"/>
+
+            <p:outputPanel id="streamDetail" mode="native" styleClass="streamDetail edit-panel">
+                <p:commandButton value="#{msg['btn.delete']}" icon="fa fa-fw fa-remove"
+                                 rendered="#{streamBean.selectedStream ne null
+                                             and streamBean.selectedStream.id ne null}"
+                                 actionListener="#{streamBean.delete}"/>
+
+
+                <p:panelGrid columns="2" rendered="#{not empty streamBean.selectedStream}"
+                             columnClasses="label,value">
+
+                    <p:outputLabel for="discipline" value="#{msg['stream.info.discipline']}"/>
+                    <p:selectOneMenu id="discipline" value="#{streamBean.selectedStream.discipline}"  converter="entityConverter" required="true">
+                        <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.discipline']}"/>
+                        <f:selectItems value="#{sessionBean.disciplines}" var="discipline" itemLabel="#{discipline.name}" itemValue="#{discipline}"/>
+                        <p:ajax update=":streamInfoForm:streamDetail"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="department" value="#{msg['stream.info.department']}"/>
+                    <p:selectOneMenu id="department" value="#{streamBean.selectedStream.department}"  converter="entityConverter">
+                        <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.department']}"/>
+                        <f:selectItems value="#{sessionBean.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"/>
+                        <p:ajax update=":streamInfoForm:streamDetail"/>
+                    </p:selectOneMenu>
+
+
+                    <p:outputLabel for="name" value="#{msg['stream.info.name']}"/>
+                    <p:inputText id="name" value="#{streamBean.selectedStream.name}" required="true">
+                        <p:ajax update=":streamInfoForm:streamDetail"/>
+                    </p:inputText>
+
+                    <p:outputLabel for="course" value="#{msg['label.course']}"/>
+                    <p:selectOneMenu id="course" value="#{streamBean.selectedStream.course}">
+                        <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.course']}"/>
+                        <f:selectItem itemValue="#{1}" itemLabel="1"/>
+                        <f:selectItem itemValue="#{2}" itemLabel="2"/>
+                        <f:selectItem itemValue="#{3}" itemLabel="3"/>
+                        <f:selectItem itemValue="#{4}" itemLabel="4"/>
+                        <f:selectItem itemValue="#{5}" itemLabel="5"/>
+                        <f:selectItem itemValue="#{6}" itemLabel="6"/>
+                        <p:ajax update=":streamInfoForm:streamDetail"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="groups" value="#{msg['stream.info.groups']}"/>
+                    <p:pickList id="groups" value="#{streamBean.selectedGroups}"
+                                showCheckbox="true" showSourceFilter="true"
+                                showTargetFilter="true" filterMatchMode="contains"
+                                var="group" itemValue="#{group}" itemLabel="#{group.name}"
+                                converter="entityConverter">
+
+                        <p:ajax event="transfer" update=":streamInfoForm:streamDetail"/>
+                    </p:pickList>
+
+                    <p:outputLabel for="description" value="#{msg['label.description']}"/>
+                    <p:inputTextarea id="description" value="#{streamBean.selectedStream.description}">
+                        <p:ajax update=":streamInfoForm:streamDetail"/>
+                    </p:inputTextarea>
+                </p:panelGrid>
+
+                <p:outputPanel rendered="#{streamBean.infoChanged}">
+                    <p:commandButton value="#{msg['btn.save.exit']}" icon="fa fa-fw fa-save"
+                                     actionListener="#{streamBean.saveAndExit}"
+                                     update=":streamInfoForm:streamDetail"/>
+                </p:outputPanel>
+            </p:outputPanel>
+        </p:dialog>
+    </h:form>
+</ui:composition>

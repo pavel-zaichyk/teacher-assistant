@@ -1,0 +1,54 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:h="http://xmlns.jcp.org/jsf/html"
+				xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+				xmlns:f="http://xmlns.jcp.org/jsf/core"
+				xmlns:p="http://primefaces.org/ui"
+>
+	<h:form id="lessonsForm">
+		<p:dataTable var="lesson" value="#{sessionBean.lessons}"
+					 sortBy="#{lesson.clazz.date}"
+					 sortOrder="descending">
+			<f:facet name="header">
+				#{msg['lessons']}
+			</f:facet>
+			<p:column headerText="#{msg['lesson.stream']}">
+				<h:outputText value="#{lesson.stream.name}"/>
+			</p:column>
+			<p:column headerText="#{msg['lesson.discipline']}">
+				<h:outputText value="#{lesson.stream.discipline.name}"/>
+			</p:column>
+			<p:column headerText="#{msg['lesson.date']}">
+				<h:outputText value="#{lesson.clazz ne null ? lesson.clazz.date : ''}" converter="localDateConverter"/>
+			</p:column>
+			<p:column headerText="#{msg['lesson.time']}">
+				<h:outputText
+						value="#{lesson.clazz ne null and lesson.clazz.schedule ne null ? lesson.clazz.schedule.caption : ''}"/>
+			</p:column>
+			<p:column headerText="#{msg['lesson.type']}">
+				<h:outputText value="#{msg[lesson.type.key]}"/>
+			</p:column>
+			<p:column headerText="#{msg['lesson.group']}">
+				<h:outputText value="#{lesson.group ne null ? lesson.group.name : msg['label.all.groups']}"/>
+			</p:column>
+			<p:column styleClass="groupOptions">
+				<p:commandButton actionListener="#{lessonBean.initLesson(lesson)}" update="@([id$=wrapper])"
+								 icon="fa fa-fw fa-search" title="#{msg['option.view']}">
+					<f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+					<f:setPropertyActionListener value="lesson" target="#{sessionBean.activeView}"/>
+				</p:commandButton>
+				<p:commandButton actionListener="#{lessonBean.removeLesson(lesson)}" update=":lessonsForm"
+								 icon="fa fa-fw fa-minus" title="#{msg['option.remove']}"
+								 styleClass="red">
+					<p:confirm header="#{msg['warning']}" message="#{msg['warning.sure.delete']}" icon="ui-icon-alert"/>
+				</p:commandButton>
+			</p:column>
+		</p:dataTable>
+
+
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+			<p:commandButton value="#{msg['label.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			<p:commandButton value="#{msg['label.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+		</p:confirmDialog>
+
+	</h:form>
+</ui:composition>

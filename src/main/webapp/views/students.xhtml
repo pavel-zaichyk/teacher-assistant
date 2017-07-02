@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+>
+    <h:form id="studentsForm">
+        <p:dataTable var="student" widgetVar="studentsTable" value="#{studentBean.students}"
+                     sortBy="#{student.fullName}" filteredValue="#{studentBean.filteredStudents}">
+            <p:ajax event="filter" update="@this"/>
+            <f:facet name="header">
+                #{msg['students']}
+            </f:facet>
+            <p:column sortBy="#{student.cardUid}" filterBy="#{student.cardUid}" filterMatchMode="startsWith">
+                <h:outputText value="#{student.cardUid}"/>
+            </p:column>
+            <p:column sortBy="#{student.fullName}" filterBy="#{student.fullName}" filterMatchMode="startsWith">
+                <h:outputText value="#{student.fullName}"/>
+            </p:column>
+            <p:column sortBy="#{student.groupNames}" filterBy="#{student.groupNames}" filterMatchMode="contains">
+                <h:outputText value="#{student.groupNames}" escape="false"/>
+            </p:column>
+            <p:column styleClass="options">
+                <p:commandButton update=":studentInfoForm" oncomplete="PF('studentDialog').show()"
+                                 icon="fa fa-fw fa-search" title="#{msg['option.view']}">
+                    <f:setPropertyActionListener value="#{student}" target="#{studentBean.selectedStudent}"/>
+                    <p:resetInput target=":studentInfoForm:studentDetail"/>
+                </p:commandButton>
+            </p:column>
+        </p:dataTable>
+    </h:form>
+</ui:composition>

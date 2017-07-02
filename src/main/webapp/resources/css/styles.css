@@ -1,0 +1,704 @@
+/*
+	General styles
+ */
+
+/* Color */
+.green {
+	color: #008000 !important;
+}
+.red {
+	color: #ff0000 !important;
+}
+.blue {color: #0000ff !important;}
+
+/* Width */
+.w5px {width: 5px;}
+.w16px {width: 16px;}
+.w20px {width: 20px;}
+.w25px {width: 25px;}
+.w30px {width: 30px;}
+.w40px {width: 40px;}
+.w50px {width: 50px;}
+.w55px {width: 55px;}
+.w70px {width: 70px;}
+.w90px {width: 90px;}
+.w200px {width: 200px;}
+.w210px {width: 210px;}
+.w250px {width: 250px;}
+.w300px {width: 300px;}
+.w350px {width: 350px;}
+.w500px {width: 500px;}
+.w550px {width: 550px;}
+.w700px {width: 700px;}
+
+.w20pc {width: 20%;}
+.w25pc {width: 25%;}
+.w30pc {width: 30%;}
+.w35pc {width: 35%;}
+.w50pc {width: 50%;}
+.w90pc {width: 90%;}
+#wrapper .w100pc {width: 100%;}
+
+/* Height */
+.h30px {height: 30px;}
+.h200px {height: 200px;}
+.h280px {height: 280px;}
+
+/* Min Height */
+.min-height-350px {min-height: 350px}
+.min-height-400px {min-height: 400px}
+.min-height-450px {min-height: 450px}
+
+/* Align */
+.center {
+	text-align: center;
+}
+.right {
+	text-align: right;
+}
+.left {
+	text-align: left;
+}
+
+.top {vertical-align: top;}
+#wrapper .middle {vertical-align: middle;}
+
+/* Display */
+.inline {
+	display: inline;
+}
+#wrapper .block {display: block;}
+#wrapper .inline-block {display: inline-block;}
+
+/* Font Size */
+#wrapper .font-size-10pt {font-size: 10pt;}
+#wrapper .font-size-11pt {font-size: 11pt;}
+#wrapper .font-size-12pt {font-size: 12pt;}
+#wrapper .font-size-20pt {font-size: 20pt;}
+
+/* Font Weight */
+.bold {font-weight: bold;}
+
+/* Text Transform */
+.uppercase {text-transform: uppercase;}
+
+/* Margin */
+.margin-top-10px {margin-top: 10px;}
+.margin-top-20px {margin-top: 20px;}
+.margin-bottom-10px {margin-bottom: 10px;}
+.margin-bottom-20px {margin-bottom: 20px;}
+.margin-bottom-70px {margin-bottom: 70px;}
+
+/* Padding */
+#wrapper .padding-0px {padding: 0;}
+.padding-top-15px {padding-top: 15px;}
+.padding-left-10px {padding-left: 10px;}
+
+/* Text Transform */
+.lowercase {text-transform: lowercase;}
+
+/* Float */
+.float-right {float: right;}
+
+/* Border */
+	.border-2px {
+		border: 2px solid #000000;
+	}
+/*
+	Custom styles
+ */
+
+/*
+	Loader
+*/
+.loader {
+	position: fixed;
+	bottom: 0;
+	right: 0;
+}
+
+/*
+	Menu
+ */
+.menu .ui-menu {
+	padding: 0;
+}
+
+/*
+    Growl (Notifications)
+*/
+div.ui-growl {
+	width: 30%;
+}
+
+.ui-growl .ui-growl-message {
+	width: 85%;
+}
+
+body {
+	margin-top: 0;
+}
+
+.fa-small {
+	font-size: 75%;
+	padding: 2px;
+}
+
+.connected span {
+	color: green;
+	font-weight: bold;
+}
+
+.disconnected span {
+	color: red;
+	font-weight: bold;
+}
+
+.options {
+	width: 32px;
+	text-align: center;
+}
+
+.groupOptions {
+	width: 15%;
+	text-align: center;
+}
+
+.ui-panel-collapsed-h {
+	position: absolute;
+	z-index: 5000;
+}
+
+.studentDetail {
+	max-height: 90%;
+}
+
+.groupStudentsDialog {
+	width: 90%;
+	height: 90%;
+}
+
+.v-align-top .ui-panelgrid-cell {
+	vertical-align: top;
+}
+
+.noBorder {
+	border: none;
+}
+
+.noBorder > .ui-datatable {
+	margin-top: 0;
+	margin-bottom: 5%;
+}
+
+.noBorder .ui-widget-content {
+	border: none;
+}
+
+.noBorder .ui-widget-content .ui-panelgrid-cell {
+	border: none;
+	padding-left: 0;
+}
+
+/*.visitInfo,*/
+/*.visitInfo .ui-panel,*/
+/*.visitInfo .ui-panel-content,*/
+/*.visitInfo .ui-panel-content .ui-widget-content,*/
+/*.visitInfo div.ui-panel-content{*/
+/*padding-left: 0px;*/
+/*}*/
+
+/* Edit form */
+.edit-form .edit-panel .value > div,
+.edit-form .edit-panel .value input,
+.edit-form .edit-panel .value textarea {
+	width: 100%
+}
+
+.edit-form .edit-panel .value {
+	padding-right: 3rem;
+}
+
+/*Lesson Form */
+.lesson-info {
+	width: 100%;
+}
+
+.lesson-info td {
+	vertical-align: top;
+}
+
+#lessonForm .lesson-info label {
+	display: block;
+}
+
+.lesson-info .visit-info .visit-label {
+	font-size: 30pt;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+
+.lesson-info .visit-info label {
+	margin-left: 2rem;
+}
+
+.lesson-info .visit-info div,
+.lesson-info .visit-info td,
+.lesson-info .visit-info table {
+	padding: 0;
+}
+
+.lesson-info .lesson-text {
+	font-size: 20pt;
+}
+
+.visit-info td {
+	vertical-align: middle;
+}
+
+.lesson-buttons button {
+	margin-right: 10px;
+}
+
+.lesson-info .lesson-buttons .ui-panel-content,
+.lesson-info .lesson-text .ui-panel-content {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+/*
+	transparent icon button
+ */
+.lesson-tables .transparent-button th,
+.lesson-tables .transparent-button td {
+	padding-left: 0;
+}
+
+.lesson-tables .transparent-button button {
+	background-color: rgba(0, 0, 0, 0);
+	border: 0;
+	width: 20px;
+}
+
+.lesson-tables .transparent-button .ui-button-text {
+	padding: 0;
+}
+
+.lesson-tables .transparent-button .ui-icon {
+	width: 15px;
+}
+
+/*
+	lesson-tables
+ */
+.lesson-tables .ui-datatable thead th,
+.lesson-tables .ui-datatable tbody td,
+.lesson-tables .ui-datatable tfoot td,
+.lesson-tables .ui-datatable tfoot th {
+	border-width: 0;
+	padding: 2px 5px;
+}
+
+.lesson-tables .ui-column-filter.ui-inputfield {
+	width: 40%;
+	display: inline;
+}
+
+.lesson-tables .ui-datatable-odd {
+	background: none repeat scroll 0 0 #dddddd;
+}
+
+/*
+	Image
+ */
+.lesson-info .visit-info .image,
+.studentDetail .image {
+	width: 200px;
+	height: 267px;
+	display: block;
+	padding: 0;
+	text-align: center;
+	border: 2px solid;
+}
+
+.studentDetail .image td {
+	width: 300px;
+}
+
+.lesson-info .visit-info .image div,
+.studentDetail .image div {
+	padding: 0;
+}
+
+.image img {
+	max-width: 200px;
+	height: auto;
+}
+
+/*
+	Additions
+*/
+.camera, .camera video {
+	width: 100% !important;
+	height: 100% !important;
+}
+
+.lesson-tables .additions .ui-panel-content {
+	padding: 0;
+}
+
+.lesson-tables .additions .time {
+	font-size: 30pt;
+	text-align: center;
+}
+
+.lesson-tables .additions .time span {
+	border: 0;
+	padding: 0;
+}
+
+.lesson-tables .additions .ui-widget-header {
+	border: 1px solid #a8a8a8;
+}
+
+/* Lesson Mode table */
+.skip {
+	background-color: rgba(255, 0, 0, 0.3);
+}
+
+.lesson-mode-table .skip {
+	position: relative;
+}
+
+.lesson-mode-table .skip:after,
+.lesson-mode-table .skip:before {
+	content: "";
+	position: absolute;
+	border-top: 1px solid black;
+	width: 105%;
+	transform-origin: 0% 0%;
+	left: 0;
+}
+.lesson-mode-table .skip:after {
+	transform: rotate(17deg);
+	top: 0;
+}
+.lesson-mode-table .skip:before {
+	transform: rotate(-17deg);
+	top: 21px;
+}
+
+#lessonModeForm .lesson-mode-table .ui-datatable-data .no-class {
+	background-color: rgba(211, 211, 211, 0.7);
+}
+
+#lessonModeForm .lesson-mode-table .attestation {
+	background-color: rgba(249, 233, 2, 0.3);
+	text-align: center;
+	font-weight: bold;
+	width: 50px;
+}
+
+.lesson-mode-table .ui-column-filter.ui-inputfield {
+	width: 40px;
+	display: inline;
+}
+
+.lesson-mode-table th {
+	height: 54px;
+}
+
+/*
+.lesson-mode-table a {
+	text-decoration: none;
+}*/
+
+.lesson-mode-table td.student-info {
+	height: 22px;
+	padding-top: 1px;
+	padding-bottom: 1px;
+}
+
+.lesson-mode-table td.student-info a {
+	text-decoration: none;
+}
+
+.lesson-mode-table th.student-info {
+	padding: 0;
+}
+
+.lesson-mode-table .skips {
+	background-color: rgba(0, 246, 255, 0.3);
+	width: 30px;
+	padding: 0;
+	text-align: center;
+	font-weight: bold;
+}
+
+.lesson-mode-table .average-attestation {
+	background-color: rgba(249, 233, 2, 0.3);
+	width: 40px;
+	padding: 0;
+	text-align: center;
+	font-weight: bold;
+}
+
+.lesson-mode-table .exams {
+	background-color: rgba(25, 193, 72, 0.3);
+	width: 40px;
+	padding: 0;
+	text-align: center;
+	font-weight: bold;
+}
+
+
+.lesson-mode-table .ui-datatable-scrollable-theadclone {
+	display: none;
+}
+
+.lesson-mode-table .ui-datatable-data .class-info,
+/*.lesson-mode-table .ui-datatable-data .class-info .ui-cell-editor,*/
+.lesson-mode-table .ui-widget-header .class-info,
+.lesson-mode-table .ui-datatable-scrollable-theadclone .class-info{
+	padding: 0;
+	width: 70px;
+}
+
+.lesson-mode-table td.class-info,
+.lesson-mode-table td.class-info .ui-cell-editor-output{
+	height: 24px;
+}
+
+.lesson-mode-table td.class-info {
+	text-align: center;
+	font-weight: bold;
+}
+
+/*.lesson-mode-table td.class-info .ui-cell-editor-output{*/
+	/*display: list-item;*/
+/*}*/
+
+/*.lesson-mode-table td.class-info span {*/
+	/*display: block;*/
+	/*height: 22px;*/
+	/*padding: 4px 10px;*/
+/*}*/
+
+.lesson-mode-table td.class-info input {
+	width: 90%;
+	height: 14px;
+}
+/*
+.lesson-mode-table tbody.ui-datatable-data td{
+	padding: 0;
+}
+
+.lesson-mode-table .student-info  {
+	padding-left: 10px;
+}
+*/
+.lesson-mode-table .lesson-info {
+	display: block;
+	height: 50px;
+}
+
+.lesson-mode-table .ui-datatable-odd {
+	background: none;
+}
+
+.ui-datatable .ui-datatable-scrollable-body {
+	height: 80vh;
+}
+
+ .ui-datatable.group-mode .ui-datatable-scrollable-body {
+	 height: auto;
+ }
+
+.ui-datatable-scrollable-container .ui-datatable-scrollable-body,
+.ui-datatable-scrollable-container .ui-datatable-scrollable-header {
+	width: 70vw;
+}
+/*
+.lesson-mode-table tbody > tr {
+	height: 35px;
+}
+*/
+.ui-datatable-scrollable-container .ui-datatable-scrollable-header thead tr th:last-child {
+	border-right-width: 21px;
+ }
+
+.ui-datatable-frozen-container .ui-datatable-scrollable-body tbody {
+	border-right-width: 2px;
+}
+
+.ui-datatable-frozen-container .ui-datatable-scrollable-body tbody tr:last-child {
+	border-bottom-width: 21px;
+}
+
+.lesson-mode-table .notes-info {
+	display: block;
+	text-align: right;
+}
+
+.lesson-mode-table .ui-state-highlight{
+	background: rgba(0, 0, 0, 0) linear-gradient(-90deg, rgba(86, 163, 31, 0.5), rgba(106, 255, 0, 0.5)) repeat scroll 0 0;
+	color: inherit;
+	text-shadow: inherit;
+}
+
+.lesson-mode-table .student-info button {
+	width: 25px;
+	height: 25px;
+	font-size: 12pt;
+}
+
+.lesson-mode-table .student-info .ui-button-text {
+	padding: 0;
+}
+
+.lesson-mode-table .student-info .ui-icon {
+	left: 40%;
+}
+
+/* Photo Mode */
+.photo-mode .ui-datagrid-column {
+	width: 14%;
+}
+
+.photo-mode .ui-widget-content {
+	border: none;
+}
+
+.photo-mode img {
+	max-width: 150px;
+	height: auto;
+}
+
+.photo-mode .student {
+	display: block;
+}
+
+.photo-mode .student .name {
+	display: block;
+}
+
+.photo-mode .lesson-info label {
+	margin-left: 10px;
+	display: inline;
+}
+
+.photo-mode img{
+	border: 2px solid;
+}
+
+/* Student Mode */
+.student-mode label {
+	display: block;
+}
+
+.student-mode img {
+	max-width: 200px;
+	height: auto;
+	border: 2px solid;
+}
+
+.student-lesson {
+	display: block;
+	text-align: center;
+	width: 60px;
+	height: 100px;
+	border: 1px solid;
+}
+
+.student-lesson.practical {
+	background-color: rgba(0, 0, 200, 0.3);
+}
+.student-lesson.lecture {
+	background-color: rgba(249, 237, 67, 0.3);
+}
+.student-lesson.lab {
+	background-color: rgba(0, 200, 0, 0.3);
+}
+
+.student-additional-info {
+	font-size: 1.1em;
+}
+
+.student-additional-info td {
+	vertical-align: top;
+}
+
+.buttons {
+	font-size: 10pt;
+	margin-bottom: 20px;
+	display: block;
+	text-align: right;
+}
+
+.additional-lesson {
+	border: 1px solid blue;
+}
+
+.student-mode .student-attestation {
+	padding-bottom: 6px;
+	padding-top: 6px;
+	display: block;
+	height: 38px;
+}
+
+.student-mode .student-class-info input {
+	height: 14px;
+	width: 40px;
+}
+
+.student-mode .student-class-info {
+	display: inline-block;
+	margin-bottom: 15px;
+	height: 292px;
+}
+
+.student-mode  .student-class-info .ui-grid {
+	border: none;
+}
+
+.student-additional-info .ui-panel .ui-panel-content {
+	padding: 0;
+}
+
+.student-mode .skip {
+	position: relative;
+}
+
+.student-mode .skip:after,
+.student-mode .skip:before {
+	content: "";
+	position: absolute;
+	border-top: 1px solid black;
+	width: 117px;
+	transform-origin: 0% 0%;
+	left: 0;
+}
+.student-mode .skip:after {
+	transform: rotate(59deg);
+	top: 0;
+}
+.student-mode .skip:before {
+	transform: rotate(-59deg);
+	top: 100px;
+}
+
+.student-mode .student-class-info .ui-datagrid-column {
+	padding: 1px;
+}
+
+.exam-block {
+	width: 100%;
+	display: inline;
+}
+
+.exam-block input {
+	width: 100%;
+	height: 70px;
+	padding: 0;
+	text-align: center;
+}
