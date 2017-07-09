@@ -22,7 +22,6 @@ import static com.grsu.teacherassistant.utils.FacesUtils.update;
 public class StudentBean implements Serializable {
 
 	private Student selectedStudent;
-	private Student copyOfSelectedStudent; // used to detect changes
 
 	private DualListModel<Group> selectedGroups;
 	private List<Student> filteredStudents;
@@ -34,7 +33,6 @@ public class StudentBean implements Serializable {
 
 	public void setSelectedStudent(Student selectedStudent) {
 		this.selectedStudent = selectedStudent;
-		copyOfSelectedStudent = this.selectedStudent == null ? null : new Student(selectedStudent);
 	}
 
 	public DualListModel<Group> getSelectedGroups() {
@@ -58,10 +56,6 @@ public class StudentBean implements Serializable {
 		if (selectedStudent != null) {
 			selectedStudent.setGroups(selectedGroups == null ? null : selectedGroups.getTarget());
 		}
-	}
-
-	public boolean isInfoChanged() {
-		return selectedStudent != null && !selectedStudent.equals(copyOfSelectedStudent);
 	}
 
 	public List<Student> getStudents() {
@@ -102,10 +96,6 @@ public class StudentBean implements Serializable {
 
 	public Student getSelectedStudent() {
 		return selectedStudent;
-	}
-
-	public Student getCopyOfSelectedStudent() {
-		return copyOfSelectedStudent;
 	}
 
 	public List<Student> getFilteredStudents() {

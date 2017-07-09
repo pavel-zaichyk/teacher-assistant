@@ -115,7 +115,7 @@
 							</p:commandButton>
 							<p:commandButton title="#{msg['btn.lessons']}"
 							                 value="#{msg['btn.lessons']}"
-							                 update="@([id$=views])"
+							                 update="@([id$=wrapper])"
 							                 styleClass="block w100pc margin-bottom-10px">
 								<f:setPropertyActionListener value="#{true}" target="#{menuBean.showMenu}"/>
 								<f:setPropertyActionListener value="lessons" target="#{sessionBean.activeView}"/>
@@ -201,7 +201,10 @@
 						  filterBy="#{pStudent.name}"
 						  filterMatchMode="startsWith"
 						  styleClass="bold w210px">
-					<h:outputText value="#{pStudent.name}"/>
+					<p:commandLink styleClass="bold #{pStudent.additional ? 'blue' : ''}" value="#{pStudent.name}" update="@([id$=wrapper])"
+					               actionListener="#{studentModeBean.initStudentMode(pStudent.student, lessonBean.selectedLesson.stream)}">
+						<f:setPropertyActionListener value="studentMode" target="#{sessionBean.activeView}"/>
+					</p:commandLink>
 				</p:column>
 
 				<p:column headerText="#{msg['total.skip']}"
@@ -269,7 +272,10 @@
 						  filterBy="#{aStudent.name}"
 						  filterMatchMode="startsWith"
 						  styleClass="bold  w210px">
-					<h:outputText value="#{aStudent.name}"/>
+					<p:commandLink value="#{aStudent.name}" update="@([id$=wrapper])"
+					               actionListener="#{studentModeBean.initStudentMode(aStudent.student, lessonBean.selectedLesson.stream)}">
+						<f:setPropertyActionListener value="studentMode" target="#{sessionBean.activeView}"/>
+					</p:commandLink>
 				</p:column>
 
 				<p:column headerText="#{msg['total.skip']}"

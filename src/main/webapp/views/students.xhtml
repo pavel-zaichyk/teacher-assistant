@@ -15,7 +15,10 @@
                 <h:outputText value="#{student.cardUid}"/>
             </p:column>
             <p:column sortBy="#{student.fullName}" filterBy="#{student.fullName}" filterMatchMode="startsWith">
-                <h:outputText value="#{student.fullName}"/>
+                <p:commandLink value="#{student.fullName}" update="@([id$=wrapper])"
+                               actionListener="#{studentModeBean.initStudentMode(student, null)}">
+                    <f:setPropertyActionListener value="studentMode" target="#{sessionBean.activeView}"/>
+                </p:commandLink>
             </p:column>
             <p:column sortBy="#{student.groupNames}" filterBy="#{student.groupNames}" filterMatchMode="contains">
                 <h:outputText value="#{student.groupNames}" escape="false"/>

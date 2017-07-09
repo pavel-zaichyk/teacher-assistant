@@ -33,32 +33,32 @@
 			</h:panelGrid>
 
 			<h:panelGroup>
-				<h:panelGroup id="buttons" styleClass="buttons">
-					<h:panelGrid columns="5" styleClass="inline" columnClasses=",top">
-						<p:selectOneMenu filter="true" filterMatchMode="startsWith" converter="entityConverter"
-						                 value="#{studentModeBean.student}"
-						>
-							<f:selectItem itemValue="#{null}" itemLabel="#{msg['select.student']}"/>
-							<f:selectItems value="#{sessionBean.students}" var="student"
-							               itemLabel="#{student.fullName}"
-							               itemValue="#{student}"/>
-							<p:ajax listener="#{studentModeBean.initStudentMode(studentModeBean.student, null)}"
-							        update=":studentModeForm"/>
-						</p:selectOneMenu>
+				<h:panelGrid columns="3" styleClass="inline font-size-12pt" columnClasses="top,top,">
+					<p:selectOneMenu filter="true" filterMatchMode="startsWith" converter="entityConverter"
+					                 value="#{studentModeBean.student}"
+					>
+						<f:selectItem itemValue="#{null}" itemLabel="#{msg['select.student']}"/>
+						<f:selectItems value="#{sessionBean.students}" var="student"
+						               itemLabel="#{student.fullName}"
+						               itemValue="#{student}"/>
+						<p:ajax listener="#{studentModeBean.initStudentMode(studentModeBean.student, null)}"
+						        update=":studentModeForm"/>
+					</p:selectOneMenu>
 
-						<p:selectOneMenu converter="entityConverter"
-						                 value="#{studentModeBean.stream}"
-						                 styleClass="font-size-12pt block"
-						                 rendered="#{studentModeBean.studentStreams.size() gt 1}"
-						>
-							<f:selectItem itemValue="#{null}" itemLabel="#{msg['select.stream']}"/>
-							<f:selectItems value="#{studentModeBean.studentStreams}" var="stream"
-							               itemLabel="#{stream.name}"
-							               itemValue="#{stream}"/>
-							<p:ajax listener="#{studentModeBean.initStudentMode(studentModeBean.student, studentModeBean.stream)}"
-							        update=":studentModeForm"/>
-						</p:selectOneMenu>
+					<p:selectOneMenu converter="entityConverter"
+					                 value="#{studentModeBean.stream}"
+					                 styleClass="block"
+					                 rendered="#{studentModeBean.studentStreams.size() gt 1}"
+					>
+						<f:selectItem itemValue="#{null}" itemLabel="#{msg['select.stream']}"/>
+						<f:selectItems value="#{studentModeBean.studentStreams}" var="stream"
+						               itemLabel="#{stream.name}"
+						               itemValue="#{stream}"/>
+						<p:ajax listener="#{studentModeBean.initStudentMode(studentModeBean.student, studentModeBean.stream)}"
+						        update=":studentModeForm"/>
+					</p:selectOneMenu>
 
+					<h:panelGroup id="buttons" styleClass="buttons">
 						<p:commandButton title="#{msg['btn.startRecord']}" icon="fa fa-fw fa-play"
 						                 update=":studentModeForm:buttons"
 						                 actionListener="#{serialBean.startRecord}"
@@ -84,6 +84,13 @@
 							<f:ajax event="click" listener="#{studentModeBean.clear}"/>
 						</p:commandButton>
 
+						<p:commandButton update=":studentInfoForm" oncomplete="PF('studentDialog').show()"
+						                 icon="fa fa-fw fa-search" title="#{msg['option.view']}">
+							<f:setPropertyActionListener value="#{studentModeBean.student}"
+							                             target="#{studentBean.selectedStudent}"/>
+							<p:resetInput target=":studentInfoForm:studentDetail"/>
+						</p:commandButton>
+
 						<p:commandButton id="modeBtn" icon="fa fa-fw fa-forward"/>
 						<p:overlayPanel for="modeBtn" showEvent="mouseover"
 						                hideEvent="mousedown"
@@ -92,6 +99,7 @@
 						                showCloseIcon="true">
 							<p:commandButton title="#{msg['btn.lessonMode']}" value="#{msg['btn.lessonMode']}"
 							                 actionListener="#{lessonModeBean.initLessonMode}"
+							                 disabled="#{lessonModeBean.lesson eq null}"
 							                 update="@([id$=views])"
 							                 styleClass="block w100pc margin-bottom-10px">
 								<f:setPropertyActionListener value="lessonMode" target="#{sessionBean.activeView}"/>
@@ -99,6 +107,7 @@
 							</p:commandButton>
 							<p:commandButton title="#{msg['btn.photoMode']}" value="#{msg['btn.photoMode']}"
 							                 actionListener="#{menuBean.changeView('photoMode')}"
+							                 disabled="#{lessonModeBean.lesson eq null}"
 							                 update="@([id$=views])"
 							                 styleClass="block w100pc margin-bottom-10px">
 							</p:commandButton>
@@ -106,21 +115,22 @@
 							                 value="#{msg['btn.registerMode']}"
 							                 actionListener="#{lessonBean.initLesson(lessonBean.selectedLesson)}"
 							                 styleClass="block w100pc margin-bottom-10px"
+							                 disabled="#{lessonBean.selectedLesson eq null}"
 							                 update="@([id$=views])">
 								<f:setPropertyActionListener value="lesson" target="#{sessionBean.activeView}"/>
 								<f:ajax event="click" listener="#{lessonModeBean.clear}"/>
 							</p:commandButton>
 							<p:commandButton title="#{msg['btn.lessons']}"
 							                 value="#{msg['btn.lessons']}"
-							                 update="@([id$=views])"
+							                 update="@([id$=wrapper])"
 							                 styleClass="block w100pc margin-bottom-10px">
 								<f:setPropertyActionListener value="#{true}" target="#{menuBean.showMenu}"/>
 								<f:setPropertyActionListener value="lessons" target="#{sessionBean.activeView}"/>
 							</p:commandButton>
 						</p:overlayPanel>
 
-					</h:panelGrid>
-				</h:panelGroup>
+					</h:panelGroup>
+				</h:panelGrid>
 				<h:panelGroup styleClass="block margin-bottom-70px">
 					<p:outputLabel value="#{studentModeBean.stream.name}"/>
 					<p:outputLabel value="#{studentModeBean.stream.discipline.name}"/>

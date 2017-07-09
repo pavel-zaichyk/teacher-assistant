@@ -82,7 +82,7 @@
 						</p:commandButton>
 						<p:commandButton title="#{msg['btn.lessons']}"
 						                 value="#{msg['btn.lessons']}"
-						                 update="@([id$=views])"
+						                 update="@([id$=wrapper])"
 						                 styleClass="block w100pc margin-bottom-10px">
 							<f:setPropertyActionListener value="#{true}" target="#{menuBean.showMenu}"/>
 							<f:setPropertyActionListener value="lessons" target="#{sessionBean.activeView}"/>

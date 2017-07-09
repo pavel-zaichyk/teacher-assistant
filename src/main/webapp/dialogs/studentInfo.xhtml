@@ -76,7 +76,7 @@
 					</p:panelGrid>
 				</p:panelGrid>
 
-				<p:outputPanel rendered="#{studentBean.infoChanged}">
+				<p:outputPanel>
 					<p:commandButton value="#{msg['btn.save.exit']}" icon="fa fa-fw fa-save"
 									 actionListener="#{studentBean.saveAndExit}"
 									 update=":studentInfoForm:studentDetail"/>
