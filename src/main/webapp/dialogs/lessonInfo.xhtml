@@ -63,13 +63,13 @@
 					</p:selectOneMenu>
 
 					<p:outputLabel for="date" value="#{msg['lesson.date']}"/>
-					<p:calendar id="date" value="#{newLessonBean.lesson.clazz.date}"
+					<p:calendar id="date" value="#{newLessonBean.lesson.date}"
 								converter="localDateConverter" pattern="dd.MM.yyyy">
 						<p:ajax event="dateSelect" update=":lessonInfoForm:lessonDetail"/>
 					</p:calendar>
 
 					<p:outputLabel for="schedule" value="#{msg['lesson.schedule']}"/>
-					<p:selectOneMenu id="schedule" value="#{newLessonBean.lesson.clazz.schedule}"
+					<p:selectOneMenu id="schedule" value="#{newLessonBean.lesson.schedule}"
 									 converter="entityConverter" required="true">
 						<f:selectItem itemValue="#{null}" itemLabel="#{msg['select.schedule']}"/>
 						<f:selectItems value="#{sessionBean.schedules}" var="schedule" itemLabel="#{schedule.caption}"/>

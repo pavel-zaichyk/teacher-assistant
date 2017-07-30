@@ -2,7 +2,6 @@ package com.grsu.teacherassistant.beans;
 
 import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.entities.*;
-import com.grsu.teacherassistant.entities.Class;
 import com.grsu.teacherassistant.models.LessonType;
 
 import javax.faces.bean.ManagedBean;
@@ -29,13 +28,7 @@ public class NewLessonBean implements Serializable {
 	private List<LessonType> lessonTypes = new ArrayList<>(Arrays.asList(LessonType.LECTURE, LessonType.PRACTICAL, LessonType.LAB, LessonType.EXAM));
 
 	private void initLesson() {
-		if (lesson.getClasses() == null) {
-			Class cl = new Class();
-			cl.setDate(LocalDateTime.now());
-			cl.setLesson(lesson);
-			lesson.setClasses(new HashSet<>());
-			lesson.getClasses().add(cl);
-		}
+		lesson.setDate(LocalDateTime.now());
 	}
 
 	public void exit() {
@@ -56,8 +49,6 @@ public class NewLessonBean implements Serializable {
 			}
 
 			EntityDAO.add(lesson);
-			EntityDAO.add(lesson.getClazz());
-
 
 			List<Group> groups;
 
@@ -72,16 +63,15 @@ public class NewLessonBean implements Serializable {
 				students.addAll(group.getStudents());
 			}
 
-			List<StudentClass> studentClasses = new ArrayList<>();
+			List<StudentLesson> studentLessons = new ArrayList<>();
 			for (Student student : students) {
-				StudentClass sc = new StudentClass();
+				StudentLesson sc = new StudentLesson();
 				sc.setStudent(student);
-				sc.setClazz(lesson.getClazz());
-				studentClasses.add(sc);
+				sc.setLesson(lesson);
+				studentLessons.add(sc);
 			}
-			EntityDAO.add(new ArrayList<>(studentClasses));
+			EntityDAO.add(new ArrayList<>(studentLessons));
 
-			sessionBean.updateLessons();
 			sessionBean.updateStudents();
 		}
 		exit();

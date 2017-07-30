@@ -1,6 +1,8 @@
 package com.grsu.teacherassistant.entities;
 
 import com.grsu.teacherassistant.converters.db.LocalTimeAttributeConverter;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalTime;
@@ -10,6 +12,8 @@ import java.util.List;
  * Created by zaychick-pavel on 2/9/17.
  */
 @Entity
+@Getter
+@Setter
 public class Schedule implements AssistantEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +35,7 @@ public class Schedule implements AssistantEntity {
 	private Integer number;
 
 	@OneToMany(mappedBy = "schedule", fetch = FetchType.EAGER)
-	private List<Class> classes;
+	private List<Lesson> lessons;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "version_id", referencedColumnName = "id")
@@ -43,55 +47,6 @@ public class Schedule implements AssistantEntity {
 
 	public String getTime() {
 		return String.format("%s - %s", begin, end);
-	}
-
-	/* GETTERS & SETTERS */
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public LocalTime getBegin() {
-		return begin;
-	}
-
-	public void setBegin(LocalTime begin) {
-		this.begin = begin;
-	}
-
-	public LocalTime getEnd() {
-		return end;
-	}
-
-	public void setEnd(LocalTime end) {
-		this.end = end;
-	}
-
-	public Integer getNumber() {
-		return number;
-	}
-
-	public void setNumber(Integer number) {
-		this.number = number;
-	}
-
-	public List<Class> getClasses() {
-		return classes;
-	}
-
-	public void setClasses(List<Class> classes) {
-		this.classes = classes;
-	}
-
-	public ScheduleVersion getVersion() {
-		return version;
-	}
-
-	public void setVersion(ScheduleVersion version) {
-		this.version = version;
 	}
 
 	@Override

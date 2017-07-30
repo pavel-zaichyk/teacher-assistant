@@ -4,6 +4,8 @@ import com.grsu.teacherassistant.converters.db.LessonTypeAttributeConverter;
 import com.grsu.teacherassistant.converters.db.LocalDateTimeAttributeConverter;
 import com.grsu.teacherassistant.models.LessonType;
 import com.grsu.teacherassistant.utils.EntityUtils;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.CascadeType;
 
@@ -12,6 +14,7 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -19,6 +22,8 @@ import java.util.Set;
  */
 @Entity
 @ManagedBean(name = "newInstanceOfLesson")
+@Getter
+@Setter
 public class Lesson implements AssistantEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -38,9 +43,10 @@ public class Lesson implements AssistantEntity {
 	@Column(name = "create_date")
 	private LocalDateTime createDate;
 
-	@OneToMany(mappedBy = "lesson", fetch = FetchType.EAGER)
-	@Cascade(CascadeType.DELETE)
-	private Set<Class> classes;
+	@Basic
+	@Convert(converter = LocalDateTimeAttributeConverter.class)
+	@Column(name = "date")
+	private LocalDateTime date;
 
 	@NotFound(action= NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -62,6 +68,15 @@ public class Lesson implements AssistantEntity {
 	@Where(clause = "type = 'LESSON'")
 	private List<Note> notes;
 
+	@ManyToOne
+	@JoinColumn(name = "schedule_id", referencedColumnName = "id")
+	private Schedule schedule;
+
+	@MapKey(name = "studentId")
+	@OneToMany(mappedBy = "lesson", fetch = FetchType.EAGER)
+	@Cascade(org.hibernate.annotations.CascadeType.DELETE)
+	private Map<Integer, StudentLesson> studentLessons;
+
 	public Lesson() {
 	}
 
@@ -70,90 +85,10 @@ public class Lesson implements AssistantEntity {
 		this.name = lesson.name;
 		this.description = lesson.description;
 		this.createDate = lesson.createDate;
-		this.classes = lesson.classes;
+		this.date = lesson.date;
 		this.stream = lesson.stream;
 		this.type = lesson.type;
 		this.group = lesson.group;
-	}
-
-	/* GETTERS & SETTERS */
-	public Class getClazz() {
-		if (classes != null && classes.size() > 0) {
-			return (Class) classes.toArray()[0];
-		}
-		return null;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public LocalDateTime getCreateDate() {
-		return createDate;
-	}
-
-	public void setCreateDate(LocalDateTime createDate) {
-		this.createDate = createDate;
-	}
-
-	public Set<Class> getClasses() {
-		return classes;
-	}
-
-	public void setClasses(Set<Class> classes) {
-		this.classes = classes;
-	}
-
-	public Stream getStream() {
-		return stream;
-	}
-
-	public void setStream(Stream stream) {
-		this.stream = stream;
-	}
-
-	public LessonType getType() {
-		return type;
-	}
-
-	public void setType(LessonType type) {
-		this.type = type;
-	}
-
-	public Group getGroup() {
-		return group;
-	}
-
-	public void setGroup(Group group) {
-		this.group = group;
-	}
-
-	public List<Note> getNotes() {
-		return notes;
-	}
-
-	public void setNotes(List<Note> notes) {
-		this.notes = notes;
 	}
 
 	@Override
@@ -167,7 +102,7 @@ public class Lesson implements AssistantEntity {
 		if (name != null ? !name.equals(lesson.name) : lesson.name != null) return false;
 		if (description != null ? !description.equals(lesson.description) : lesson.description != null) return false;
 		if (createDate != null ? !createDate.equals(lesson.createDate) : lesson.createDate != null) return false;
-		if (!EntityUtils.compareEntityLists(classes, lesson.classes)) return false;
+		if (date != null ? !date.equals(lesson.date) : lesson.date != null) return false;
 		if (!EntityUtils.compareEntity(stream, lesson.stream)) return false;
 		if (!EntityUtils.compareEntity(group, lesson.group)) return false;
 
@@ -180,6 +115,7 @@ public class Lesson implements AssistantEntity {
 		result = 31 * result + (name != null ? name.hashCode() : 0);
 		result = 31 * result + (description != null ? description.hashCode() : 0);
 		result = 31 * result + (createDate != null ? createDate.hashCode() : 0);
+		result = 31 * result + (date != null ? date.hashCode() : 0);
 		return result;
 	}
 
@@ -190,6 +126,7 @@ public class Lesson implements AssistantEntity {
 				", name='" + name + '\'' +
 				", description='" + description + '\'' +
 				", createDate='" + createDate + '\'' +
+				", date='" + date + '\'' +
 				'}';
 	}
 }

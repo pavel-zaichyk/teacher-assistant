@@ -113,11 +113,11 @@
 							</p:commandButton>
 							<p:commandButton title="#{msg['btn.registerMode']}"
 							                 value="#{msg['btn.registerMode']}"
-							                 actionListener="#{lessonBean.initLesson(lessonBean.selectedLesson)}"
+							                 actionListener="#{registrationModeBean.initLesson(registrationModeBean.selectedLesson)}"
 							                 styleClass="block w100pc margin-bottom-10px"
-							                 disabled="#{lessonBean.selectedLesson eq null}"
+							                 disabled="#{registrationModeBean.selectedLesson eq null}"
 							                 update="@([id$=views])">
-								<f:setPropertyActionListener value="lesson" target="#{sessionBean.activeView}"/>
+								<f:setPropertyActionListener value="registrationMode" target="#{sessionBean.activeView}"/>
 								<f:ajax event="click" listener="#{lessonModeBean.clear}"/>
 							</p:commandButton>
 							<p:commandButton title="#{msg['btn.lessons']}"
@@ -161,7 +161,7 @@
 				<h:outputText value="#{msg['label.attestation.notes']}:" styleClass="bold block"/>
 				<ui:repeat var="attestation" value="#{studentModeBean.attestations}">
 					<h:panelGrid columns="2" rendered="#{attestation.notes.size() gt 0}">
-						<h:outputText value="#{attestation.clazz.date}" converter="localShortDateConverter"/>
+						<h:outputText value="#{attestation.date}" converter="localShortDateConverter"/>
 						<h:panelGroup>
 							<ui:repeat var="note" value="#{attestation.notes}">
 								<h:outputText value="#{note.description}" styleClass="block"/>
@@ -171,11 +171,11 @@
 				</ui:repeat>
 
 				<h:outputText value="#{msg['label.lesson.notes']}:" styleClass="bold block"/>
-				<ui:repeat var="studentClass" value="#{studentModeBean.studentClasses}">
-					<h:panelGrid columns="2" rendered="#{studentClass.notes.size() gt 0}">
-						<h:outputText value="#{studentClass.clazz.date}" converter="localShortDateConverter"/>
+				<ui:repeat var="studentLesson" value="#{studentModeBean.studentLessons}">
+					<h:panelGrid columns="2" rendered="#{studentLesson.notes.size() gt 0}">
+						<h:outputText value="#{studentLesson.lesson.date}" converter="localShortDateConverter"/>
 						<h:panelGroup>
-							<ui:repeat var="note" value="#{studentClass.notes}">
+							<ui:repeat var="note" value="#{studentLesson.notes}">
 								<h:outputText value="#{note.description}" styleClass="block"/>
 							</ui:repeat>
 						</h:panelGroup>
@@ -206,29 +206,29 @@
 			</p:panel>
 
 			<h:panelGroup>
-				<p:dataGrid id="studentClassesInfo" var="studentClass" value="#{studentModeBean.studentClasses}"
+				<p:dataGrid id="studentLessonsInfo" var="studentLesson" value="#{studentModeBean.studentLessons}"
 				            columns="10" layout="grid" styleClass="student-class-info">
 					<h:panelGroup id="lessonInfo"
-					              styleClass="student-lesson #{studentClass.registered eq false ? 'skip' : ''}
-								  #{studentClass.clazz.lesson.type.key}
-								  #{studentModeBean.isAdditionalLesson(studentClass.clazz.lesson) ? 'additional-lesson' : ''}">
-						<p:ajax event="click" listener="#{studentModeBean.editMark(studentClass)}"
+					              styleClass="student-lesson #{studentLesson.registered eq false ? 'skip' : ''}
+								  #{studentLesson.lesson.type.key}
+								  #{studentModeBean.isAdditionalLesson(studentLesson.lesson) ? 'additional-lesson' : ''}">
+						<p:ajax event="click" listener="#{studentModeBean.editMark(studentLesson)}"
 						        update="@this :studentModeForm:focus"
-						        disabled="#{studentClass eq studentModeBean.editedStudentClass}"/>
+						        disabled="#{studentLesson eq studentModeBean.editedStudentLesson}"/>
 
 						<h:outputLabel styleClass="font-size-11pt"
-						               value="#{msg['label.'.concat(studentClass.clazz.lesson.type.key)]}"/>
-						<h:outputLabel styleClass="font-size-11pt" value="#{studentClass.clazz.date}"
+						               value="#{msg['label.'.concat(studentLesson.lesson.type.key)]}"/>
+						<h:outputLabel styleClass="font-size-11pt" value="#{studentLesson.lesson.date}"
 						               converter="localShortDateConverter"/>
-						<h:panelGroup rendered="#{not (studentClass eq studentModeBean.editedStudentClass)}">
-							<h:outputLabel styleClass="bold" value="#{studentClass.mark}"/>
-							<p:outputLabel id="noteStudentClass" styleClass="float-right"
-							               rendered="#{studentClass.notes.size() gt 0}">
+						<h:panelGroup rendered="#{not (studentLesson eq studentModeBean.editedStudentLesson)}">
+							<h:outputLabel styleClass="bold" value="#{studentLesson.mark}"/>
+							<p:outputLabel id="notestudentLesson" styleClass="float-right"
+							               rendered="#{studentLesson.notes.size() gt 0}">
 								<i class="fa fa-info-circle"></i>
 							</p:outputLabel>
-							<p:tooltip for="noteStudentClass" position="bottom"
-							           rendered="#{studentClass.notes.size() gt 0}">
-								<ui:repeat var="note" value="#{studentClass.notes}">
+							<p:tooltip for="notestudentLesson" position="bottom"
+							           rendered="#{studentLesson.notes.size() gt 0}">
+								<ui:repeat var="note" value="#{studentLesson.notes}">
 									<h:panelGrid columns="2" columnClasses="w300px, w20px" styleClass="w100pc">
 										<h:outputText value="#{note.description}"/>
 										<h:outputText value="#{note.createDate}" converter="localDateConverter"/>
@@ -236,9 +236,9 @@
 								</ui:repeat>
 							</p:tooltip>
 						</h:panelGroup>
-						<h:panelGroup rendered="#{studentClass eq studentModeBean.editedStudentClass}">
+						<h:panelGroup rendered="#{studentLesson eq studentModeBean.editedStudentLesson}">
 							<p:inputText id="editedMark"
-							             value="#{studentClass.mark}"
+							             value="#{studentLesson.mark}"
 							             valueChangeListener="#{studentModeBean.saveMark}"
 							>
 								<p:ajax event="blur" listener="#{studentModeBean.saveMark(null)}"
@@ -253,8 +253,8 @@
 						            oncomplete="PF('notesDialog').show()"
 						            update=":studentModeForm:notes"
 						>
-							<f:setPropertyActionListener value="#{studentClass}"
-							                             target="#{studentModeBean.selectedStudentClass}"/>
+							<f:setPropertyActionListener value="#{studentLesson}"
+							                             target="#{studentModeBean.selectedStudentLesson}"/>
 							<f:setPropertyActionListener value="#{null}"
 							                             target="#{studentModeBean.newNote}"/>
 						</p:menuitem>
@@ -263,23 +263,23 @@
 						            oncomplete="PF('registeredDialog').show()"
 						            update=":studentModeForm:skips"
 						>
-							<f:setPropertyActionListener value="#{studentClass}"
-							                             target="#{studentModeBean.selectedStudentClass}"/>
-							<f:setPropertyActionListener value="#{studentClass.registered}"
+							<f:setPropertyActionListener value="#{studentLesson}"
+							                             target="#{studentModeBean.selectedStudentLesson}"/>
+							<f:setPropertyActionListener value="#{studentLesson.registered}"
 							                             target="#{studentModeBean.registered}"/>
 						</p:menuitem>
 					</p:contextMenu>
 					<p:tooltip for="lessonInfo" position="top">
 						<h:panelGrid columns="1">
-							<h:outputText value="#{msg[studentClass.clazz.lesson.type.key]}"/>
-							<h:outputText value="#{studentClass.clazz.date}" converter="localDateConverter"/>
-							<h:outputText value="#{studentClass.clazz.schedule.caption}"/>
-							<h:outputText value="#{studentClass.clazz.lesson.group.name}"/>
-							<h:outputText value="#{studentClass.clazz.lesson.description}"/>
+							<h:outputText value="#{msg[studentLesson.lesson.type.key]}"/>
+							<h:outputText value="#{studentLesson.lesson.date}" converter="localDateConverter"/>
+							<h:outputText value="#{studentLesson.lesson.schedule.caption}"/>
+							<h:outputText value="#{studentLesson.lesson.group.name}"/>
+							<h:outputText value="#{studentLesson.lesson.description}"/>
 							<h:outputText value="#{msg['label.notes']}:"
-							              rendered="#{studentClass.clazz.lesson.notes.size() gt 0}"/>
+							              rendered="#{studentLesson.lesson.notes.size() gt 0}"/>
 						</h:panelGrid>
-						<ui:repeat var="note" value="#{studentClass.clazz.lesson.notes}">
+						<ui:repeat var="note" value="#{studentLesson.lesson.notes}">
 							<h:panelGrid columns="2" columnClasses="w300px, w20px" styleClass="w100pc">
 								<h:outputText value="#{note.description}"/>
 								<h:outputText value="#{note.createDate}" converter="localDateConverter"/>
@@ -288,7 +288,7 @@
 					</p:tooltip>
 				</p:dataGrid>
 
-				<p:focus id="focus" context="studentClassesInfo"/>
+				<p:focus id="focus" context="studentLessonsInfo"/>
 
 				<p:panelGrid styleClass="exam-block">
 					<f:facet name="header">
@@ -329,7 +329,7 @@
 										            update=":studentModeForm:notes"
 										>
 											<f:setPropertyActionListener value="#{attestation}"
-											                             target="#{studentModeBean.selectedStudentClass}"/>
+											                             target="#{studentModeBean.selectedStudentLesson}"/>
 											<f:setPropertyActionListener value="#{null}"
 											                             target="#{studentModeBean.newNote}"/>
 										</p:menuitem>
@@ -365,7 +365,7 @@
 							<p:inputNumber id="examMark"
 							               value="#{studentModeBean.lessonStudent.examMark}"
 							               valueChangeListener="#{studentModeBean.changeExamMark}"
-							               rendered="#{studentModeBean.examClass ne null}"
+							               rendered="#{studentModeBean.exam ne null}"
 							               minValue="0"
 							               maxValue="10">
 								<p:ajax update="totalMark @this"/>
@@ -375,7 +375,7 @@
 							<p:inputNumber id="totalMark"
 							               value="#{studentModeBean.lessonStudent.totalMark}"
 							               valueChangeListener="#{studentModeBean.changeExamMark}"
-							               rendered="#{studentModeBean.examClass ne null}"
+							               rendered="#{studentModeBean.exam ne null}"
 							               minValue="0"
 							               maxValue="10">
 								<p:ajax update="examMark @this"/>
@@ -397,12 +397,12 @@
 		          resizable="false">
 			<p:ajax event="close" update=":studentModeForm:studentAdditionalInfo"/>
 			<p:outputPanel id="notes">
-				<p:outputLabel styleClass="block" value="#{studentModeBean.selectedStudentClass.clazz.date}"
+				<p:outputLabel styleClass="block" value="#{studentModeBean.selectedStudentLesson.lesson.date}"
 				               converter="localDateConverter"/>
 				<p:outputLabel styleClass="block"
-				               value="#{msg[studentModeBean.selectedStudentClass.clazz.lesson.type.key]}"/>
+				               value="#{msg[studentModeBean.selectedStudentLesson.lesson.type.key]}"/>
 				<p:outputLabel styleClass="block" value="#{studentModeBean.lessonStudent.name}"/>
-				<ui:repeat var="note" value="#{studentModeBean.selectedStudentClass.notes}">
+				<ui:repeat var="note" value="#{studentModeBean.selectedStudentLesson.notes}">
 					<h:panelGrid columns="3" columnClasses="w300px, w20px">
 						<h:outputText value="#{note.description}"/>
 						<h:outputText value="#{note.createDate}" converter="localDateConverter"/>
@@ -429,10 +429,10 @@
 			<p:ajax event="close" update=":studentModeForm:studentAdditionalInfo :studentModeForm:studentSkips"/>
 			<p:outputPanel id="skips">
 				<h:panelGroup>
-					<p:outputLabel styleClass="block" value="#{studentModeBean.selectedStudentClass.clazz.date}"
+					<p:outputLabel styleClass="block" value="#{studentModeBean.selectedStudentLesson.lesson.date}"
 					               converter="localDateConverter"/>
 					<p:outputLabel styleClass="block"
-					               value="#{msg[studentModeBean.selectedStudentClass.clazz.lesson.type.key]}"/>
+					               value="#{msg[studentModeBean.selectedStudentLesson.lesson.type.key]}"/>
 					<p:outputLabel styleClass="block" value="#{studentModeBean.lessonStudent.name}"/>
 					<p:selectOneRadio id="registered"
 					                  value="#{studentModeBean.registered}">

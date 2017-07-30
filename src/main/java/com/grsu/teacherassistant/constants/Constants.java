@@ -23,7 +23,7 @@ public final class Constants {
 	public final static String TOTAL_SKIP = "total.skip";
 
 	//NOTE TYPES
-	public static final String STUDENT_CLASS = "STUDENT_CLASS";
+	public static final String STUDENT_LESSON = "STUDENT_LESSON";
 	public static final String STUDENT = "STUDENT";
 	public static final String LESSON = "LESSON";
 

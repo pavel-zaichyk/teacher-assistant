@@ -1,6 +1,8 @@
 package com.grsu.teacherassistant.entities;
 
 import com.grsu.teacherassistant.converters.db.LocalTimeAttributeConverter;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Where;
@@ -10,11 +12,12 @@ import java.time.LocalTime;
 import java.util.List;
 
 /**
- * Created by pavel on 2/10/17.
+ * @author Pavel Zaychick
  */
 @Entity
-@Table(name = "STUDENT_CLASS")
-public class StudentClass implements AssistantEntity {
+@Table(name = "STUDENT_LESSON")
+@Getter @Setter
+public class StudentLesson implements AssistantEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
@@ -42,105 +45,26 @@ public class StudentClass implements AssistantEntity {
 	@JoinColumn(name = "student_id", referencedColumnName = "id")
 	private Student student;
 
+	@NotFound(action= NotFoundAction.IGNORE)
 	@ManyToOne
-	@JoinColumn(name = "class_id", referencedColumnName = "id")
-	private Class clazz;
-
+	@JoinColumn(name = "lesson_id", referencedColumnName = "id")
+	private Lesson lesson;
 
 	@Basic
 	@Column(name = "student_id", insertable = false, updatable = false)
 	private Integer studentId;
 
 	@Basic
-	@Column(name = "class_id", insertable = false, updatable = false)
-	private Integer classId;
+	@Column(name = "lesson_id", insertable = false, updatable = false)
+	private Integer lessonId;
 
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "entity_id", referencedColumnName = "id")
-	@Where(clause = "type = 'STUDENT_CLASS'")
+	@Where(clause = "type = 'STUDENT_LESSON'")
 	private List<Note> notes;
 
-	/* GETTERS & SETTERS */
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Boolean getRegistered() {
+	public boolean isRegistered() {
 		return Boolean.TRUE.equals(registered);
-	}
-
-	public void setRegistered(Boolean registered) {
-		this.registered = registered;
-	}
-
-	public LocalTime getRegistrationTime() {
-		return registrationTime;
-	}
-
-	public void setRegistrationTime(LocalTime registrationTime) {
-		this.registrationTime = registrationTime;
-	}
-
-	public String getRegistrationType() {
-		return registrationType;
-	}
-
-	public void setRegistrationType(String registrationType) {
-		this.registrationType = registrationType;
-	}
-
-	public String getMark() {
-		return mark;
-	}
-
-	public void setMark(String mark) {
-		this.mark = mark;
-	}
-
-	public Student getStudent() {
-		return student;
-	}
-
-	public void setStudent(Student student) {
-		this.student = student;
-	}
-
-	public Class getClazz() {
-		return clazz;
-	}
-
-	public void setClazz(Class clazz) {
-		this.clazz = clazz;
-	}
-
-
-	public Integer getStudentId() {
-		return studentId;
-	}
-
-	public void setStudentId(Integer studentId) {
-		this.studentId = studentId;
-	}
-
-
-	public Integer getClassId() {
-		return classId;
-	}
-
-	public void setClassId(Integer classId) {
-		this.classId = classId;
-	}
-
-	public List<Note> getNotes() {
-		return notes;
-	}
-
-	public void setNotes(List<Note> notes) {
-		this.notes = notes;
 	}
 
 	@Override
@@ -148,7 +72,7 @@ public class StudentClass implements AssistantEntity {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		StudentClass that = (StudentClass) o;
+		StudentLesson that = (StudentLesson) o;
 
 		if (id != null ? !id.equals(that.id) : that.id != null) return false;
 		if (registered != null ? !registered.equals(that.registered) : that.registered != null) return false;
@@ -173,7 +97,7 @@ public class StudentClass implements AssistantEntity {
 
 	@Override
 	public String toString() {
-		return "StudentClass{" +
+		return "StudentLesson{" +
 				"id=" + id +
 				", registered=" + registered +
 				", registrationTime='" + registrationTime + '\'' +

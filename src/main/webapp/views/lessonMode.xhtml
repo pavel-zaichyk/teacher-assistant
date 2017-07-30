@@ -43,9 +43,9 @@
 				<f:facet name="header">
 					<p:commandButton title="#{msg['btn.backToLessons']}"
 									 icon="fa fa-fw fa-arrow-left"
-									 actionListener="#{lessonBean.initLesson(lessonModeBean.lesson)}"
+									 actionListener="#{registrationModeBean.initLesson(lessonModeBean.lesson)}"
 									 update="@([id$=views])">
-						<f:setPropertyActionListener value="lesson" target="#{sessionBean.activeView}"/>
+						<f:setPropertyActionListener value="registrationMode" target="#{sessionBean.activeView}"/>
 						<f:ajax event="click" listener="#{lessonModeBean.clear}"/>
 					</p:commandButton>
 					<p:commandButton title="#{msg['btn.backToLessons']}"
@@ -54,7 +54,7 @@
 									 update="@([id$=wrapper])">
 						<f:setPropertyActionListener value="#{true}" target="#{menuBean.showMenu}"/>
 						<f:setPropertyActionListener value="lessons" target="#{sessionBean.activeView}"/>
-						<f:ajax event="click" listener="#{lessonBean.clear}"/>
+						<f:ajax event="click" listener="#{registrationModeBean.clear}"/>
 					</p:commandButton>
 					<p:commandButton id="modeBtn" icon="fa fa-fw fa-forward"/>
 					<p:overlayPanel for="modeBtn" showEvent="mouseover"
@@ -74,10 +74,10 @@
 						</p:commandButton>
 						<p:commandButton title="#{msg['btn.registerMode']}"
 						                 value="#{msg['btn.registerMode']}"
-						                 actionListener="#{lessonBean.initLesson(lessonBean.selectedLesson)}"
+						                 actionListener="#{registrationModeBean.initLesson(registrationModeBean.selectedLesson)}"
 						                 styleClass="block w100pc margin-bottom-10px"
 						                 update="@([id$=views])">
-							<f:setPropertyActionListener value="lesson" target="#{sessionBean.activeView}"/>
+							<f:setPropertyActionListener value="registrationMode" target="#{sessionBean.activeView}"/>
 							<f:ajax event="click" listener="#{lessonModeBean.clear}"/>
 						</p:commandButton>
 						<p:commandButton title="#{msg['btn.lessons']}"
@@ -158,7 +158,7 @@
 			<!-- attestations -->
 			<p:columns value="#{lessonModeBean.attestations}"
 					   var="attestation"
-					   styleClass="attestation class-info #{student.student.studentClasses[attestation.id] eq null ? 'no-class' : ''}"
+					   styleClass="attestation class-info #{student.student.studentLessons[attestation.id] eq null ? 'no-class' : ''}"
 					   rendered="#{lessonModeBean.showAttestations}"
 					   id="attestation"
 			>
@@ -202,16 +202,16 @@
 
 				</f:facet>
 
-				<p:cellEditor rendered="#{student.student.studentClasses[attestation.id] ne null}">
+				<p:cellEditor rendered="#{student.student.studentLessons[attestation.id] ne null}">
 					<f:facet name="output">
-						<h:outputText value="#{student.student.studentClasses[attestation.id].mark}"/>
+						<h:outputText value="#{student.student.studentLessons[attestation.id].mark}"/>
 						<p:outputLabel id="noteStudentAttestation" styleClass="float-right"
-									   rendered="#{student.student.studentClasses[attestation.id].notes.size() gt 0}">
+									   rendered="#{student.student.studentLessons[attestation.id].notes.size() gt 0}">
 							<i class="fa fa-info-circle"></i>
 						</p:outputLabel>
 						<p:tooltip for="noteStudentAttestation" position="bottom"
-								   rendered="#{student.student.studentClasses[attestation.id].notes.size() gt 0}">
-							<ui:repeat var="note" value="#{student.student.studentClasses[attestation.id].notes}">
+								   rendered="#{student.student.studentLessons[attestation.id].notes.size() gt 0}">
+							<ui:repeat var="note" value="#{student.student.studentLessons[attestation.id].notes}">
 								<h:panelGrid columns="2" columnClasses="w300px, w20px" styleClass="w100pc">
 									<h:outputText value="#{note.description}"/>
 									<h:outputText value="#{note.createDate}" converter="localDateConverter"/>
@@ -220,7 +220,7 @@
 						</p:tooltip>
 					</f:facet>
 					<f:facet name="input">
-						<p:inputText value="#{student.student.studentClasses[attestation.id].mark}"/>
+						<p:inputText value="#{student.student.studentLessons[attestation.id].mark}"/>
 					</f:facet>
 				</p:cellEditor>
 
@@ -237,7 +237,7 @@
 			<!-- lessons -->
 			<p:columns value="#{lessonModeBean.lessons}"
 					   var="lesson"
-					   styleClass="lesson class-info #{student.student.studentClasses[lesson.id] eq null ? 'no-class' : (student.student.studentClasses[lesson.id].registered eq false ? 'skip' : '')}"
+					   styleClass="lesson class-info #{student.student.studentLessons[lesson.id] eq null ? 'no-class' : (student.student.studentLessons[lesson.id].registered eq false ? 'skip' : '')}"
 			>
 				<f:facet name="header">
 					<h:panelGroup id="lessonInfo" styleClass="lesson-info">
@@ -272,16 +272,16 @@
 
 				</f:facet>
 
-				<p:cellEditor rendered="#{student.student.studentClasses[lesson.id] ne null}">
+				<p:cellEditor rendered="#{student.student.studentLessons[lesson.id] ne null}">
 					<f:facet name="output">
-						<h:outputText value="#{student.student.studentClasses[lesson.id].mark}"/>
-						<p:outputLabel id="noteStudentClass" styleClass="float-right"
-									   rendered="#{student.student.studentClasses[lesson.id].notes.size() gt 0}">
+						<h:outputText value="#{student.student.studentLessons[lesson.id].mark}"/>
+						<p:outputLabel id="noteStudentLesson" styleClass="float-right"
+									   rendered="#{student.student.studentLessons[lesson.id].notes.size() gt 0}">
 							<i class="fa fa-info-circle"></i>
 						</p:outputLabel>
-						<p:tooltip for="noteStudentClass" position="bottom"
-								   rendered="#{student.student.studentClasses[lesson.id].notes.size() gt 0}">
-							<ui:repeat var="note" value="#{student.student.studentClasses[lesson.id].notes}">
+						<p:tooltip for="noteStudentLesson" position="bottom"
+								   rendered="#{student.student.studentLessons[lesson.id].notes.size() gt 0}">
+							<ui:repeat var="note" value="#{student.student.studentLessons[lesson.id].notes}">
 								<h:panelGrid columns="2" columnClasses="w300px, w20px" styleClass="w100pc">
 									<h:outputText value="#{note.description}"/>
 									<h:outputText value="#{note.createDate}" converter="localDateConverter"/>
@@ -290,7 +290,7 @@
 						</p:tooltip>
 					</f:facet>
 					<f:facet name="input">
-						<p:inputText id="modelInput" value="#{student.student.studentClasses[lesson.id].mark}"/>
+						<p:inputText id="modelInput" value="#{student.student.studentLessons[lesson.id].mark}"/>
 					</f:facet>
 				</p:cellEditor>
 
@@ -359,7 +359,7 @@
 				  resizable="false">
 			<p:outputPanel id="skips">
 				<h:panelGroup
-						rendered="#{lessonModeBean.selectedStudent.student.studentClasses[lessonModeBean.selectedLesson.id] ne null and lessonModeBean.selectedLesson.type.key ne 'attestation'}">
+						rendered="#{lessonModeBean.selectedStudent.student.studentLessons[lessonModeBean.selectedLesson.id] ne null and lessonModeBean.selectedLesson.type.key ne 'attestation'}">
 					<p:outputLabel styleClass="block" value="#{lessonModeBean.selectedLesson.date}"/>
 					<p:outputLabel styleClass="block" value="#{msg[lessonModeBean.selectedLesson.lesson.type.key]}"/>
 					<p:outputLabel styleClass="block" value="#{lessonModeBean.selectedStudent.name}"/>
@@ -373,7 +373,7 @@
 					/>
 				</h:panelGroup>
 				<p:outputLabel value="#{msg['warning.operation.not.available']}"
-							   rendered="#{lessonModeBean.selectedStudent.student.studentClasses[lessonModeBean.selectedLesson.id] eq null or lessonModeBean.selectedLesson.type.key eq 'attestation'}"/>
+							   rendered="#{lessonModeBean.selectedStudent.student.studentLessons[lessonModeBean.selectedLesson.id] eq null or lessonModeBean.selectedLesson.type.key eq 'attestation'}"/>
 			</p:outputPanel>
 		</p:dialog>
 

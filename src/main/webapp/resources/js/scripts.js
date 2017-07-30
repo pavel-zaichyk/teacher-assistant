@@ -39,12 +39,12 @@ function applySelectedCell(event) {
 			type = 'STUDENT';
 		}
 		if (cell.hasClass('attestation')) {
-			type = 'STUDENT_CLASS';
+			type = 'STUDENT_LESSON';
 			id = cell[0].children[0].id;
 			lessonType = 'ATTESTATION';
 		}
 		if (cell.hasClass('lesson')) {
-			type = 'STUDENT_CLASS';
+			type = 'STUDENT_LESSON';
 			id = cell[0].children[0].id;
 			lessonType = 'OTHER';
 		}
@@ -63,7 +63,7 @@ function applySelectedCell(event) {
 	}
 
 	// if (cell.closest('#lessonModeTable_scrollableTbody').length > 0) {
-	// 	type = 'STUDENT_CLASS';
+	// 	type = 'STUDENT_LESSON';
 	// 	id = cell[0].children[0].id;
 	// }
 	// if (cell.closest('#lessonModeTable_frozenTbody').length > 0) {

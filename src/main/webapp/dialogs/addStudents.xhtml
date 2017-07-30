@@ -9,11 +9,11 @@
 				  modal="true" showEffect="fade" hideEffect="fade" resizable="false" fitViewport="true"
 				  onHide="PF('addStudentsDialog').content.empty()" width="75%">
 
-			<p:ajax event="close" listener="#{lessonBean.exitStudents}"/>
+			<p:ajax event="close" listener="#{registrationModeBean.exitStudents}"/>
 
 			<p:scrollPanel id="studentDetail" mode="native" styleClass="noBorder">
-				<p:dataTable var="student" value="#{lessonBean.allStudents}"
-							 sortBy="#{student.fullName}" filteredValue="#{lessonBean.filteredAllStudents}">
+				<p:dataTable var="student" value="#{registrationModeBean.allStudents}"
+							 sortBy="#{student.fullName}" filteredValue="#{registrationModeBean.filteredAllStudents}">
 					<p:column headerText="#{msg['student.name']}" sortBy="#{student.fullName}"
 							  filterBy="#{student.fullName}" filterMatchMode="startsWith">
 						<h:outputText value="#{student.fullName}"/>
@@ -26,7 +26,7 @@
 						<p:commandButton update=":addStudentsForm:studentDetail"
 										 icon="fa fa-fw fa-plus" title="Add"
 										 styleClass="green"
-										 actionListener="#{lessonBean.addStudent(student)}"/>
+										 actionListener="#{registrationModeBean.addStudent(student)}"/>
 					</p:column>
 				</p:dataTable>
 			</p:scrollPanel>

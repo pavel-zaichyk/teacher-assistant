@@ -1,5 +1,8 @@
 package com.grsu.teacherassistant.beans;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -12,8 +15,7 @@ import java.util.Map;
 @ManagedBean(name = "localeBean")
 @SessionScoped
 public class LocaleBean implements Serializable {
-
-	private Locale locale;
+	private static final Logger LOGGER = LoggerFactory.getLogger(LocaleBean.class);
 
 	private static Map<String, Object> locales;
 	static {
@@ -21,6 +23,8 @@ public class LocaleBean implements Serializable {
 		locales.put("English", new Locale("en"));
 		locales.put("Русский", new Locale("ru"));
 	}
+
+	private Locale locale;
 
 	public Map<String, Object> getAvailableLocales() {
 		return locales;
@@ -43,7 +47,7 @@ public class LocaleBean implements Serializable {
 	public void init() {
 //		locale = FacesContext.getCurrentInstance().getExternalContext().getRequestLocale();
 		locale = new Locale("ru");
-		System.out.println("Using default locale: " + locale);
+		LOGGER.info("Using default locale: " + locale);
 	}
 
 	//value change event listener

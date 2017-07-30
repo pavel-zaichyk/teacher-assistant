@@ -56,6 +56,9 @@ public class StudentBean implements Serializable {
 		if (selectedStudent != null) {
 			selectedStudent.setGroups(selectedGroups == null ? null : selectedGroups.getTarget());
 		}
+		int i = 0;
+		i ++;
+		++ i;
 	}
 
 	public List<Student> getStudents() {

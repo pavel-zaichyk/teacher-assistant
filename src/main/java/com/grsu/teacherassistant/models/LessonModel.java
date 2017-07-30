@@ -17,7 +17,7 @@ public class LessonModel {
 		id = lesson.getId();
 		this.lesson = lesson;
 		type = lesson.getType();
-		date = DateUtils.formatDate(lesson.getClazz().getDate(), DateUtils.FORMAT_DATE_SHORT_YEAR);
+		date = DateUtils.formatDate(lesson.getDate(), DateUtils.FORMAT_DATE_SHORT_YEAR);
 		this.number = number;
 	}
 

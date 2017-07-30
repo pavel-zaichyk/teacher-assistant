@@ -1,14 +1,13 @@
-package com.grsu.teacherassistant.beans;
+package com.grsu.teacherassistant.beans.mode;
 
+import com.grsu.teacherassistant.beans.SerialBean;
+import com.grsu.teacherassistant.beans.SerialListenerBean;
+import com.grsu.teacherassistant.beans.SessionBean;
 import com.grsu.teacherassistant.constants.Constants;
 import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.StudentDAO;
-import com.grsu.teacherassistant.entities.Group;
-import com.grsu.teacherassistant.entities.Lesson;
-import com.grsu.teacherassistant.entities.Note;
-import com.grsu.teacherassistant.entities.Stream;
-import com.grsu.teacherassistant.entities.Student;
-import com.grsu.teacherassistant.entities.StudentClass;
+import com.grsu.teacherassistant.entities.*;
+import com.grsu.teacherassistant.entities.StudentLesson;
 import com.grsu.teacherassistant.models.LessonStudentModel;
 import com.grsu.teacherassistant.models.LessonType;
 import com.grsu.teacherassistant.models.SkipInfo;
@@ -17,6 +16,8 @@ import com.grsu.teacherassistant.utils.FacesUtils;
 import lombok.Data;
 import org.primefaces.component.inputnumber.InputNumber;
 import org.primefaces.component.inputtext.InputText;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -41,6 +42,8 @@ import java.util.stream.Collectors;
 @ViewScoped
 @Data
 public class StudentModeBean implements Serializable, SerialListenerBean {
+	private static final Logger LOGGER = LoggerFactory.getLogger(StudentModeBean.class);
+
 	@ManagedProperty(value = "#{sessionBean}")
 	private SessionBean sessionBean;
 
@@ -54,14 +57,14 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 	private Map<Integer, Integer> numberMarks;
 	private Map<String, Integer> symbolMarks;
 	private Double averageMark;
-	private List<StudentClass> studentClasses;
-	private List<StudentClass> attestations;
-	private StudentClass examClass;
+	private List<StudentLesson> studentLessons;
+	private List<StudentLesson> attestations;
+	private StudentLesson exam;
 
-	private StudentClass selectedStudentClass;
+	private StudentLesson selectedStudentLesson;
 	private String newNote;
 	private boolean registered;
-	private StudentClass editedStudentClass;
+	private StudentLesson editedStudentLesson;
 
 	private List<Stream> studentStreams;
 
@@ -73,9 +76,9 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 
 		if (this.student != null) {
 			lessonStudent = new LessonStudentModel(student);
-			studentStreams = student.getStudentClasses().values().stream()
-					.filter(sc -> sc.getClazz().getLesson() != null)
-					.map(sc -> sc.getClazz().getLesson().getStream())
+			studentStreams = student.getStudentLessons().values().stream()
+					.filter(sl -> sl.getLesson() != null)
+					.map(sl -> sl.getLesson().getStream())
 					.distinct()
 					.sorted((s1, s2) -> s1.getName().compareToIgnoreCase(s2.getName()))
 					.collect(Collectors.toList());
@@ -89,16 +92,16 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 				//init student marks
 				initMarks();
 
-				//init student classes
-				studentClasses = this.stream.getLessons().stream()
-						.filter(l -> Arrays.asList(LessonType.LECTURE, LessonType.PRACTICAL, LessonType.LAB).contains(l.getType()) && student.getStudentClasses().containsKey(l.getClazz().getId()))
-						.map(l -> student.getStudentClasses().get(l.getClazz().getId()))
+				//init student lessons
+				studentLessons = this.stream.getLessons().stream()
+						.filter(l -> Arrays.asList(LessonType.LECTURE, LessonType.PRACTICAL, LessonType.LAB).contains(l.getType()) && student.getStudentLessons().containsKey(l.getId()))
+						.map(l -> student.getStudentLessons().get(l.getId()))
 						.collect(Collectors.toList());
 
 				//init attestations
 				attestations = this.stream.getLessons().stream()
-						.filter(l -> LessonType.ATTESTATION.equals(l.getType()) && student.getStudentClasses().containsKey(l.getClazz().getId()))
-						.map(l -> student.getStudentClasses().get(l.getClazz().getId()))
+						.filter(l -> LessonType.ATTESTATION.equals(l.getType()) && student.getStudentLessons().containsKey(l.getId()))
+						.map(l -> student.getStudentLessons().get(l.getId()))
 						.collect(Collectors.toList());
 				updateAverageAttestation();
 				lessonStudent.updateTotal();
@@ -109,19 +112,19 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 	private void initMarks() {
 		symbolMarks = new HashMap<>();
 		numberMarks = new HashMap<>();
-		lessonStudent.getStudent().getStudentClasses().values().forEach(sc -> {
-			if (stream.getLessons().contains(sc.getClazz().getLesson())) {
-				if (LessonType.EXAM.equals(sc.getClazz().getLesson().getType())) {
-					examClass = sc;
+		lessonStudent.getStudent().getStudentLessons().values().forEach(sl -> {
+			if (stream.getLessons().contains(sl.getLesson())) {
+				if (LessonType.EXAM.equals(sl.getLesson().getType())) {
+					exam = sl;
 					try {
-						lessonStudent.setExamMark(Integer.valueOf(sc.getMark()));
+						lessonStudent.setExamMark(Integer.valueOf(sl.getMark()));
 					} catch (NumberFormatException ex) {
 						lessonStudent.setExamMark(null);
 					}
 				}
 
-				if (sc.getMark() != null && !(LessonType.ATTESTATION.equals(sc.getClazz().getLesson().getType()) || LessonType.EXAM.equals(sc.getClazz().getLesson().getType()))) {
-					Arrays.stream(sc.getMark().split(Constants.MARK_DELIMETER)).filter(m -> !m.trim().isEmpty()).forEach(m -> {
+				if (sl.getMark() != null && !(LessonType.ATTESTATION.equals(sl.getLesson().getType()) || LessonType.EXAM.equals(sl.getLesson().getType()))) {
+					Arrays.stream(sl.getMark().split(Constants.MARK_DELIMETER)).filter(m -> !m.trim().isEmpty()).forEach(m -> {
 
 								List<String> numbers = Arrays.stream(m.split("[^0-9]"))
 										.filter(s -> !s.isEmpty())
@@ -175,11 +178,11 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 		numberMarks = null;
 		symbolMarks = null;
 		averageMark = null;
-		studentClasses = null;
+		studentLessons = null;
 		attestations = null;
-		examClass = null;
+		exam = null;
 
-		selectedStudentClass = null;
+		selectedStudentLesson = null;
 		newNote = null;
 
 		studentStreams = null;
@@ -253,41 +256,37 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 			lessonStudent.setTotalMark((Integer) event.getNewValue());
 			lessonStudent.updateExam();
 		}
-		if (examClass != null) {
-			examClass.setMark(String.valueOf(lessonStudent.getExamMark()));
-			EntityDAO.save(examClass);
+		if (exam != null) {
+			exam.setMark(String.valueOf(lessonStudent.getExamMark()));
+			EntityDAO.save(exam);
 		}
 	}
 
 	public void changeAttestationMark(ValueChangeEvent event) {
-		System.out.println(event);
-
 		String clientId = ((InputText) event.getSource()).getClientId();
 
 		String attestationId = clientId.substring(0, clientId.lastIndexOf(":"));
 		attestationId = attestationId.substring(attestationId.lastIndexOf(":") + 1);
-		StudentClass attestation = attestations.get(Integer.parseInt(attestationId));
+		StudentLesson attestation = attestations.get(Integer.parseInt(attestationId));
 		attestation.setMark(String.valueOf(event.getNewValue()));
 		updateAverageAttestation();
 		lessonStudent.updateTotal();
 		EntityDAO.save(attestation);
 	}
 
-	public void editMark(StudentClass studentClass) {
-		System.out.println("!!!!!!edit");
-		editedStudentClass = studentClass;
+	public void editMark(StudentLesson studentLesson) {
+		editedStudentLesson = studentLesson;
 	}
 
 	public void saveMark(ValueChangeEvent event) {
-		System.out.println("!!!!!save" + event);
 		if (event != null) {
 			String value = String.valueOf(event.getNewValue());
 			value = value != null ? (value.trim().isEmpty() ? null : value.trim()) : null;
-			editedStudentClass.setMark(value);
-			EntityDAO.save(editedStudentClass);
+			editedStudentLesson.setMark(value);
+			EntityDAO.save(editedStudentLesson);
 			initMarks();
 		}
-		editedStudentClass = null;
+		editedStudentLesson = null;
 	}
 
 	//NOTES
@@ -296,10 +295,10 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 			Note note = new Note();
 			note.setCreateDate(LocalDateTime.now());
 			note.setDescription(newNote);
-			note.setType(Constants.STUDENT_CLASS);
-			note.setEntityId(selectedStudentClass.getId());
+			note.setType(Constants.STUDENT_LESSON);
+			note.setEntityId(selectedStudentLesson.getId());
 			EntityDAO.save(note);
-			selectedStudentClass.getNotes().add(note);
+			selectedStudentLesson.getNotes().add(note);
 		}
 		newNote = null;
 		FacesUtils.closeDialog("notesDialog");
@@ -307,22 +306,22 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 
 	public void removeNote(Note note) {
 		EntityDAO.delete(note);
-		selectedStudentClass.getNotes().remove(note);
+		selectedStudentLesson.getNotes().remove(note);
 	}
 
 	//REGISTERED INFO
 	public void saveRegisteredInfo() {
-		boolean oldValue = selectedStudentClass.getRegistered();
+		boolean oldValue = selectedStudentLesson.isRegistered();
 		if (oldValue != registered) {
-			selectedStudentClass.setRegistered(registered);
+			selectedStudentLesson.setRegistered(registered);
 			if (!registered) {
-				selectedStudentClass.setRegistrationTime(null);
-				selectedStudentClass.setRegistrationType(null);
+				selectedStudentLesson.setRegistrationTime(null);
+				selectedStudentLesson.setRegistrationType(null);
 			} else {
-				selectedStudentClass.setRegistrationTime(LocalTime.now());
-				selectedStudentClass.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
+				selectedStudentLesson.setRegistrationTime(LocalTime.now());
+				selectedStudentLesson.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
 			}
-			EntityDAO.save(selectedStudentClass);
+			EntityDAO.save(selectedStudentLesson);
 			updateStudentSkips();
 		}
 		FacesUtils.closeDialog("registeredDialog");
@@ -337,7 +336,7 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 			FacesUtils.push("/register", student);
 			return true;
 		} else {
-			System.out.println("Student not registered. Reason: Uid[ " + uid + " ] not exist in database.");
+			LOGGER.info("Student not registered. Reason: Uid[ " + uid + " ] not exist in database.");
 			return false;
 		}
 	}

@@ -4,13 +4,17 @@ import com.grsu.teacherassistant.entities.AssistantEntity;
 import com.grsu.teacherassistant.utils.db.DBSessionFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 /**
  * Created by zaychick-pavel on 2/10/17.
  */
-public abstract class EntityDAO {
+public class EntityDAO {
+	private static final Logger LOGGER = LoggerFactory.getLogger(EntityDAO.class);
+
 	public static void add(AssistantEntity entity) {
 		Transaction transaction = null;
 		Session session = DBSessionFactory.getSession();
@@ -19,12 +23,12 @@ public abstract class EntityDAO {
 			transaction = session.beginTransaction();
 			session.save(entity);
 			transaction.commit();
-			System.out.println("[ " + entity + " ] successfully added to database.");
+			LOGGER.info("[ " + entity + " ] successfully added to database.");
 		} catch (RuntimeException e) {
 			if (transaction != null) {
 				transaction.rollback();
 			}
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		} finally {
 			session.close();
 		}
@@ -46,12 +50,12 @@ public abstract class EntityDAO {
 				}
 			}
 			transaction.commit();
-			System.out.println("[ " + entities + " ] successfully added to database.");
+			LOGGER.info("[ " + entities + " ] successfully added to database.");
 		} catch (RuntimeException e) {
 			if (transaction != null) {
 				transaction.rollback();
 			}
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		} finally {
 			session.close();
 		}
@@ -65,12 +69,12 @@ public abstract class EntityDAO {
 			transaction = session.beginTransaction();
 			session.delete(entity);
 			transaction.commit();
-			System.out.println("[ " + entity + " ] successfully deleted from database.");
+			LOGGER.info("[ " + entity + " ] successfully deleted from database.");
 		} catch (RuntimeException e) {
 			if (transaction != null) {
 				transaction.rollback();
 			}
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		} finally {
 			session.close();
 		}
@@ -92,12 +96,12 @@ public abstract class EntityDAO {
 				}
 			}
 			transaction.commit();
-			System.out.println("[ " + entities + " ] successfully deleted from database.");
+			LOGGER.info("[ " + entities + " ] successfully deleted from database.");
 		} catch (RuntimeException e) {
 			if (transaction != null) {
 				transaction.rollback();
 			}
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		} finally {
 			session.close();
 		}
@@ -111,12 +115,12 @@ public abstract class EntityDAO {
 			transaction = session.beginTransaction();
 			session.update(entity);
 			transaction.commit();
-			System.out.println("[ " + entity + " ] successfully updated in database.");
+			LOGGER.info("[ " + entity + " ] successfully updated in database.");
 		} catch (RuntimeException e) {
 			if (transaction != null) {
 				transaction.rollback();
 			}
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		} finally {
 			session.close();
 		}
@@ -138,12 +142,12 @@ public abstract class EntityDAO {
 				}
 			}
 			transaction.commit();
-			System.out.println("[ " + entities + " ] successfully updated in database.");
+			LOGGER.info("[ " + entities + " ] successfully updated in database.");
 		} catch (RuntimeException e) {
 			if (transaction != null) {
 				transaction.rollback();
 			}
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		} finally {
 			session.close();
 		}
@@ -163,7 +167,7 @@ public abstract class EntityDAO {
 		try {
 			return session.get(entityType, id);
 		} catch (RuntimeException e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		} finally {
 			session.close();
 		}
@@ -174,12 +178,12 @@ public abstract class EntityDAO {
 		Session session = DBSessionFactory.getSession();
 
 		try {
-			System.out.println("Start loading [ " + entityType + " ] from database.");
+			LOGGER.info("Start loading [ " + entityType + " ] from database.");
 			return session.createQuery("from " + entityType.getSimpleName()).list();
 		} catch (RuntimeException e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		} finally {
-			System.out.println("End loading [ " + entityType + " ] from database.");
+			LOGGER.info("End loading [ " + entityType + " ] from database.");
 			session.close();
 		}
 		return null;

@@ -35,35 +35,32 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 				name = "SkipInfoQuery",
 				query = "select st.id as studentId, l.type_id as lessonType, count(*) as count\n" +
 						"from STUDENT st\n" +
-						"join STUDENT_CLASS sc on sc.student_id = st.id\n" +
-						"join CLASS cl on cl.id = sc.class_id \n" +
-						"join SCHEDULE sch on sch.id = cl.schedule_id \n" +
-						"join LESSON l on l.id = cl.lesson_id and l.type_id in (1, 2, 3)\n" +
+						"join STUDENT_LESSON sl on sl.student_id = st.id\n" +
+						"join LESSON l on l.id = sl.lesson_id and l.type_id in (1, 2, 3)\n" +
+						"join SCHEDULE sch on sch.id = l.schedule_id \n" +
 						"join STREAM str on str.id = l.stream_id\n" +
-						"where (sc.registered is null or sc.registered = 0) and str.id = :streamId " +
-						"and ((date(cl.date) < date('now', 'localtime')) or (date(cl.date) = date('now', 'localtime') and time(sch.begin) <= time('now', 'localtime')) or l.id = :lessonId)\n" +
+						"where (sl.registered is null or sl.registered = 0) and str.id = :streamId " +
+						"and ((date(l.date) < date('now', 'localtime')) or (date(l.date) = date('now', 'localtime') and time(sch.begin) <= time('now', 'localtime')) or l.id = :lessonId)\n" +
 						"group by st.id, str.id, l.type_id",
 				resultSetMapping = "SkipInfoMapping"),
 		@NamedNativeQuery(
 				name = "StudentSkipInfoQuery",
 				query = "select st.id as studentId, l.type_id as lessonType, count(*) as count\n" +
 						"from STUDENT st\n" +
-						"join STUDENT_CLASS sc on sc.student_id = st.id\n" +
-						"join CLASS cl on cl.id = sc.class_id " +
-						"join SCHEDULE sch on sch.id = cl.schedule_id " +
-						"join LESSON l on l.id = cl.lesson_id and l.type_id in (1, 2, 3)\n" +
+						"join STUDENT_LESSON sl on sl.student_id = st.id\n" +
+						"join LESSON l on l.id = sl.lesson_id and l.type_id in (1, 2, 3)\n" +
+						"join SCHEDULE sch on sch.id = l.schedule_id " +
 						"join STREAM str on str.id = l.stream_id\n" +
-						"where st.id in (:studentId) and (sc.registered is null or sc.registered = 0) and str.id = :streamId " +
-						"and ((date(cl.date) < date('now', 'localtime')) or (date(cl.date) = date('now', 'localtime') and time(sch.begin) <= time('now', 'localtime')) or l.id = :lessonId)\n" +
+						"where st.id in (:studentId) and (sl.registered is null or sl.registered = 0) and str.id = :streamId " +
+						"and ((date(l.date) < date('now', 'localtime')) or (date(l.date) = date('now', 'localtime') and time(sch.begin) <= time('now', 'localtime')) or l.id = :lessonId)\n" +
 						"group by st.id, str.id, l.type_id",
 				resultSetMapping = "SkipInfoMapping"),
 		@NamedNativeQuery(
 				name = "AdditionalStudents",
 				query = "SELECT st.*\n" +
 						"FROM STUDENT st\n" +
-						"\tJOIN STUDENT_CLASS sc ON st.id = sc.student_id\n" +
-						"\tJOIN CLASS cl ON cl.id = sc.class_id\n" +
-						"\tJOIN LESSON l ON l.id = cl.lesson_id\n" +
+						"\tJOIN STUDENT_LESSON sl ON st.id = sl.student_id\n" +
+						"\tJOIN LESSON l ON l.id = sl.lesson_id\n" +
 						"WHERE l.id = :lessonId\n" +
 						"\t\t\tAND ((l.group_id NOT NULL AND st.id NOT IN (\n" +
 						"\tSELECT stg.student_id\n" +
@@ -120,9 +117,9 @@ public class Student implements AssistantEntity, Person {
 			inverseJoinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"))
 	private List<Group> groups;
 
-	@MapKey(name = "classId")
+	@MapKey(name = "lessonId")
 	@OneToMany(mappedBy = "student", fetch = FetchType.EAGER)
-	private Map<Integer, StudentClass> studentClasses;
+	private Map<Integer, StudentLesson> studentLessons;
 
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "entity_id", referencedColumnName = "id")
@@ -141,7 +138,7 @@ public class Student implements AssistantEntity, Person {
 		this.phone = student.phone;
 		this.email = student.email;
 		this.groups = student.groups;
-		this.studentClasses = student.studentClasses;
+		this.studentLessons = student.studentLessons;
 	}
 
 	public String getFullName() {
@@ -246,12 +243,12 @@ public class Student implements AssistantEntity, Person {
 		this.groups = groups;
 	}
 
-	public Map<Integer, StudentClass> getStudentClasses() {
-		return studentClasses;
+	public Map<Integer, StudentLesson> getStudentLessons() {
+		return studentLessons;
 	}
 
-	public void setStudentClasses(Map<Integer, StudentClass> studentClasses) {
-		this.studentClasses = studentClasses;
+	public void setStudentLessons(Map<Integer, StudentLesson> studentLessons) {
+		this.studentLessons = studentLessons;
 	}
 
 	public List<Note> getNotes() {

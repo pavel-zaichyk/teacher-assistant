@@ -1,7 +1,6 @@
 package com.grsu.teacherassistant.beans;
 
 import com.grsu.teacherassistant.dao.EntityDAO;
-import com.grsu.teacherassistant.dao.LessonDAO;
 import com.grsu.teacherassistant.entities.Department;
 import com.grsu.teacherassistant.entities.Discipline;
 import com.grsu.teacherassistant.entities.Group;
@@ -12,6 +11,8 @@ import com.grsu.teacherassistant.entities.Student;
 import com.grsu.teacherassistant.utils.CSVUtils;
 import com.grsu.teacherassistant.utils.PhotoStudentUtils;
 import com.grsu.teacherassistant.utils.SerialUtils;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -34,7 +35,9 @@ public class SessionBean implements Serializable {
 	private List<Stream> streams;
 	private List<Group> groups;
 	private List<Student> students;
-	private List<Lesson> lessons;
+
+	@Getter @Setter
+	private Lesson lesson;
 
 	@PostConstruct
 	public void connect() {
@@ -64,7 +67,6 @@ public class SessionBean implements Serializable {
 		updateStreams();
 		updateGroups();
 		updateStudents();
-		updateLessons();
 	}
 
 	public void updateSchedules() {
@@ -89,10 +91,6 @@ public class SessionBean implements Serializable {
 
 	public void updateStudents() {
 		students = null;
-	}
-
-	public void updateLessons() {
-		lessons = null;
 	}
 
 	public void loadStudentsPhoto() {
@@ -181,17 +179,6 @@ public class SessionBean implements Serializable {
 
 	public void setStudents(List<Student> students) {
 		this.students = students;
-	}
-
-	public List<Lesson> getLessons() {
-		if (lessons == null) {
-			lessons = (new LessonDAO()).getAll();
-		}
-		return lessons;
-	}
-
-	public void setLessons(List<Lesson> lessons) {
-		this.lessons = lessons;
 	}
 
 }

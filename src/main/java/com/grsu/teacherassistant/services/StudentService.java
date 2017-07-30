@@ -2,6 +2,8 @@ package com.grsu.teacherassistant.services;
 
 import com.grsu.teacherassistant.utils.FileUtils;
 import org.primefaces.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -13,6 +15,8 @@ import java.nio.charset.Charset;
  * Created by zaychick-pavel on 2/21/17.
  */
 public class StudentService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(StudentService.class);
+
 	private static final String PERSONNEL_NUMBER_URL = "http://api.grsu.by/1.x/app3/getStudentByCard?cardid=";
 	private static final String PERSONNEL_NUMBER_NAME = "TN";
 	private static final String STUDENT_PHOTO_URL = "https://intra.grsu.by/photos/";
@@ -34,7 +38,7 @@ public class StudentService {
 			ImageIO.write(image, "jpg", FileUtils.getFile(FileUtils.STUDENTS_PHOTO_FOLDER_PATH, cardUid, FileUtils.STUDENTS_PHOTO_EXTENSION));
 			return true;
 		} catch (IOException e) {
-			System.out.println(STUDENT_PHOTO_URL + personnelNumber + STUDENT_PHOTO_EXTENSION);
+			LOGGER.info(STUDENT_PHOTO_URL + personnelNumber + STUDENT_PHOTO_EXTENSION);
 			e.printStackTrace();
 		}
 		return false;

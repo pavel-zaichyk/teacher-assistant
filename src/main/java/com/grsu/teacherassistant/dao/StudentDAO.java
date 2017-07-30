@@ -6,6 +6,8 @@ import com.grsu.teacherassistant.entities.Student;
 import com.grsu.teacherassistant.utils.db.DBSessionFactory;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.PersistenceException;
 import java.util.HashMap;
@@ -13,8 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 public class StudentDAO {
-	private StudentDAO() {
-	}
+	private static final Logger LOGGER = LoggerFactory.getLogger(StudentDAO.class);
 
 	public static Student getByCardUid(String cardUid) {
 		Session session = DBSessionFactory.getSession();
@@ -25,7 +26,7 @@ public class StudentDAO {
 			query.setMaxResults(1);
 			return (Student) query.uniqueResult();
 		} catch (RuntimeException e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		} finally {
 			session.close();
 		}
@@ -41,9 +42,9 @@ public class StudentDAO {
 			query.setParameter("lessonId", lessonId);
 			skipInfoList = query.getResultList();
 		} catch (PersistenceException e) {
-			System.err.println(e.getLocalizedMessage());
+			LOGGER.error(e.getLocalizedMessage());
 		} catch (RuntimeException e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		} finally {
 			session.close();
 		}
@@ -73,9 +74,9 @@ public class StudentDAO {
 			query.setParameter("lessonId", lessonId);
 			return query.getResultList();
 		} catch (PersistenceException e) {
-			System.err.println(e.getLocalizedMessage());
+			LOGGER.error(e.getLocalizedMessage());
 		} catch (RuntimeException e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		} finally {
 			session.close();
 		}
@@ -89,9 +90,9 @@ public class StudentDAO {
 			query.setParameter("lessonId", lessonId);
 			return query.getResultList();
 		} catch (PersistenceException e) {
-			System.err.println(e.getLocalizedMessage());
+			LOGGER.error(e.getLocalizedMessage());
 		} catch (RuntimeException e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		} finally {
 			session.close();
 		}

@@ -6,7 +6,6 @@
 	<session-factory>
 		<property name="dialect">com.grsu.teacherassistant.utils.db.SQLiteDialect</property>
 		<property name="connection.driver_class">org.sqlite.JDBC</property>
-		<mapping class="com.grsu.teacherassistant.entities.Class"/>
 		<mapping class="com.grsu.teacherassistant.entities.Department"/>
 		<mapping class="com.grsu.teacherassistant.entities.Discipline"/>
 		<mapping class="com.grsu.teacherassistant.entities.Group"/>
@@ -16,7 +15,7 @@
 		<mapping class="com.grsu.teacherassistant.entities.ScheduleVersion"/>
 		<mapping class="com.grsu.teacherassistant.entities.Stream"/>
 		<mapping class="com.grsu.teacherassistant.entities.Student"/>
-		<mapping class="com.grsu.teacherassistant.entities.StudentClass"/>
+		<mapping class="com.grsu.teacherassistant.entities.StudentLesson"/>
 		<mapping class="com.grsu.teacherassistant.entities.Note"/>
 		<!-- <property name="connection.username"/> -->
 		<!-- <property name="connection.password"/> -->

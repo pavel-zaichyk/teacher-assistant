@@ -115,21 +115,12 @@ CREATE TABLE LESSON (
   create_date       TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%S','now', 'localtime')),
   type_id           INTEGER,
   group_id          INTEGER,
-  FOREIGN KEY (stream_id)      REFERENCES STREAM(id),
-  FOREIGN KEY (type_id)        REFERENCES LESSON_TYPE(id),
-  FOREIGN KEY (group_id)       REFERENCES [GROUP](id)
-);
-
--- CLASS
-CREATE TABLE CLASS (
-  id                INTEGER PRIMARY KEY AUTOINCREMENT,
   date              TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%S','now', 'localtime')),
   schedule_id       INTEGER,
-  lesson_id         INTEGER,
-  session_start     TEXT,
-  session_end       TEXT,
-  FOREIGN KEY (schedule_id)    REFERENCES SCHEDULE(id),
-  FOREIGN KEY (lesson_id)      REFERENCES LESSON(id)
+  FOREIGN KEY (stream_id)      REFERENCES STREAM(id),
+  FOREIGN KEY (type_id)        REFERENCES LESSON_TYPE(id),
+  FOREIGN KEY (group_id)       REFERENCES [GROUP](id),
+  FOREIGN KEY (schedule_id)    REFERENCES SCHEDULE(id)
 );
 
 -- NOTE
@@ -165,17 +156,18 @@ CREATE TABLE STREAM_GROUP (
   FOREIGN KEY (group_id)       REFERENCES [GROUP](id)
 );
 
--- STUDENT-CLASS
-CREATE TABLE STUDENT_CLASS (
+-- STUDENT-LESSON
+CREATE TABLE STUDENT_LESSON (
   id                INTEGER PRIMARY KEY AUTOINCREMENT,
   student_id        INTEGER,
-  class_id          INTEGER,
+  lesson_id         INTEGER,
   registered        INTEGER DEFAULT 0,
   registration_time TEXT,
   registration_type TEXT,
   mark              TEXT,
+  mark_time         TEXT,
   FOREIGN KEY (student_id)     REFERENCES STUDENT(id),
-  FOREIGN KEY (class_id)       REFERENCES CLASS(id)
+  FOREIGN KEY (lesson_id)      REFERENCES LESSON(id)
 );
 
 COMMIT;

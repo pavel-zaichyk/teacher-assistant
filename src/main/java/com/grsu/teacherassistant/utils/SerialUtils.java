@@ -5,12 +5,16 @@ import com.grsu.teacherassistant.serial.SerialListener;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.regex.Pattern;
 
 import static com.grsu.teacherassistant.constants.Constants.*;
 
 public class SerialUtils {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SerialUtils.class);
+
 	private static SerialPort serialPort;
 	private static Thread shutdownHook;
 	private static final String EXCEPTION_PORT_NOT_FOUND = "Port not found";
@@ -36,7 +40,7 @@ public class SerialUtils {
 			try {
 				serialPort.closePort();
 //				Runtime.getRuntime().removeShutdownHook(shutdownHook);
-				System.out.println("Reader disconnected");
+				LOGGER.info("Reader disconnected");
 			} catch (SerialPortException e) {
 				e.printStackTrace();
 				return false;
@@ -51,7 +55,7 @@ public class SerialUtils {
 		boolean connected = false;
 		String lastConnectionPort = PropertyUtils.getProperty("last.connection.port");
 		if (lastConnectionPort != null && !lastConnectionPort.isEmpty()) {
-			System.out.println("Found previously saved port [ " + lastConnectionPort + " ]. Trying to connect...");
+			LOGGER.info("Found previously saved port [ " + lastConnectionPort + " ]. Trying to connect...");
 			connected = connect(lastConnectionPort, serialBean);
 		}
 		return connected || connect(findReader(), serialBean);
@@ -85,7 +89,7 @@ public class SerialUtils {
 					new SerialListener(serialPort, serialBean),
 					SerialPort.MASK_RXCHAR
 			);
-			System.out.println("Serial port listener added. Port: " + port);
+			LOGGER.info("Serial port listener added. Port: " + port);
 
 			//Отправляем запрос устройству
 			Thread.sleep(1000);
@@ -95,14 +99,14 @@ public class SerialUtils {
 			Runtime.getRuntime().addShutdownHook(shutdownHook);
 		} catch (SerialPortException e) {
 			if (EXCEPTION_PORT_NOT_FOUND.equals(e.getExceptionType())) {
-				System.out.println("Connection failed. Previously saved port not found.");
+				LOGGER.info("Connection failed. Previously saved port not found.");
 			} else if (EXCEPTION_PORT_BUSY.equals(e.getExceptionType())) {
 				if (retryIfPortBusy) {
-					System.out.println("Port [ " + serialPort.getPortName() + " ] is busy. Trying to reconnect...");
+					LOGGER.info("Port [ " + serialPort.getPortName() + " ] is busy. Trying to reconnect...");
 					disconnect();
 					connect(port, serialBean, false);
 				} else {
-					System.out.println("Connection failed. Port [ " + serialPort.getPortName() + " ] is busy.");
+					LOGGER.info("Connection failed. Port [ " + serialPort.getPortName() + " ] is busy.");
 				}
 			} else {
 				e.printStackTrace();
@@ -118,7 +122,7 @@ public class SerialUtils {
 	}
 
 	private static String findReader() {
-		System.out.println("Reader search started.");
+		LOGGER.info("Reader search started.");
 		String foundAt = null;
 		for (String portName : getPortNames()) {
 			final SerialPort serialPort = new SerialPort(portName);
@@ -142,18 +146,18 @@ public class SerialUtils {
 					foundAt = portName;
 					break;
 				} else {
-					System.out.println("Port [ " + portName + " ] unsuccessful. Reason: No response");
+					LOGGER.info("Port [ " + portName + " ] unsuccessful. Reason: No response");
 				}
 			} catch (SerialPortException ex) {
-				System.out.println("Port [ " + portName + " ] unsuccessful. Reason: " + ex.getExceptionType());
+				LOGGER.info("Port [ " + portName + " ] unsuccessful. Reason: " + ex.getExceptionType());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 		if (foundAt != null) {
-			System.out.println("Reader found at port: " + foundAt);
+			LOGGER.info("Reader found at port: " + foundAt);
 		} else {
-			System.out.println("Reader not found.");
+			LOGGER.info("Reader not found.");
 		}
 		return foundAt;
 	}
@@ -172,7 +176,7 @@ public class SerialUtils {
 				if (serialPort != null) {
 					try {
 						serialPort.closePort();
-						System.out.println("Serial port closed by shutdown hook!");
+						LOGGER.info("Serial port closed by shutdown hook!");
 					} catch (SerialPortException e) {
 						e.printStackTrace();
 					}

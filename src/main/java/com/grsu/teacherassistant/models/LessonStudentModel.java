@@ -12,12 +12,12 @@ import java.time.LocalTime;
 @Data
 public class LessonStudentModel {
 	private Integer id;
-	public String name;
-	public Integer totalSkip;
+	private String name;
+	private Integer totalSkip;
 	private Integer lectureSkip;
 	private Integer practicalSkip;
 	private Integer labSkip;
-	public LocalTime registrationTime;
+	private LocalTime registrationTime;
 	private Student student;
 	private Double averageAttestation;
 	private boolean additional;

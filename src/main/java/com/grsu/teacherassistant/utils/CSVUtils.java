@@ -1,5 +1,6 @@
 package com.grsu.teacherassistant.utils;
 
+import com.grsu.teacherassistant.beans.LocaleBean;
 import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.GroupDAO;
 import com.grsu.teacherassistant.dao.StudentDAO;
@@ -7,6 +8,8 @@ import com.grsu.teacherassistant.entities.Department;
 import com.grsu.teacherassistant.entities.Group;
 import com.grsu.teacherassistant.entities.Student;
 import com.opencsv.CSVReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
@@ -22,6 +25,8 @@ import static org.apache.commons.lang3.StringUtils.capitalize;
  */
 
 public class CSVUtils {
+	private static final Logger LOGGER = LoggerFactory.getLogger(CSVUtils.class);
+
 	private static final char SEPARATOR = ';';
 
 	public static List<Group> updateGroupsFromCSV() {
@@ -29,7 +34,7 @@ public class CSVUtils {
 
 		for (Group group : parseGroups()) {
 			if (group.getStudents().isEmpty()) {
-				System.out.println("Group [ " + group.getName() + " ] is empty and not added to database.");
+				LOGGER.info("Group [ " + group.getName() + " ] is empty and not added to database.");
 				continue;
 			}
 
@@ -54,13 +59,13 @@ public class CSVUtils {
 			List<Student> students = new ArrayList<>(group.getStudents());
 			Group groupFromDB = new GroupDAO().getByName(group.getName());
 			if (groupFromDB != null) {
-				System.out.println("Group [ " + group.getName() + " ] already exists. Updating...");
+				LOGGER.info("Group [ " + group.getName() + " ] already exists. Updating...");
 				group = groupFromDB;
 			}
 			group.getStudents().clear();
 			EntityDAO.save(group);
 			processStudents(group, students);
-			System.out.println("Group [ " + group.getName() + " ] processed.");
+			LOGGER.info("Group [ " + group.getName() + " ] processed.");
 
 			/* return processed groups with students */
 			group.setStudents(students);
@@ -106,11 +111,11 @@ public class CSVUtils {
 	private static List<Group> parseGroups() {
 		List<File> files = FileUtils.getCSVFilesFromAppFilesFolder();
 		if (files.isEmpty()) {
-			System.out.println("CSV files not found. Processing skipped.");
+			LOGGER.info("CSV files not found. Processing skipped.");
 			return Collections.emptyList();
 		}
 
-		System.out.println("CSV files founded. Processing...");
+		LOGGER.info("CSV files founded. Processing...");
 		List<Group> groups = new ArrayList<>();
 		for (File file : files) {
 			Group group = parseGroup(file);
@@ -160,18 +165,18 @@ public class CSVUtils {
 			department.setName(departmentName);
 			group.setDepartment(department);
 		} else {
-			System.out.println("Group [ " + groupName + " ] is empty and will not be added to database.");
+			LOGGER.info("Group [ " + groupName + " ] is empty and will not be added to database.");
 		}
 
 		try {
 			reader.close();
 			if (file.delete()) {
-				System.out.println("File [" + fileName + "] is deleted.");
+				LOGGER.info("File [" + fileName + "] is deleted.");
 			} else {
-				System.out.println("Delete operation for file [" + fileName + "] is failed.");
+				LOGGER.info("Delete operation for file [" + fileName + "] is failed.");
 			}
 		} catch (IOException e) {
-			System.out.println("Warning! Close stream for file [" + fileName + "] failed!");
+			LOGGER.info("Warning! Close stream for file [" + fileName + "] failed!");
 		}
 
 		return group;
@@ -188,7 +193,7 @@ public class CSVUtils {
 
 		String parsedUid = record[3];
 		if (parsedUid == null || parsedUid.isEmpty()) {
-			System.out.println("No card ID for [ " + student.getFullName() + " ]. Need to update UID manually.");
+			LOGGER.info("No card ID for [ " + student.getFullName() + " ]. Need to update UID manually.");
 			student.setCardUid("0");
 		} else {
 			student.setCardId(Integer.parseInt(record[3]));

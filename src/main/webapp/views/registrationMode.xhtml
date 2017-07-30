@@ -14,19 +14,19 @@
 			<p:panel id="lastVisitInfo" styleClass="visit-info">
 				<p:panelGrid columns="2">
 					<p:panel styleClass="image">
-						<p:graphicImage value="#{imageBean.getImagePath(lessonBean.processedStudent.cardUid)}"/>
+						<p:graphicImage value="#{imageBean.getImagePath(registrationModeBean.processedStudent.cardUid)}"/>
 					</p:panel>
-					<p:panel rendered="#{lessonBean.processedStudent eq null}">
+					<p:panel rendered="#{registrationModeBean.processedStudent eq null}">
 						<p:outputLabel value="#{msg['lesson.visit.noData']}"/>
 					</p:panel>
-					<p:panel rendered="#{lessonBean.processedStudent ne null}" styleClass="visit-label">
-						<p:outputLabel id="visitLastName" value="#{lessonBean.processedStudent.lastName}"/>
-						<p:outputLabel id="visitFirstName" value="#{lessonBean.processedStudent.firstName}"/>
+					<p:panel rendered="#{registrationModeBean.processedStudent ne null}" styleClass="visit-label">
+						<p:outputLabel id="visitLastName" value="#{registrationModeBean.processedStudent.lastName}"/>
+						<p:outputLabel id="visitFirstName" value="#{registrationModeBean.processedStudent.firstName}"/>
 						<p:outputLabel id="visitGroup" escape="false"
 									   styleClass="font-size-20pt margin-top-20px margin-bottom-20px"
-									   value="#{lessonBean.processedStudent.groupNames}"/>
+									   value="#{registrationModeBean.processedStudent.groupNames}"/>
 						<p:outputLabel styleClass="lowercase" escape="false"
-									   value="#{lessonBean.getStudentSkip(lessonBean.processedStudent)}"/>
+									   value="#{registrationModeBean.getStudentSkip(registrationModeBean.processedStudent)}"/>
 					</p:panel>
 				</p:panelGrid>
 			</p:panel>
@@ -51,28 +51,28 @@
 										 actionListener="#{serialBean.disableSound}"
 										 rendered="#{serialBean.recordStarted and serialBean.soundEnabled}"/>
 
-						<p:commandButton title="#{msg[lessonBean.camera ? 'btn.camera.turnOff' : 'btn.camera.turnOn']}"
-										 styleClass="#{lessonBean.camera ? 'red' : ''}"
+						<p:commandButton title="#{msg[registrationModeBean.camera ? 'btn.camera.turnOff' : 'btn.camera.turnOn']}"
+										 styleClass="#{registrationModeBean.camera ? 'red' : ''}"
 										 icon="fa fa-fw fa-video-camera"
 										 update=":lessonForm:lessonButtons :lessonForm:additions"
-										 actionListener="#{lessonBean.setCamera(!lessonBean.camera)}"
+										 actionListener="#{registrationModeBean.setCamera(!registrationModeBean.camera)}"
 						/>
 
 						<p:commandButton title="#{msg['btn.addVisit']}" icon="fa fa-fw fa-plus"
-										 actionListener="#{lessonBean.initAllStudents}"
+										 actionListener="#{registrationModeBean.initAllStudents}"
 										 oncomplete="PF('addStudentsDialog').show()"
 										 update=":addStudentsForm:studentDetail"/>
 
 						<p:commandButton title="#{msg['btn.openLessonMode']}"
 										 icon="fa fa-fw fa-list"
 										 update="@([id$=wrapper])"
-										 actionListener="#{lessonBean.openLessonMode}">
+										 actionListener="#{registrationModeBean.openLessonMode}">
 							<f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
 						</p:commandButton>
 
 						<p:commandButton title="#{msg['btn.backToLessons']}"
 										 icon="fa fa-fw fa-arrow-left"
-										 actionListener="#{lessonBean.returnToLessons}"
+										 actionListener="#{registrationModeBean.returnToLessons}"
 										 update="@([id$=wrapper])">
 							<f:setPropertyActionListener value="#{true}" target="#{menuBean.showMenu}"/>
 						</p:commandButton>
@@ -97,11 +97,11 @@
 							                 actionListener="#{studentModeBean.initStudentMode(null, lessonModeBean.stream)}">
 								<f:setPropertyActionListener value="studentMode" target="#{sessionBean.activeView}"/>
 								<f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
-								<f:setPropertyActionListener value="#{lessonBean.selectedLesson.stream}" target="#{lessonModeBean.stream}"/>
-								<f:setPropertyActionListener value="#{lessonBean.selectedLesson}" target="#{lessonModeBean.lesson}"/>
+								<f:setPropertyActionListener value="#{registrationModeBean.selectedLesson.stream}" target="#{lessonModeBean.stream}"/>
+								<f:setPropertyActionListener value="#{registrationModeBean.selectedLesson}" target="#{lessonModeBean.lesson}"/>
 							</p:commandButton>
 							<p:commandButton title="#{msg['btn.photoMode']}" value="#{msg['btn.photoMode']}"
-							                 actionListener="#{lessonBean.openPhotoMode}"
+							                 actionListener="#{registrationModeBean.openPhotoMode}"
 							                 update="@([id$=views])"
 							                 styleClass="block w100pc margin-bottom-10px">
 								<f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
@@ -109,7 +109,7 @@
 							<p:commandButton title="#{msg['btn.lessonMode']}"
 							                 value="#{msg['btn.lessonMode']}"
 							                 update="@([id$=wrapper])"
-							                 actionListener="#{lessonBean.openLessonMode}"
+							                 actionListener="#{registrationModeBean.openLessonMode}"
 							                 styleClass="block w100pc margin-bottom-10px">
 								<f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
 							</p:commandButton>
@@ -125,28 +125,28 @@
 					<p:panelGrid columns="2" styleClass="lesson-text left">
 						<p:panelGrid columns="2" id="attendanceInfo" styleClass="bold">
 							<h:outputText value="#{msg['lesson.students.all']}"/>
-							<h:outputText value="#{lessonBean.lessonStudents.size()}"/>
+							<h:outputText value="#{registrationModeBean.lessonStudents.size()}"/>
 
 							<h:outputText value="#{msg['lesson.students.present']}"/>
 							<h:outputText
-									value="#{lessonBean.presentStudents.size() - lessonBean.additionalStudents.size()}"/>
+									value="#{registrationModeBean.presentStudents.size() - registrationModeBean.additionalStudents.size()}"/>
 
 							<h:outputText value="#{msg['lesson.students.absent']}"/>
-							<h:outputText value="#{lessonBean.absentStudents.size()}"/>
+							<h:outputText value="#{registrationModeBean.absentStudents.size()}"/>
 
-							<h:outputText rendered="#{lessonBean.additionalStudents.size() gt 0}"
+							<h:outputText rendered="#{registrationModeBean.additionalStudents.size() gt 0}"
 										  value="#{msg['lesson.students.additional']}"/>
-							<h:outputText rendered="#{lessonBean.additionalStudents.size() gt 0}"
-										  value="#{lessonBean.additionalStudents.size()}"/>
+							<h:outputText rendered="#{registrationModeBean.additionalStudents.size() gt 0}"
+										  value="#{registrationModeBean.additionalStudents.size()}"/>
 						</p:panelGrid>
 						<p:panel>
-							<p:outputLabel value="#{lessonBean.selectedLesson.stream.name}"/>
-							<p:outputLabel rendered="#{lessonBean.selectedLesson.group ne null}"
-										   value="#{lessonBean.selectedLesson.group.name}"/>
-							<p:outputLabel value="#{msg[lessonBean.selectedLesson.type.key]}"/>
-							<p:outputLabel value="#{lessonBean.selectedLesson.clazz.date}"
+							<p:outputLabel value="#{registrationModeBean.selectedLesson.stream.name}"/>
+							<p:outputLabel rendered="#{registrationModeBean.selectedLesson.group ne null}"
+										   value="#{registrationModeBean.selectedLesson.group.name}"/>
+							<p:outputLabel value="#{msg[registrationModeBean.selectedLesson.type.key]}"/>
+							<p:outputLabel value="#{registrationModeBean.selectedLesson.date}"
 										   converter="localDateConverter"/>
-							<p:outputLabel value="#{lessonBean.selectedLesson.clazz.schedule.caption}"/>
+							<p:outputLabel value="#{registrationModeBean.selectedLesson.schedule.caption}"/>
 						</p:panel>
 					</p:panelGrid>
 				</p:panelGrid>
@@ -158,11 +158,11 @@
 			<p:dataTable id="presentStudents"
 						 var="pStudent"
 						 widgetVar="pStudentsTable"
-						 value="#{lessonBean.presentStudentsLazyModel}"
+						 value="#{registrationModeBean.presentStudentsLazyModel}"
 						 sortBy="#{pStudent.registrationTime}"
 						 sortOrder="descending"
 						 resizableColumns="true"
-						 selection="#{lessonBean.selectedPresentStudents}"
+						 selection="#{registrationModeBean.selectedPresentStudents}"
 						 rowKey="#{pStudent.id}"
 						 paginator="true"
 						 rows="15"
@@ -174,9 +174,9 @@
 				<p:ajax event="rowSelectCheckbox" update="removePresentStudentsBtn"/>
 				<p:ajax event="rowUnselectCheckbox" update="removePresentStudentsBtn"/>
 				<p:ajax event="toggleSelect" update="removePresentStudentsBtn"
-						listener="#{lessonBean.onPresentStudentsSelect}"/>
+						listener="#{registrationModeBean.onPresentStudentsSelect}"/>
 
-				<p:ajax event="rowSelect" listener="#{lessonBean.onStudentRowSelect}"
+				<p:ajax event="rowSelect" listener="#{registrationModeBean.onStudentRowSelect}"
 						update=":lessonForm:lastVisitInfo :lessonForm:additionalInfo"/>
 
 				<p:column selectionMode="multiple" styleClass="w16px center"/>
@@ -187,14 +187,14 @@
 										 update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:attendanceInfo"
 										 styleClass="w25px"
 										 icon="fa fa-fw fa-angle-double-right" title="Remove"
-										 actionListener="#{lessonBean.removePresentStudents}"
-										 disabled="#{lessonBean.selectedPresentStudents eq null or lessonBean.selectedPresentStudents.size() eq 0}"/>
+										 actionListener="#{registrationModeBean.removePresentStudents}"
+										 disabled="#{registrationModeBean.selectedPresentStudents eq null or registrationModeBean.selectedPresentStudents.size() eq 0}"/>
 					</f:facet>
 					<p:commandButton
 							update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:attendanceInfo"
 							icon="fa fa-fw fa-angle-right" title="Remove"
 							styleClass="w25px"
-							actionListener="#{lessonBean.removeLessonStudent(pStudent)}"/>
+							actionListener="#{registrationModeBean.removeLessonStudent(pStudent)}"/>
 				</p:column>
 
 				<p:column sortBy="#{pStudent.name}"
@@ -202,7 +202,7 @@
 						  filterMatchMode="startsWith"
 						  styleClass="bold w210px">
 					<p:commandLink styleClass="bold #{pStudent.additional ? 'blue' : ''}" value="#{pStudent.name}" update="@([id$=wrapper])"
-					               actionListener="#{studentModeBean.initStudentMode(pStudent.student, lessonBean.selectedLesson.stream)}">
+					               actionListener="#{studentModeBean.initStudentMode(pStudent.student, registrationModeBean.selectedLesson.stream)}">
 						<f:setPropertyActionListener value="studentMode" target="#{sessionBean.activeView}"/>
 					</p:commandLink>
 				</p:column>
@@ -230,11 +230,11 @@
 			<p:dataTable id="absentStudents"
 						 var="aStudent"
 						 widgetVar="aStudentsTable"
-						 value="#{lessonBean.absentStudentsLazyModel}"
+						 value="#{registrationModeBean.absentStudentsLazyModel}"
 						 sortBy="#{aStudent.totalSkip}"
 						 sortOrder="descending"
 						 resizableColumns="true"
-						 selection="#{lessonBean.selectedAbsentStudents}"
+						 selection="#{registrationModeBean.selectedAbsentStudents}"
 						 rowKey="#{aStudent.id}"
 						 paginator="true"
 						 rows="15"
@@ -245,9 +245,9 @@
 				<p:ajax event="rowSelectCheckbox" update="addAbsentStudentsBtn"/>
 				<p:ajax event="rowUnselectCheckbox" update="addAbsentStudentsBtn"/>
 				<p:ajax event="toggleSelect" update="addAbsentStudentsBtn"
-						listener="#{lessonBean.onAbsentStudentsSelect}"/>
+						listener="#{registrationModeBean.onAbsentStudentsSelect}"/>
 
-				<p:ajax event="rowSelect" listener="#{lessonBean.onStudentRowSelect}"
+				<p:ajax event="rowSelect" listener="#{registrationModeBean.onStudentRowSelect}"
 						update=":lessonForm:lastVisitInfo :lessonForm:additionalInfo"/>
 
 				<p:column selectionMode="multiple" styleClass="w16px center"/>
@@ -258,14 +258,14 @@
 										 update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:lastVisitInfo :lessonForm:attendanceInfo"
 										 icon="fa fa-angle-double-left" title="Add"
 										 styleClass="w25px"
-										 actionListener="#{lessonBean.addAbsentStudents}"
-										 disabled="#{lessonBean.selectedAbsentStudents eq null or lessonBean.selectedAbsentStudents.size() eq 0}"/>
+										 actionListener="#{registrationModeBean.addAbsentStudents}"
+										 disabled="#{registrationModeBean.selectedAbsentStudents eq null or registrationModeBean.selectedAbsentStudents.size() eq 0}"/>
 					</f:facet>
 					<p:commandButton
 							update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:lastVisitInfo :lessonForm:attendanceInfo"
 							icon="fa fa-fw fa-angle-left" title="Add"
 							styleClass="w25px"
-							actionListener="#{lessonBean.addLessonStudent(aStudent)}"/>
+							actionListener="#{registrationModeBean.addLessonStudent(aStudent)}"/>
 				</p:column>
 
 				<p:column sortBy="#{aStudent.name}"
@@ -273,7 +273,7 @@
 						  filterMatchMode="startsWith"
 						  styleClass="bold  w210px">
 					<p:commandLink value="#{aStudent.name}" update="@([id$=wrapper])"
-					               actionListener="#{studentModeBean.initStudentMode(aStudent.student, lessonBean.selectedLesson.stream)}">
+					               actionListener="#{studentModeBean.initStudentMode(aStudent.student, registrationModeBean.selectedLesson.stream)}">
 						<f:setPropertyActionListener value="studentMode" target="#{sessionBean.activeView}"/>
 					</p:commandLink>
 				</p:column>
@@ -294,13 +294,13 @@
 				<p:panel id="timer" styleClass="time ui-widget-header">
 					<pe:timer
 							widgetVar="timer"
-							rendered="#{lessonBean.timer ne 0}"
+							rendered="#{registrationModeBean.timer ne 0}"
 							format="HH:mm:ss"
-							timeout="#{lessonBean.timer}"
-							listener="#{lessonBean.calculateTimer}"
+							timeout="#{registrationModeBean.timer}"
+							listener="#{registrationModeBean.calculateTimer}"
 							singleRun="false"
 							update="timer"/>
-					<h:outputText value="00:00:00" rendered="#{lessonBean.timer eq 0}"/>
+					<h:outputText value="00:00:00" rendered="#{registrationModeBean.timer eq 0}"/>
 					/
 					<p:clock pattern="HH:mm:ss"/>
 				</p:panel>
@@ -312,13 +312,13 @@
 				<p:photoCam id="camera"
 							widgetVar="camera"
 							styleClass="camera"
-							rendered="#{lessonBean.camera}"/>
+							rendered="#{registrationModeBean.camera}"/>
 				<p:panel id="additionalInfo"
-						 rendered="#{not lessonBean.camera}"
+						 rendered="#{not registrationModeBean.camera}"
 						 header="#{msg['label.additional.info']}"
 						 styleClass="additional-info h200px">
-					<h:outputLabel value="#{lessonBean.processedStudent.fullName}" styleClass="bold"/>
-					<ui:repeat id="noteInfo" var="note" value="#{lessonBean.notes}">
+					<h:outputLabel value="#{registrationModeBean.processedStudent.fullName}" styleClass="bold"/>
+					<ui:repeat id="noteInfo" var="note" value="#{registrationModeBean.notes}">
 						<h:panelGrid columns="2" columnClasses="w300px, w20px" styleClass="w100pc">
 							<h:outputText value="#{note.description}"/>
 							<h:outputText value="#{note.createDate}" converter="localDateConverter"/>

@@ -52,20 +52,14 @@ INSERT INTO STREAM_GROUP (stream_id, group_id) VALUES (3, 4);
 INSERT INTO STREAM_GROUP (stream_id, group_id) VALUES (3, 5);
 
 
-INSERT INTO LESSON (name, description, stream_id, type_id)
-  VALUES ('Занятие1', 'ОписаниеЗанятие1', 1, 1);
-INSERT INTO LESSON (name, description, stream_id, type_id)
-  VALUES ('Занятие2', 'ОписаниеЗанятие2', 1, 1);
-INSERT INTO LESSON (name, description, stream_id, type_id, group_id)
-  VALUES ('Занятие3', 'ОписаниеЗанятие3', 1, 2, 1);
+INSERT INTO LESSON (name, description, stream_id, type_id, date, schedule_id)
+  VALUES ('Занятие1', 'ОписаниеЗанятие1', 1, 1, '2017-01-01', 2);
+INSERT INTO LESSON (name, description, stream_id, type_id, date, schedule_id)
+  VALUES ('Занятие2', 'ОписаниеЗанятие2', 1, 1, '2017-01-02', 3);
+INSERT INTO LESSON (name, description, stream_id, type_id, group_id, date, schedule_id)
+  VALUES ('Занятие3', 'ОписаниеЗанятие3', 1, 2, 1, '2017-02-02');
 
-
-INSERT INTO CLASS (date, schedule_id, lesson_id) VALUES ('2017-01-01', 2, 1);
-INSERT INTO CLASS (date, schedule_id, lesson_id) VALUES ('2017-01-02', 3, 2);
-INSERT INTO CLASS (date, schedule_id, lesson_id) VALUES ('2017-02-02', 4, 3);
-INSERT INTO CLASS (date, schedule_id, lesson_id) VALUES ('2017-02-03', 1, 3);
-
-INSERT INTO STUDENT_CLASS (student_id, class_id, registered, mark) VALUES (1, 2, 1, '!');
-INSERT INTO STUDENT_CLASS (student_id, class_id, registered, mark) VALUES (2, 2, 1, '+');
+INSERT INTO STUDENT_LESSON (student_id, lesson_id, registered, mark) VALUES (1, 2, 1, '!');
+INSERT INTO STUDENT_LESSON (student_id, lesson_id, registered, mark) VALUES (2, 2, 1, '+');
 
 COMMIT;

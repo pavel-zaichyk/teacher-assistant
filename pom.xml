@@ -39,6 +39,9 @@
 		<apache.httpclient.version>4.5.3</apache.httpclient.version>
 		<opencsv.version>3.9</opencsv.version>
 		<lombok.version>1.16.16</lombok.version>
+
+		<slf4j.version>1.7.25</slf4j.version>
+		<logback.version>1.1.9</logback.version>
 	</properties>
 
 	<dependencies>
@@ -73,16 +76,16 @@
 			<version>${jsf.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>${servlet.api.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>jsp-api</artifactId>
-			<version>${jsp.api.version}</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>javax.servlet</groupId>-->
+			<!--<artifactId>servlet-api</artifactId>-->
+			<!--<version>${servlet.api.version}</version>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>javax.servlet.jsp</groupId>-->
+			<!--<artifactId>jsp-api</artifactId>-->
+			<!--<version>${jsp.api.version}</version>-->
+		<!--</dependency>-->
 
 		<!-- Throws just an info message, but is confusing -->
 		<!-- "com.sun.faces.application.view.ViewScopeManager.<init> CDI @ViewScoped bean functionality unavailable" -->
@@ -95,11 +98,11 @@
 		</dependency>
 
 		<!-- JSF 2 <probably not used> -->
-		<dependency>
-			<groupId>javax.servlet.jsp.jstl</groupId>
-			<artifactId>javax.servlet.jsp.jstl-api</artifactId>
-			<version>${jstl.api.version}</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>javax.servlet.jsp.jstl</groupId>-->
+			<!--<artifactId>javax.servlet.jsp.jstl-api</artifactId>-->
+			<!--<version>${jstl.api.version}</version>-->
+		<!--</dependency>-->
 
 		<!-- Database -->
 		<dependency>
@@ -118,11 +121,11 @@
 		</dependency>
 
 		<!-- Tools -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>${apache.commons.lang.version}</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.apache.commons</groupId>-->
+			<!--<artifactId>commons-lang3</artifactId>-->
+			<!--<version>${apache.commons.lang.version}</version>-->
+		<!--</dependency>-->
 
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -148,6 +151,23 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>${lombok.version}</version>
+		</dependency>
+
+		<!-- logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
 		</dependency>
 	</dependencies>
 

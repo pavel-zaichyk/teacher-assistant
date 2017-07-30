@@ -1,14 +1,10 @@
-package com.grsu.teacherassistant.beans;
+package com.grsu.teacherassistant.beans.mode;
 
 import com.grsu.teacherassistant.constants.Constants;
 import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.StudentDAO;
-import com.grsu.teacherassistant.entities.Class;
-import com.grsu.teacherassistant.entities.Lesson;
-import com.grsu.teacherassistant.entities.Note;
-import com.grsu.teacherassistant.entities.Stream;
-import com.grsu.teacherassistant.entities.Student;
-import com.grsu.teacherassistant.entities.StudentClass;
+import com.grsu.teacherassistant.entities.*;
+import com.grsu.teacherassistant.entities.StudentLesson;
 import com.grsu.teacherassistant.models.LazyStudentDataModel;
 import com.grsu.teacherassistant.models.LessonModel;
 import com.grsu.teacherassistant.models.LessonStudentModel;
@@ -17,6 +13,8 @@ import com.grsu.teacherassistant.utils.FacesUtils;
 import lombok.Data;
 import org.primefaces.component.api.DynamicColumn;
 import org.primefaces.event.CellEditEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -40,6 +38,7 @@ import java.util.stream.Collectors;
 @ViewScoped
 @Data
 public class LessonModeBean implements Serializable {
+	private static final Logger LOGGER = LoggerFactory.getLogger(LessonModeBean.class);
 
 	private Stream stream;
 	private Lesson lesson;
@@ -113,8 +112,8 @@ public class LessonModeBean implements Serializable {
 		this.lessons = lessons.stream()
 				.filter(l -> Arrays.asList(LessonType.LECTURE, LessonType.PRACTICAL, LessonType.LAB).contains(l.getType()))
 				.sorted((l1, l2) -> {
-					if (l1.getClazz().getDate().isAfter(l2.getClazz().getDate())) return -1;
-					if (l1.getClazz().getDate().isBefore(l2.getClazz().getDate())) return 1;
+					if (l1.getDate().isAfter(l2.getDate())) return -1;
+					if (l1.getDate().isBefore(l2.getDate())) return 1;
 					return 0;
 				})
 				.map(LessonModel::new).collect(Collectors.toList());
@@ -137,7 +136,7 @@ public class LessonModeBean implements Serializable {
 
 		students = studentSet.stream().map(LessonStudentModel::new).collect(Collectors.toList());
 		students.addAll(additionalStudents);
-		students = students.stream().sorted(Comparator.comparing(s -> s.name)).collect(Collectors.toList());
+		students = students.stream().sorted(Comparator.comparing(s -> s.getName())).collect(Collectors.toList());
 		students.stream().forEach(this::updateAverageAttestation);
 
 		Map<Integer, Map<String, Integer>> skipInfo = StudentDAO.getSkipInfo(stream.getId(), lesson.getId());
@@ -146,7 +145,7 @@ public class LessonModeBean implements Serializable {
 				s.setTotalSkip(skipInfo.get(s.getId()).get(Constants.TOTAL_SKIP));
 			}
 			exams.stream().forEach(e -> {
-				StudentClass exam = s.getStudent().getStudentClasses().get(e.getLesson().getClazz().getId());
+				StudentLesson exam = s.getStudent().getStudentLessons().get(e.getLesson().getId());
 				if (exam != null) {
 					try {
 						s.setExamMark(Integer.valueOf(exam.getMark()));
@@ -164,7 +163,7 @@ public class LessonModeBean implements Serializable {
 		student.setAverageAttestation(null);
 		List<String> marks = new ArrayList<>();
 		attestations.stream().forEach(lesson -> {
-			StudentClass sc = student.getStudent().getStudentClasses().get(lesson.getId());
+			StudentLesson sc = student.getStudent().getStudentLessons().get(lesson.getId());
 			if (sc != null && sc.getMark() != null) {
 				marks.addAll(Arrays.asList(sc.getMark().split("[^0-9]")));
 			}
@@ -175,9 +174,9 @@ public class LessonModeBean implements Serializable {
 	}
 
 	public void initRegisteredDialog() {
-		if (Constants.STUDENT_CLASS.equals(selectedType)) {
+		if (Constants.STUDENT_LESSON.equals(selectedType)) {
 			selectedLesson = calculateSelectedLesson();
-			registered = selectedStudent.getStudent().getStudentClasses().get(selectedLesson.getId()).getRegistered();
+			registered = selectedStudent.getStudent().getStudentLessons().get(selectedLesson.getId()).isRegistered();
 		} else {
 			selectedLesson = null;
 		}
@@ -188,8 +187,8 @@ public class LessonModeBean implements Serializable {
 		selectedLesson = calculateSelectedLesson();
 
 		switch (selectedType) {
-			case Constants.STUDENT_CLASS:
-				StudentClass sc = selectedStudent.getStudent().getStudentClasses().get(selectedLesson.getId());
+			case Constants.STUDENT_LESSON:
+				StudentLesson sc = selectedStudent.getStudent().getStudentLessons().get(selectedLesson.getId());
 				if (sc != null) {
 					notes = sc.getNotes();
 					entityId = sc.getId();
@@ -234,7 +233,7 @@ public class LessonModeBean implements Serializable {
 		} else {
 			id = lessons.get(((DynamicColumn) event.getColumn()).getIndex()).getId();
 		}
-		EntityDAO.update(studentsLazyModel.getRowData().getStudent().getStudentClasses().get(id));
+		EntityDAO.update(studentsLazyModel.getRowData().getStudent().getStudentLessons().get(id));
 	}
 
 	public void saveNote() {
@@ -253,21 +252,21 @@ public class LessonModeBean implements Serializable {
 	}
 
 	public void saveRegisteredInfo() {
-		boolean oldValue = selectedStudent.getStudent().getStudentClasses().get(selectedLesson.getId()).getRegistered();
+		boolean oldValue = selectedStudent.getStudent().getStudentLessons().get(selectedLesson.getId()).isRegistered();
 		if (oldValue != registered) {
-			StudentClass studentClass = selectedStudent.getStudent().getStudentClasses().get(selectedLesson.getId());
-			studentClass.setRegistered(registered);
+			StudentLesson studentLesson = selectedStudent.getStudent().getStudentLessons().get(selectedLesson.getId());
+			studentLesson.setRegistered(registered);
 			if (!registered) {
-				studentClass.setRegistrationTime(null);
-				studentClass.setRegistrationType(null);
+				studentLesson.setRegistrationTime(null);
+				studentLesson.setRegistrationType(null);
 
 				FacesUtils.execute("$('#" + selectedClientId.replaceAll("\\:", "\\\\\\\\:") + "').closest('td').addClass('skip');");
 			} else {
-				studentClass.setRegistrationTime(LocalTime.now());
-				studentClass.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
+				studentLesson.setRegistrationTime(LocalTime.now());
+				studentLesson.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
 				FacesUtils.execute("$('#" + selectedClientId.replaceAll("\\:", "\\\\\\\\:") + "').closest('td').removeClass('skip')");
 			}
-			EntityDAO.save(studentClass);
+			EntityDAO.save(studentLesson);
 		}
 		FacesUtils.closeDialog("registeredDialog");
 		selectedLesson = null;
@@ -279,7 +278,7 @@ public class LessonModeBean implements Serializable {
 		selectedType = null;
 		selectedCell = null;
 		selectedLesson = null;
-		System.out.println("selectedClientId " + selectedClientId);
+		LOGGER.info("selectedClientId " + selectedClientId);
 		if (selectedClientId != null) {
 			FacesUtils.update(selectedClientId);
 		}
@@ -293,32 +292,27 @@ public class LessonModeBean implements Serializable {
 
 	public void createAttestation() {
 		Lesson lesson = new Lesson();
-		Class cl = new Class();
-		cl.setDate(LocalDateTime.now());
-		cl.setLesson(lesson);
-		lesson.setClasses(new HashSet<>());
-		lesson.getClasses().add(cl);
+		lesson.setDate(LocalDateTime.now());
 		lesson.setType(LessonType.ATTESTATION);
 		lesson.setStream(this.stream);
 		lesson.setGroup(this.lesson.getGroup());
 		lesson.setNotes(new ArrayList<>());
 
 		EntityDAO.add(lesson);
-		EntityDAO.add(lesson.getClazz());
 		stream.getLessons().add(lesson);
 
-		List<StudentClass> studentClasses = new ArrayList<>();
+		List<StudentLesson> studentLessons = new ArrayList<>();
 		students.stream().forEach(s -> {
-			StudentClass sc = new StudentClass();
+			StudentLesson sc = new StudentLesson();
 			sc.setStudent(s.getStudent());
-			sc.setClazz(lesson.getClazz());
+			sc.setLesson(lesson);
 			sc.setNotes(new ArrayList<>());
-			studentClasses.add(sc);
-			s.getStudent().getStudentClasses().put(lesson.getClazz().getId(), sc);
+			studentLessons.add(sc);
+			s.getStudent().getStudentLessons().put(lesson.getId(), sc);
 		});
-		EntityDAO.add(new ArrayList<>(studentClasses));
-		lesson.getClazz().setStudentClasses(new HashMap<>());
-		studentClasses.stream().forEach(sc -> lesson.getClazz().getStudentClasses().put(sc.getStudentId(), sc));
+		EntityDAO.add(new ArrayList<>(studentLessons));
+		lesson.setStudentLessons(new HashMap<>());
+		studentLessons.stream().forEach(sc -> lesson.getStudentLessons().put(sc.getStudentId(), sc));
 		attestations.add(new LessonModel(lesson));
 		attestations.forEach(a -> a.setNumber(attestations.indexOf(a) + 1));
 	}

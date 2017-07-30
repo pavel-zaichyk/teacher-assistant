@@ -4,8 +4,11 @@ import com.grsu.teacherassistant.entities.Group;
 import com.grsu.teacherassistant.utils.db.DBSessionFactory;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GroupDAO {
+	private static final Logger LOGGER = LoggerFactory.getLogger(GroupDAO.class);
 
 	public Group getByName(String name) {
 		Session session = DBSessionFactory.getSession();
@@ -16,7 +19,7 @@ public class GroupDAO {
 			query.setMaxResults(1);
 			return (Group) query.uniqueResult();
 		} catch (RuntimeException e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		} finally {
 			session.close();
 		}

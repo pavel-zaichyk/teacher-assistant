@@ -1,10 +1,12 @@
-package com.grsu.teacherassistant.beans;
+package com.grsu.teacherassistant.beans.mode;
 
+import com.grsu.teacherassistant.beans.SerialBean;
+import com.grsu.teacherassistant.beans.SerialListenerBean;
+import com.grsu.teacherassistant.beans.SessionBean;
 import com.grsu.teacherassistant.constants.Constants;
 import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.StudentDAO;
 import com.grsu.teacherassistant.entities.*;
-import com.grsu.teacherassistant.entities.Class;
 import com.grsu.teacherassistant.models.LazyStudentDataModel;
 import com.grsu.teacherassistant.models.LessonStudentModel;
 import com.grsu.teacherassistant.models.LessonType;
@@ -15,6 +17,8 @@ import com.grsu.teacherassistant.utils.LocaleUtils;
 import lombok.Data;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.ToggleSelectEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -35,10 +39,12 @@ import java.util.stream.Collectors;
 import static com.grsu.teacherassistant.utils.FacesUtils.closeDialog;
 import static com.grsu.teacherassistant.utils.FacesUtils.update;
 
-@ManagedBean(name = "lessonBean")
+@ManagedBean(name = "registrationModeBean")
 @ViewScoped
 @Data
-public class LessonBean implements Serializable, SerialListenerBean {
+public class RegistrationModeBean implements Serializable, SerialListenerBean {
+	private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationModeBean.class);
+
 	@ManagedProperty(value = "#{sessionBean}")
 	private SessionBean sessionBean;
 
@@ -145,17 +151,13 @@ public class LessonBean implements Serializable, SerialListenerBean {
 			presentStudents = null;
 			absentStudents = null;
 		} else {
-			List<StudentClass> studentClasses = new ArrayList<>();
-			for (Class cls : selectedLesson.getClasses()) {
-				studentClasses.addAll(cls.getStudentClasses().values());
-			}
 			presentStudents = new ArrayList<>();
 			absentStudents = new ArrayList<>();
-			for (StudentClass studentClass : studentClasses) {
-				if (studentClass.getRegistered()) {
-					presentStudents.add(studentClass.getStudent());
+			for (StudentLesson studentLesson : selectedLesson.getStudentLessons().values()) {
+				if (studentLesson.isRegistered()) {
+					presentStudents.add(studentLesson.getStudent());
 				} else {
-					absentStudents.add(studentClass.getStudent());
+					absentStudents.add(studentLesson.getStudent());
 				}
 			}
 		}
@@ -198,7 +200,7 @@ public class LessonBean implements Serializable, SerialListenerBean {
 		Student student = EntityUtils.getPersonByUid(absentStudents, uid);
 		if (student == null) {
 			if (EntityUtils.getPersonByUid(presentStudents, uid) != null) {
-				System.out.println("Student not registered. Reason: Uid[ " + uid + " ] already exists.");
+				LOGGER.info("Student not registered. Reason: Uid[ " + uid + " ] already exists.");
 				return false;
 			} else {
 				student = EntityUtils.getPersonByUid(allStudents, uid);
@@ -207,7 +209,7 @@ public class LessonBean implements Serializable, SerialListenerBean {
 		if (student != null) {
 			return processStudent(student);
 		} else {
-			System.out.println("Student not registered. Reason: Uid[ " + uid + " ] not exist in database.");
+			LOGGER.info("Student not registered. Reason: Uid[ " + uid + " ] not exist in database.");
 			return false;
 		}
 	}
@@ -220,23 +222,23 @@ public class LessonBean implements Serializable, SerialListenerBean {
 			additionalStudents.add(student);
 		}
 
-		if (student.getStudentClasses() != null) {
-			StudentClass studentClass = student.getStudentClasses().get(selectedLesson.getClazz().getId());
-			if (studentClass == null) {
-				studentClass = new StudentClass();
-				studentClass.setStudent(student);
-				studentClass.setClazz(selectedLesson.getClazz());
-				studentClass.setRegistered(true);
-				studentClass.setRegistrationTime(LocalTime.now());
-				studentClass.setRegistrationType(Constants.REGISTRATION_TYPE_AUTOMATIC);
-				EntityDAO.add(studentClass);
-				student.getStudentClasses().put(studentClass.getClazz().getId(), studentClass);
-				selectedLesson.getClazz().getStudentClasses().put(studentClass.getStudent().getId(), studentClass);
+		if (student.getStudentLessons() != null) {
+			StudentLesson studentLesson = student.getStudentLessons().get(selectedLesson.getId());
+			if (studentLesson == null) {
+				studentLesson = new StudentLesson();
+				studentLesson.setStudent(student);
+				studentLesson.setLesson(selectedLesson);
+				studentLesson.setRegistered(true);
+				studentLesson.setRegistrationTime(LocalTime.now());
+				studentLesson.setRegistrationType(Constants.REGISTRATION_TYPE_AUTOMATIC);
+				EntityDAO.add(studentLesson);
+				student.getStudentLessons().put(studentLesson.getId(), studentLesson);
+				selectedLesson.getStudentLessons().put(studentLesson.getStudent().getId(), studentLesson);
 			} else {
-				studentClass.setRegistered(true);
-				studentClass.setRegistrationTime(LocalTime.now());
-				studentClass.setRegistrationType(Constants.REGISTRATION_TYPE_AUTOMATIC);
-				EntityDAO.update(studentClass);
+				studentLesson.setRegistered(true);
+				studentLesson.setRegistrationTime(LocalTime.now());
+				studentLesson.setRegistrationType(Constants.REGISTRATION_TYPE_AUTOMATIC);
+				EntityDAO.update(studentLesson);
 				updateSkipInfo(Arrays.asList(student));
 			}
 		}
@@ -244,7 +246,7 @@ public class LessonBean implements Serializable, SerialListenerBean {
 		processedStudent = student;
 		updateLessonStudents();
 		FacesUtils.push("/register", processedStudent);
-		System.out.println("Student registered");
+		LOGGER.info("Student registered");
 		return true;
 	}
 
@@ -260,23 +262,23 @@ public class LessonBean implements Serializable, SerialListenerBean {
 			}
 		}
 
-		if (student.getStudentClasses() != null) {
-			StudentClass studentClass = student.getStudentClasses().get(selectedLesson.getClazz().getId());
-			if (studentClass == null) {
-				studentClass = new StudentClass();
-				studentClass.setStudent(student);
-				studentClass.setClazz(selectedLesson.getClazz());
-				studentClass.setRegistered(true);
-				studentClass.setRegistrationTime(LocalTime.now());
-				studentClass.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
-				EntityDAO.add(studentClass);
-				student.getStudentClasses().put(studentClass.getClazz().getId(), studentClass);
-				selectedLesson.getClazz().getStudentClasses().put(studentClass.getStudent().getId(), studentClass);
+		if (student.getStudentLessons() != null) {
+			StudentLesson studentLesson = student.getStudentLessons().get(selectedLesson.getId());
+			if (studentLesson == null) {
+				studentLesson = new StudentLesson();
+				studentLesson.setStudent(student);
+				studentLesson.setLesson(selectedLesson);
+				studentLesson.setRegistered(true);
+				studentLesson.setRegistrationTime(LocalTime.now());
+				studentLesson.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
+				EntityDAO.add(studentLesson);
+				student.getStudentLessons().put(studentLesson.getId(), studentLesson);
+				selectedLesson.getStudentLessons().put(studentLesson.getStudent().getId(), studentLesson);
 			} else {
-				studentClass.setRegistered(true);
-				studentClass.setRegistrationTime(LocalTime.now());
-				studentClass.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
-				EntityDAO.update(studentClass);
+				studentLesson.setRegistered(true);
+				studentLesson.setRegistrationTime(LocalTime.now());
+				studentLesson.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
+				EntityDAO.update(studentLesson);
 				updateSkipInfo(Arrays.asList(student));
 			}
 
@@ -289,19 +291,19 @@ public class LessonBean implements Serializable, SerialListenerBean {
 	}
 
 	public void removeStudent(Student student) {
-		StudentClass studentClass = student.getStudentClasses().get(selectedLesson.getClazz().getId());
+		StudentLesson studentLesson = student.getStudentLessons().get(selectedLesson.getId());
 		if (lessonStudents.contains(student)) {
 
-			studentClass.setRegistrationType(null);
-			studentClass.setRegistrationTime(null);
-			studentClass.setRegistered(false);
-			EntityDAO.update(studentClass);
+			studentLesson.setRegistrationType(null);
+			studentLesson.setRegistrationTime(null);
+			studentLesson.setRegistered(false);
+			EntityDAO.update(studentLesson);
 			absentStudents.add(student);
 			updateSkipInfo(Arrays.asList(student));
 		} else {
-			student.getStudentClasses().remove(selectedLesson.getClazz().getId());
-			selectedLesson.getClazz().getStudentClasses().remove(student.getId());
-			EntityDAO.delete(studentClass);
+			student.getStudentLessons().remove(selectedLesson.getId());
+			selectedLesson.getStudentLessons().remove(student.getId());
+			EntityDAO.delete(studentLesson);
 			allStudents.add(student);
 		}
 
@@ -313,12 +315,6 @@ public class LessonBean implements Serializable, SerialListenerBean {
 		FacesUtils.execute("PF('pStudentsTable').clearFilters()");
 	}
 
-
-	public void removeLesson(Lesson lesson) {
-		EntityDAO.delete(lesson);
-		sessionBean.getLessons().remove(lesson);
-	}
-
 	public void addAbsentStudents() {
 		if (selectedAbsentStudents != null && selectedAbsentStudents.size() > 0) {
 			List<Student> selectedStudents = null;
@@ -328,15 +324,15 @@ public class LessonBean implements Serializable, SerialListenerBean {
 				selectedStudents = selectedAbsentStudents.stream().map(LessonStudentModel::getStudent).collect(Collectors.toList());
 			}
 
-			List<StudentClass> studentClassList = new ArrayList<>();
+			List<StudentLesson> studentLessonList = new ArrayList<>();
 			for (Student student : selectedStudents) {
-				StudentClass studentClass = student.getStudentClasses().get(selectedLesson.getClazz().getId());
-				studentClass.setRegistered(true);
-				studentClass.setRegistrationTime(LocalTime.now());
-				studentClass.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
-				studentClassList.add(studentClass);
+				StudentLesson studentLesson = student.getStudentLessons().get(selectedLesson.getId());
+				studentLesson.setRegistered(true);
+				studentLesson.setRegistrationTime(LocalTime.now());
+				studentLesson.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
+				studentLessonList.add(studentLesson);
 			}
-			EntityDAO.update(new ArrayList<>(studentClassList));
+			EntityDAO.update(new ArrayList<>(studentLessonList));
 			updateSkipInfo(selectedStudents);
 
 			presentStudents.addAll(selectedStudents);
@@ -363,28 +359,28 @@ public class LessonBean implements Serializable, SerialListenerBean {
 			}
 
 
-			List<StudentClass> updateStudentClassList = new ArrayList<>();
-			List<StudentClass> removeStudentClassList = new ArrayList<>();
+			List<StudentLesson> updateStudentLessonList = new ArrayList<>();
+			List<StudentLesson> removeStudentLessonList = new ArrayList<>();
 
 			for (Student student : selectedStudents) {
-				StudentClass studentClass = student.getStudentClasses().get(selectedLesson.getClazz().getId());
+				StudentLesson studentLesson = student.getStudentLessons().get(selectedLesson.getId());
 
 				if (lessonStudents.contains(student)) {
 
-					studentClass.setRegistrationType(null);
-					studentClass.setRegistrationTime(null);
-					studentClass.setRegistered(false);
-					updateStudentClassList.add(studentClass);
+					studentLesson.setRegistrationType(null);
+					studentLesson.setRegistrationTime(null);
+					studentLesson.setRegistered(false);
+					updateStudentLessonList.add(studentLesson);
 					absentStudents.add(student);
 				} else {
-					student.getStudentClasses().remove(selectedLesson.getClazz().getId());
-					selectedLesson.getClazz().getStudentClasses().remove(student.getId());
+					student.getStudentLessons().remove(selectedLesson.getId());
+					selectedLesson.getStudentLessons().remove(student.getId());
 					allStudents.add(student);
-					removeStudentClassList.add(studentClass);
+					removeStudentLessonList.add(studentLesson);
 				}
 			}
-			EntityDAO.update(new ArrayList<>(updateStudentClassList));
-			EntityDAO.delete(new ArrayList<>(removeStudentClassList));
+			EntityDAO.update(new ArrayList<>(updateStudentLessonList));
+			EntityDAO.delete(new ArrayList<>(removeStudentLessonList));
 			updateSkipInfo(selectedStudents);
 
 			presentStudents.removeAll(selectedStudents);
@@ -433,7 +429,7 @@ public class LessonBean implements Serializable, SerialListenerBean {
 		for (Student st : students) {
 			LessonStudentModel lessonStudentModel = new LessonStudentModel(st);
 			lessonStudentModel.setRegistrationTime(
-					st.getStudentClasses().get(selectedLesson.getClazz().getId()).getRegistrationTime());
+					st.getStudentLessons().get(selectedLesson.getId()).getRegistrationTime());
 			Map<String, Integer> stSkipInfo = skipInfo.get(st.getId());
 			if (stSkipInfo != null) {
 				lessonStudentModel.setTotalSkip(stSkipInfo.get(Constants.TOTAL_SKIP));
@@ -457,6 +453,11 @@ public class LessonBean implements Serializable, SerialListenerBean {
 
 	public void removeLessonStudent(LessonStudentModel lessonStudentModel) {
 		removeStudent(lessonStudentModel.getStudent());
+		try {
+			throw new RuntimeException();
+		} catch (RuntimeException e) {
+//
+		}
 	}
 
 
@@ -482,7 +483,7 @@ public class LessonBean implements Serializable, SerialListenerBean {
 		processedStudent = ((LessonStudentModel) event.getObject()).getStudent();
 		notes = new ArrayList<>();
 		notes.addAll(processedStudent.getNotes());
-		processedStudent.getStudentClasses().values().forEach(sc -> notes.addAll(sc.getNotes()));
+		processedStudent.getStudentLessons().values().forEach(sc -> notes.addAll(sc.getNotes()));
 	}
 
 	public void onPresentStudentsSelect(ToggleSelectEvent event) {
@@ -496,15 +497,15 @@ public class LessonBean implements Serializable, SerialListenerBean {
 	public void calculateTimer() {
 		timer = 0;
 
-		LocalDateTime date = selectedLesson.getClazz().getDate();
-		LocalTime begin = selectedLesson.getClazz().getSchedule().getBegin();
+		LocalDateTime date = selectedLesson.getDate();
+		LocalTime begin = selectedLesson.getSchedule().getBegin();
 		LocalDateTime beginDate = date.plus(begin.toNanoOfDay(), ChronoUnit.NANOS);
 		LocalDateTime now = LocalDateTime.now();
 		if (beginDate.isAfter(now)) {
 			timer = now.until(beginDate, ChronoUnit.SECONDS);
 		}
 		if (timer == 0) {
-			LocalTime end = selectedLesson.getClazz().getSchedule().getEnd();
+			LocalTime end = selectedLesson.getSchedule().getEnd();
 			LocalDateTime endDate = date.plus(end.toNanoOfDay(), ChronoUnit.NANOS);
 			if (endDate.isAfter(now)) {
 				timer = now.until(endDate, ChronoUnit.SECONDS);

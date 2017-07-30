@@ -6,10 +6,14 @@ import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.grsu.teacherassistant.constants.Constants.*;
 
 public class SerialListener implements SerialPortEventListener {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SerialListener.class);
+
 	private SerialPort serialPort;
 	private SerialBean serialBean;
 
@@ -20,15 +24,15 @@ public class SerialListener implements SerialPortEventListener {
 
 	public void serialEvent(SerialPortEvent event) {
 		if (event.isRXCHAR() && event.getEventValue() > 0) {
-			System.out.println("---");
+			LOGGER.info("---");
 			try {
 				//Получаем ответ от устройства, обрабатываем данные и т.д.
 				String data = serialPort.readString(event.getEventValue());
-				System.out.println("Data received: ' " + data + " '");
+				LOGGER.info("Data received: ' " + data + " '");
 				//И снова отправляем запрос
 				if (data.startsWith(SERIAL_CARD_UID_PREFIX)) {
 					String uid = data.replace(SERIAL_CARD_UID_PREFIX, "").substring(0, 8);
-					System.out.println("Received card with uid: " + uid);
+					LOGGER.info("Received card with uid: " + uid);
 					SerialUtils.sendResponse(
 							serialPort,
 							serialBean.process(uid),
@@ -38,7 +42,7 @@ public class SerialListener implements SerialPortEventListener {
 					/*Student student = EntityUtils.getPersonByUid(lessonBean.getAbsentStudents(), uid);
 					if (student == null) {
 						if (EntityUtils.getPersonByUid(lessonBean.getPresentStudents(), uid) != null) {
-							System.out.println("Student not registered. Reason: Uid[ " + uid + " ] already exists.");
+							LOGGER.info("Student not registered. Reason: Uid[ " + uid + " ] already exists.");
 							return;
 						} else {
 							student = EntityUtils.getPersonByUid(lessonBean.getAllStudents(), uid);
@@ -51,7 +55,7 @@ public class SerialListener implements SerialPortEventListener {
 								lessonBean.isSoundEnabled()
 						);
 					} else {
-						System.out.println("Student not registered. Reason: Uid[ " + uid + " ] not exist in database.");
+						LOGGER.info("Student not registered. Reason: Uid[ " + uid + " ] not exist in database.");
 						SerialUtils.sendResponse(
 								serialPort,
 								false,
@@ -60,7 +64,7 @@ public class SerialListener implements SerialPortEventListener {
 					}*/
 				}
 			} catch (SerialPortException ex) {
-				System.out.println(ex);
+				LOGGER.error(ex.getMessage(), ex);
 			}
 		}
 	}

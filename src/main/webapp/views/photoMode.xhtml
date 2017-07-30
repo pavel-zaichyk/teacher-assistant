@@ -28,10 +28,10 @@
 			</p:commandButton>
 			<p:commandButton title="#{msg['btn.registerMode']}"
 			                 value="#{msg['btn.registerMode']}"
-			                 actionListener="#{lessonBean.initLesson(lessonBean.selectedLesson)}"
+			                 actionListener="#{registrationModeBean.initLesson(registrationModeBean.selectedLesson)}"
 			                 styleClass="block w100pc margin-bottom-10px"
 			                 update="@([id$=views])">
-				<f:setPropertyActionListener value="lesson" target="#{sessionBean.activeView}"/>
+				<f:setPropertyActionListener value="registrationMode" target="#{sessionBean.activeView}"/>
 				<f:ajax event="click" listener="#{lessonModeBean.clear}"/>
 			</p:commandButton>
 			<p:commandButton title="#{msg['btn.lessons']}"
@@ -48,15 +48,15 @@
 			<p:outputLabel rendered="#{lessonModeBean.lesson.group ne null}"
 						   value="#{lessonModeBean.lesson.group.name}"/>
 			<p:outputLabel value="#{msg[lessonModeBean.lesson.type.key]}"/>
-			<p:outputLabel value="#{lessonModeBean.lesson.clazz.date}"
+			<p:outputLabel value="#{lessonModeBean.lesson.date}"
 						   converter="localDateConverter"/>
-			<p:outputLabel value="#{lessonModeBean.lesson.clazz.schedule.caption}"/>
+			<p:outputLabel value="#{lessonModeBean.lesson.schedule.caption}"/>
 		</h:panelGroup>
 
 		<p:dataGrid var="student" value="#{lessonModeBean.students}" columns="7" layout="grid">
 			<h:panelGroup styleClass="center bold student">
 				<p:graphicImage value="#{imageBean.getImagePath(student.student.cardUid)}"/>
-				<p:outputLabel value="#{student.name}" styleClass="name #{student.additional ? 'blue' : ''} #{student.student.studentClasses[lessonModeBean.lesson.id].registered eq false ? 'skip' : ''}"/>
+				<p:outputLabel value="#{student.name}" styleClass="name #{student.additional ? 'blue' : ''} #{student.student.studentLessons[lessonModeBean.lesson.id].registered eq false ? 'skip' : ''}"/>
 			</h:panelGroup>
 		</p:dataGrid>
 
