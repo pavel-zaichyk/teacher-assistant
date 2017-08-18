@@ -702,3 +702,8 @@ body {
 	padding: 0;
 	text-align: center;
 }
+
+/* picklist */
+#wrapper .ui-picklist.ui-picklist-responsive .ui-picklist-list-wrapper {
+	width: 45%;
+}

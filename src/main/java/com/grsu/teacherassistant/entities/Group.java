@@ -12,11 +12,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Created by zaychick-pavel on 2/9/17.
+ * @author Pavel Zaychick
  */
 @Entity
 @Table(name = "[GROUP]")
-@ManagedBean(name = "newInstanceOfGroup")
 public class Group implements AssistantEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

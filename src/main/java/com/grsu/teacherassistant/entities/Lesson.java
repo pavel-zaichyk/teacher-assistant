@@ -4,6 +4,7 @@ import com.grsu.teacherassistant.converters.db.LessonTypeAttributeConverter;
 import com.grsu.teacherassistant.converters.db.LocalDateTimeAttributeConverter;
 import com.grsu.teacherassistant.models.LessonType;
 import com.grsu.teacherassistant.utils.EntityUtils;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.*;
@@ -18,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by zaychick-pavel on 2/9/17.
+ * @author Pavel Zaychick
  */
 @Entity
 @ManagedBean(name = "newInstanceOfLesson")
@@ -103,8 +104,8 @@ public class Lesson implements AssistantEntity {
 		if (description != null ? !description.equals(lesson.description) : lesson.description != null) return false;
 		if (createDate != null ? !createDate.equals(lesson.createDate) : lesson.createDate != null) return false;
 		if (date != null ? !date.equals(lesson.date) : lesson.date != null) return false;
-		if (!EntityUtils.compareEntity(stream, lesson.stream)) return false;
-		if (!EntityUtils.compareEntity(group, lesson.group)) return false;
+//		if (!EntityUtils.compareEntity(stream, lesson.stream)) return false;
+//		if (!EntityUtils.compareEntity(group, lesson.group)) return false;
 
 		return true;
 	}

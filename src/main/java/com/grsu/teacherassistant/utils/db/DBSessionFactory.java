@@ -19,8 +19,14 @@ public class DBSessionFactory {
 	static {
 		try {
 			Configuration configuration = new Configuration();
-			configuration.configure();
 			configuration.setProperty(HIBERNATE_CONNECTION_URL, DATABASE_URL);
+
+			String resourceName = getProperty("db.resource.name");
+			if (resourceName != null) {
+				configuration.configure(resourceName);
+			} else {
+				configuration.configure();
+			}
 
 			sessionFactory = configuration.buildSessionFactory();
 		} catch (Throwable ex) {

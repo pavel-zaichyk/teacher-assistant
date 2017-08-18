@@ -6,6 +6,9 @@
 	<session-factory>
 		<property name="dialect">com.grsu.teacherassistant.utils.db.SQLiteDialect</property>
 		<property name="connection.driver_class">org.sqlite.JDBC</property>
+		<property name="hbm2ddl.auto">create-drop</property>
+		<property name="show_sql">true</property>
+		<property name="hibernate.hbm2ddl.import_files">/sql/fill_tables.sql,/sql/fill_test_data.sql</property>
 		<mapping class="com.grsu.teacherassistant.entities.Department"/>
 		<mapping class="com.grsu.teacherassistant.entities.Discipline"/>
 		<mapping class="com.grsu.teacherassistant.entities.Group"/>

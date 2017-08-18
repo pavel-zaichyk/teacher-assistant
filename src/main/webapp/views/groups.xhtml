@@ -5,36 +5,62 @@
                 xmlns:p="http://primefaces.org/ui"
 >
     <h:form id="groupsForm">
-        <p:dataTable var="group" value="#{groupBean.groups}">
+        <p:dataTable id="groups"
+                     var="group"
+                     value="#{groupsBean.groups}"
+                     selection="#{groupsBean.selectedGroup}"
+                     rowKey="#{group.id}"
+                     selectionMode="single"
+                     sortBy="#{group.name}"
+                     filteredValue="#{groupsBean.filteredGroups}">
+            <p:ajax event="filter" update="@this"/>
+
             <f:facet name="header">
                 #{msg['groups']}
             </f:facet>
-            <p:column headerText="#{msg['group.name']}">
+
+            <p:column headerText="#{msg['group.name']}"
+                      sortBy="#{group.name}"
+                      filterBy="#{group.name}"
+                      filterMatchMode="contains"
+            >
                 <h:outputText value="#{group.name}"/>
             </p:column>
 
-            <p:column headerText="#{msg['group.department']}">
+            <p:column headerText="#{msg['group.department']}"
+                      sortBy="#{group.department.name}"
+                      filterBy="#{group.department.name}"
+                      filterMatchMode="contains"
+            >
                 <h:outputText value="#{group.department.name}"/>
             </p:column>
 
-            <p:column styleClass="options groupOptions">
-                <p:commandButton update=":groupInfoForm" oncomplete="PF('groupInfoDialog').show()"
-                                 icon="fa fa-fw fa-pencil" title="View">
-                    <f:setPropertyActionListener value="#{group}" target="#{groupBean.selectedGroup}"/>
-                    <p:resetInput target=":groupInfoForm:groupInfoDetail"/>
-                </p:commandButton>
-                <p:commandButton update=":groupStudentsForm" oncomplete="PF('groupStudentsDialog').show()"
-                                 icon="fa fa-fw fa-search" title="View">
-                    <f:setPropertyActionListener value="delete" target="#{groupBean.dialogAction}"/>
-                    <f:setPropertyActionListener value="#{group}" target="#{groupBean.selectedGroup}"/>
-                </p:commandButton>
-                <p:commandButton update=":groupStudentsForm" oncomplete="PF('groupStudentsDialog').show()"
-                                 icon="fa fa-fw fa-plus" title="View">
-                    <f:setPropertyActionListener value="add" target="#{groupBean.dialogAction}"/>
-                    <f:setPropertyActionListener value="#{group}" target="#{groupBean.selectedGroup}"/>
-                </p:commandButton>
-            </p:column>
+            <!--<p:column styleClass="options groupOptions">-->
+            <!--<p:commandButton update=":groupInfoForm" oncomplete="PF('groupInfoDialog').show()"-->
+            <!--icon="fa fa-fw fa-pencil" title="View">-->
+            <!--<f:setPropertyActionListener value="#{group}" target="#{groupBean.selectedGroup}"/>-->
+            <!--<p:resetInput target=":groupInfoForm:groupInfoDetail"/>-->
+            <!--</p:commandButton>-->
+            <!--<p:commandButton update=":groupStudentsForm" oncomplete="PF('groupStudentsDialog').show()"-->
+            <!--icon="fa fa-fw fa-search" title="View">-->
+            <!--<f:setPropertyActionListener value="delete" target="#{groupBean.dialogAction}"/>-->
+            <!--<f:setPropertyActionListener value="#{group}" target="#{groupBean.selectedGroup}"/>-->
+            <!--</p:commandButton>-->
+            <!--<p:commandButton update=":groupStudentsForm" oncomplete="PF('groupStudentsDialog').show()"-->
+            <!--icon="fa fa-fw fa-plus" title="View">-->
+            <!--<f:setPropertyActionListener value="add" target="#{groupBean.dialogAction}"/>-->
+            <!--<f:setPropertyActionListener value="#{group}" target="#{groupBean.selectedGroup}"/>-->
+            <!--</p:commandButton>-->
+            <!--</p:column>-->
         </p:dataTable>
 
+        <p:contextMenu for="groups">
+            <p:menuitem value="#{msg['option.view']}"
+                        update=":groupInfoForm"
+                        icon="ui-icon-search"
+                        actionListener="#{groupBean.initGroup(groupsBean.selectedGroup)}">
+                <p:resetInput target=":groupInfoForm:groupInfoDetail"/>
+            </p:menuitem>
+        </p:contextMenu>
     </h:form>
 </ui:composition>

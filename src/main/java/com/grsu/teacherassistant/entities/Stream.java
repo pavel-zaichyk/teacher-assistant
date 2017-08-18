@@ -1,6 +1,8 @@
 package com.grsu.teacherassistant.entities;
 
 import com.grsu.teacherassistant.converters.db.LocalDateTimeAttributeConverter;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.NotFound;
@@ -19,6 +21,8 @@ import static com.grsu.teacherassistant.constants.Constants.GROUPS_DELIMITER;
  */
 @Entity
 @ManagedBean(name = "newInstanceOfStream")
+@Getter
+@Setter
 public class Stream implements AssistantEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -88,95 +92,6 @@ public class Stream implements AssistantEntity {
 
 	public String getGroupNames() {
 		return groups.stream().map(Group::getName).collect(Collectors.joining(GROUPS_DELIMITER));
-	}
-
-	/* GETTERS & SETTERS */
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public LocalDateTime getCreateDate() {
-		return createDate;
-	}
-
-	public void setCreateDate(LocalDateTime createDate) {
-		this.createDate = createDate;
-	}
-
-	public Integer getCourse() {
-		return course;
-	}
-
-	public void setCourse(Integer course) {
-		this.course = course;
-	}
-
-	public Boolean isActive() {
-		return active;
-	}
-
-	public void setActive(Boolean active) {
-		this.active = active;
-	}
-
-	public LocalDateTime getExpirationDate() {
-		return expirationDate;
-	}
-
-	public void setExpirationDate(LocalDateTime expirationDate) {
-		this.expirationDate = expirationDate;
-	}
-
-	public List<Group> getGroups() {
-		return groups;
-	}
-
-	public void setGroups(List<Group> groups) {
-		this.groups = groups;
-	}
-
-	public List<Lesson> getLessons() {
-		return lessons;
-	}
-
-	public void setLessons(List<Lesson> lessons) {
-		this.lessons = lessons;
-	}
-
-	public Discipline getDiscipline() {
-		return discipline;
-	}
-
-	public void setDiscipline(Discipline discipline) {
-		this.discipline = discipline;
-	}
-
-	public Department getDepartment() {
-		return department;
-	}
-
-	public void setDepartment(Department department) {
-		this.department = department;
 	}
 
 	@Override

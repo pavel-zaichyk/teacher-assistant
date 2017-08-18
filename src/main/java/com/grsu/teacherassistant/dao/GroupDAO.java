@@ -7,10 +7,13 @@ import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author Pavel Zaychick
+ */
 public class GroupDAO {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GroupDAO.class);
 
-	public Group getByName(String name) {
+	public static Group getByName(String name) {
 		Session session = DBSessionFactory.getSession();
 		try {
 			Query query = session.createQuery("from Group where name = :name");

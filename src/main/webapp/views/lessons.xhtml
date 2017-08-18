@@ -4,86 +4,116 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
 >
-	<h:form id="lessonsForm">
-		<p:dataTable var="lesson" value="#{lessonsBean.lessons}"
-		             selection="#{lessonsBean.selectedLesson}"
-		             rowKey="#{lesson.id}"
-		             selectionMode="single"
-		             sortBy="#{lesson.date}"
-		             sortOrder="descending">
-			<p:ajax event="rowSelect" listener="#{registrationModeBean.initLesson(lesson)}"
-			        update="@([id$=wrapper])">
-				<f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
-				<f:setPropertyActionListener value="registrationMode" target="#{sessionBean.activeView}"/>
-			</p:ajax>
+    <h:form id="lessonsForm">
+        <p:panelGrid columns="9" styleClass="noBorder">
+            <p:outputLabel for="dateFrom" value="#{msg['lesson.dateFrom']}"/>
+            <p:calendar id="dateFrom" value="#{lessonsBean.dateFrom}"
+                        converter="localDateConverter" pattern="dd.MM.yyyy">
+            </p:calendar>
+            <p:outputLabel for="dateTo" value="#{msg['lesson.dateTo']}"/>
+            <p:calendar id="dateTo" value="#{lessonsBean.dateTo}"
+                        converter="localDateConverter" pattern="dd.MM.yyyy">
+            </p:calendar>
 
-			<f:facet name="header">
-				#{msg['lessons']}
-			</f:facet>
-			<p:column headerText="#{msg['lesson.stream']}"
-			          sortBy="#{lesson.stream.name}"
-			          filterBy="#{lesson.stream.name}"
-			          filterMatchMode="startsWith"
-			>
-				<h:outputText value="#{lesson.stream.name}"/>
-			</p:column>
-			<p:column headerText="#{msg['lesson.discipline']}"
-			          sortBy="#{lesson.stream.discipline.name}"
-			          filterBy="#{lesson.stream.discipline.name}"
-			          filterMatchMode="startsWith"
-			>
-				<h:outputText value="#{lesson.stream.discipline.name}"/>
-			</p:column>
-			<p:column headerText="#{msg['lesson.date']}"
-			          sortBy="#{lesson.date}"
-			          filterBy="#{lesson.date}"
-			          filterMatchMode="startsWith"
-			>
-				<h:outputText value="#{lesson.date}" converter="localDateConverter"/>
-			</p:column>
-			<p:column headerText="#{msg['lesson.time']}"
-			          sortBy="#{lesson.schedule.caption}"
-			          filterBy="#{lesson.schedule.caption}"
-			          filterMatchMode="startsWith"
-			>
-				<h:outputText
-						value="#{lesson.schedule ne null ? lesson.schedule.caption : ''}"/>
-			</p:column>
-			<p:column headerText="#{msg['lesson.type']}"
-			          sortBy="#{msg[lesson.type.key]}"
-			          filterBy="#{msg[lesson.type.key]}"
-			          filterMatchMode="startsWith"
-			>
-				<h:outputText value="#{msg[lesson.type.key]}"/>
-			</p:column>
-			<p:column headerText="#{msg['lesson.group']}"
-			          sortBy="#{lesson.group.name}"
-			          filterBy="#{lesson.group.name}"
-			          filterMatchMode="contains"
-			>
-				<h:outputText value="#{lesson.group ne null ? lesson.group.name : msg['label.all.groups']}"/>
-			</p:column>
-			<p:column styleClass="groupOptions">
-				<p:commandButton actionListener="#{registrationModeBean.initLesson(lesson)}" update="@([id$=wrapper])"
-				                 icon="fa fa-fw fa-search" title="#{msg['option.view']}">
-					<f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
-					<f:setPropertyActionListener value="registrationMode" target="#{sessionBean.activeView}"/>
-				</p:commandButton>
-				<p:commandButton actionListener="#{lessonsBean.removeLesson(lesson)}" update=":lessonsForm"
-				                 icon="fa fa-fw fa-minus" title="#{msg['option.remove']}"
-				                 styleClass="red">
-					<p:confirm header="#{msg['warning']}" message="#{msg['warning.sure.delete']}" icon="ui-icon-alert"/>
-				</p:commandButton>
-			</p:column>
-		</p:dataTable>
+            <p:selectBooleanCheckbox id="showClosed" value="#{lessonsBean.showClosed}"/>
+            <p:outputLabel for="showClosed" value="#{msg['lesson.showClosed']}"/>
 
+            <p:outputLabel for="stream" value="#{msg['lesson.stream']}"/>
+            <p:selectOneMenu id="stream" value="#{lessonsBean.streamId}">
+                <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.stream']}"/>
+                <f:selectItems value="#{lessonsBean.streams}" var="stream"
+                               itemLabel="#{stream.value}" itemValue="#{stream.key}"/>
+            </p:selectOneMenu>
 
-		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-			<p:commandButton value="#{msg['label.yes']}" type="button" styleClass="ui-confirmdialog-yes"
-			                 icon="ui-icon-check"/>
-			<p:commandButton value="#{msg['label.no']}" type="button" styleClass="ui-confirmdialog-no"
-			                 icon="ui-icon-close"/>
-		</p:confirmDialog>
+            <p:commandButton value="#{msg['btn.search']}" icon="fa fa-fw fa-search"
+                             actionListener="#{lessonsBean.search}"
+                             update=":lessonsForm"/>
+        </p:panelGrid>
 
-	</h:form>
+        <p:dataTable id="lessons"
+                     var="lesson"
+                     value="#{lessonsBean.lessons}"
+                     selection="#{lessonsBean.selectedLesson}"
+                     rowKey="#{lesson.id}"
+                     selectionMode="single"
+                     sortBy="#{lesson.date}"
+                     sortOrder="descending"
+                     filteredValue="#{lessonsBean.filteredLessons}">
+            <p:ajax event="filter" update="@this"/>
+            <!--<p:ajax event="rowSelect" listener="#{registrationModeBean.initLesson(lessonsBean.selectedLesson)}"-->
+            <!--update="@([id$=wrapper])">-->
+            <!--<f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>-->
+            <!--<f:setPropertyActionListener value="registrationMode" target="#{sessionBean.activeView}"/>-->
+            <!--</p:ajax>-->
+
+            <p:column headerText="#{msg['lesson.stream']}"
+                      sortBy="#{lesson.stream.name}"
+                      filterBy="#{lesson.stream.name}"
+                      filterMatchMode="startsWith"
+            >
+                <h:outputText value="#{lesson.stream.name}"/>
+            </p:column>
+            <p:column headerText="#{msg['lesson.discipline']}"
+                      sortBy="#{lesson.stream.discipline.name}"
+                      filterBy="#{lesson.stream.discipline.name}"
+                      filterMatchMode="startsWith"
+            >
+                <h:outputText value="#{lesson.stream.discipline.name}"/>
+            </p:column>
+            <p:column headerText="#{msg['lesson.date']}"
+                      sortBy="#{lesson.date}"
+                      filterBy="#{lesson.date}"
+                      filterMatchMode="startsWith"
+            >
+                <h:outputText value="#{lesson.date}" converter="localDateConverter"/>
+            </p:column>
+            <p:column headerText="#{msg['lesson.time']}"
+                      sortBy="#{lesson.schedule.caption}"
+                      filterBy="#{lesson.schedule.caption}"
+                      filterMatchMode="contains"
+            >
+                <h:outputText
+                    value="#{lesson.schedule ne null ? lesson.schedule.caption : ''}"/>
+            </p:column>
+            <p:column headerText="#{msg['lesson.type']}"
+                      sortBy="#{msg[lesson.type.key]}"
+                      filterBy="#{msg[lesson.type.key]}"
+                      filterMatchMode="startsWith"
+            >
+                <h:outputText value="#{msg[lesson.type.key]}"/>
+            </p:column>
+            <p:column headerText="#{msg['lesson.group']}"
+                      sortBy="#{lesson.group.name}"
+                      filterBy="#{lesson.group.name}"
+                      filterMatchMode="contains"
+            >
+                <h:outputText value="#{lesson.group ne null ? lesson.group.name : msg['label.all.groups']}"/>
+            </p:column>
+        </p:dataTable>
+
+        <p:contextMenu for="lessons">
+            <p:menuitem value="#{msg['option.view']}"
+                        update="@([id$=wrapper])"
+                        icon="ui-icon-search"
+                        actionListener="#{registrationModeBean.initLesson(lessonsBean.selectedLesson)}">
+                <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+                <f:setPropertyActionListener value="registrationMode" target="#{sessionBean.activeView}"/>
+            </p:menuitem>
+            <p:menuitem value="#{msg['option.remove']}"
+                        update=":lessonsForm"
+                        icon="ui-icon-close"
+                        styleClass="red"
+                        actionListener="#{lessonsBean.removeLesson(lessonsBean.selectedLesson)}">
+                <p:confirm header="#{msg['warning']}" message="#{msg['warning.sure.delete']}" icon="ui-icon-alert"/>
+            </p:menuitem>
+        </p:contextMenu>
+
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+            <p:commandButton value="#{msg['label.yes']}" type="button" styleClass="ui-confirmdialog-yes"
+                             icon="ui-icon-check"/>
+            <p:commandButton value="#{msg['label.no']}" type="button" styleClass="ui-confirmdialog-no"
+                             icon="ui-icon-close"/>
+        </p:confirmDialog>
+
+    </h:form>
 </ui:composition>

@@ -31,10 +31,10 @@
 					<p:resetInput target=":streamInfoForm:streamDetail"/>
 				</p:menuitem>
 
-				<p:menuitem value="#{msg['menu.file.new.group']}" icon="fa fa-fw fa-users"
-							update=":groupInfoForm" oncomplete="PF('groupInfoDialog').show()">
-					<f:setPropertyActionListener value="#{newInstanceOfGroup}"
-												 target="#{groupBean.selectedGroup}"/>
+				<p:menuitem value="#{msg['menu.file.new.group']}"
+                            icon="fa fa-fw fa-users"
+							update=":groupInfoForm"
+                            actionListener="#{groupBean.initGroup(null)}">
 					<p:resetInput target=":groupInfoForm:groupInfoDetail"/>
 				</p:menuitem>
 
@@ -87,11 +87,11 @@
 				<f:actionListener binding="#{registrationModeBean.clear()}"/>
 			</p:menuitem>
 
-			<p:menuitem value="#{msg['menu.new.lesson']}" icon="fa fa-fw fa-book"
-						update=":lessonInfoForm" oncomplete="PF('lessonDialog').show()"
+			<p:menuitem value="#{msg['menu.new.lesson']}"
+                        icon="fa fa-fw fa-book"
+						update=":lessonInfoForm"
+                        actionListener="#{newLessonBean.createNewLesson}"
 						rendered="#{sessionBean.connected}">
-				<f:setPropertyActionListener value="#{newInstanceOfLesson}"
-											 target="#{newLessonBean.lesson}"/>
 				<p:resetInput target=":lessonInfoForm:lessonDetail"/>
 			</p:menuitem>
 
