@@ -1,18 +1,19 @@
 INSERT INTO DEPARTMENT (name, abbreviation) VALUES ('Факультет 1', 'ф1');
 INSERT INTO DEPARTMENT (name, abbreviation) VALUES ('Факультет 2', 'ф2');
 
-INSERT INTO [GROUP] (name, department_id) VALUES ('Группа 1', 1);
-INSERT INTO [GROUP] (name, department_id) VALUES ('Группа 2', 1);
-INSERT INTO [GROUP] (name, department_id) VALUES ('Группа 3', 2);
-INSERT INTO [GROUP] (name, department_id) VALUES ('Группа 4', 2);
-INSERT INTO [GROUP] (name) VALUES ('Группа 5');
+INSERT INTO [GROUP] (name, department_id, active) VALUES ('Группа 1', 1, 1);
+INSERT INTO [GROUP] (name, department_id, active) VALUES ('Группа 2', 1, 0);
+INSERT INTO [GROUP] (name, department_id, active) VALUES ('Группа 3', 2, 1);
+INSERT INTO [GROUP] (name, department_id, active) VALUES ('Группа 4', 2, 1);
+INSERT INTO [GROUP] (name, active, expiration_date) VALUES ('Группа 5', 1, '2017-01-10T00:00:00');
 
 
-INSERT INTO STUDENT (card_uid, card_id, first_name, last_name, patronymic, email) VALUES ('uidStudent1', '22', 'ИмяСтудент1', 'ФамилияСтудент1', 'ОтчествоСтудент1', 'student1@test.com');
-INSERT INTO STUDENT (card_uid, card_id, first_name, last_name, patronymic, email) VALUES ('uidStudent2', '33', 'ИмяСтудент2', 'ФамилияСтудент2', 'ОтчествоСтудент2', 'student2@test.com');
-INSERT INTO STUDENT (card_uid, card_id, first_name, last_name, patronymic, email) VALUES ('uidStudent3', '44', 'ИмяСтудент3', 'ФамилияСтудент3', 'ОтчествоСтудент3', 'student3@test.com');
-INSERT INTO STUDENT (card_uid, card_id, first_name, last_name, patronymic, email) VALUES ('uidStudent4', '55', 'ИмяСтудент4', 'ФамилияСтудент4', 'ОтчествоСтудент4', 'student4@test.com');
-INSERT INTO STUDENT (card_uid, card_id, first_name, last_name, patronymic, email) VALUES ('uidStudent5', '66', 'ИмяСтудент5', 'ФамилияСтудент5', 'ОтчествоСтудент5', 'student5@test.com');
+INSERT INTO STUDENT (card_uid, card_id, first_name, last_name, patronymic, email) VALUES ('uidStudent1', '11', 'ИмяСтудент1', 'ФамилияСтудент1', 'ОтчествоСтудент1', 'student1@test.com');
+INSERT INTO STUDENT (card_uid, card_id, first_name, last_name, patronymic, email) VALUES ('uidStudent2', '22', 'ИмяСтудент2', 'ФамилияСтудент2', 'ОтчествоСтудент2', 'student2@test.com');
+INSERT INTO STUDENT (card_uid, card_id, first_name, last_name, patronymic, email) VALUES ('uidStudent3', '33', 'ИмяСтудент3', 'ФамилияСтудент3', 'ОтчествоСтудент3', 'student3@test.com');
+INSERT INTO STUDENT (card_uid, card_id, first_name, last_name, patronymic, email) VALUES ('uidStudent4', '44', 'ИмяСтудент4', 'ФамилияСтудент4', 'ОтчествоСтудент4', 'student4@test.com');
+INSERT INTO STUDENT (card_uid, card_id, first_name, last_name, patronymic, email) VALUES ('uidStudent5', '55', 'ИмяСтудент5', 'ФамилияСтудент5', 'ОтчествоСтудент5', 'student5@test.com');
+INSERT INTO STUDENT (card_uid, card_id, first_name, last_name, patronymic, email) VALUES ('uidStudent6', '66', 'ИмяСтудент6', 'ФамилияСтудент6', 'ОтчествоСтудент6', 'student6@test.com');
 
 INSERT INTO STUDENT_GROUP (student_id, group_id) VALUES (1, 1);
 INSERT INTO STUDENT_GROUP (student_id, group_id) VALUES (2, 1);

@@ -1,6 +1,5 @@
 package com.grsu.teacherassistant.beans;
 
-import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.entities.Group;
 import lombok.Data;
 
@@ -16,14 +15,6 @@ import java.util.List;
 @ViewScoped
 @Data
 public class GroupsBean implements Serializable {
-    private List<Group> groups;
     private List<Group> filteredGroups;
     private Group selectedGroup;
-
-    public List<Group> getGroups() {
-        if (groups == null) {
-            groups = EntityDAO.getAll(Group.class);
-        }
-        return groups;
-    }
 }

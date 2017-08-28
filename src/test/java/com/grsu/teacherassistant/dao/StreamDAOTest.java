@@ -1,16 +1,26 @@
 package com.grsu.teacherassistant.dao;
 
 import com.grsu.teacherassistant.TestConfiguration;
+import com.grsu.teacherassistant.entities.Stream;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * @author Pavel Zaychick
  */
 public class StreamDAOTest extends TestConfiguration {
+    @Test
+    public void getAllTest() {
+        List<Stream> s = StreamDAO.getAll();
+
+        assert s != null;
+        Assert.assertEquals(2, s.size());
+    }
+
     @Test
     public void getNamesTest() {
         Map<Integer, String> expected = new HashMap<>();

@@ -1,7 +1,7 @@
 package com.grsu.teacherassistant.beans;
 
-import com.grsu.teacherassistant.beans.mode.RegistrationModeBean;
 import com.grsu.teacherassistant.dao.EntityDAO;
+import com.grsu.teacherassistant.dao.StudentDAO;
 import com.grsu.teacherassistant.entities.Group;
 import com.grsu.teacherassistant.entities.Student;
 import com.grsu.teacherassistant.utils.FacesUtils;
@@ -39,9 +39,12 @@ public class GroupBean implements Serializable {
         } else {
             this.group = new Group();
             this.group.setStudents(new ArrayList<>());
+            this.group.setActive(true);
         }
         LOGGER.info("!!!!!!Start loading students");
-        students = new DualListModel<>(sessionBean.getStudents(), this.group.getStudents());
+        List<Student> source = StudentDAO.getAll();
+        source.removeAll(this.group.getStudents());
+        students = new DualListModel<>(source, this.group.getStudents());
         LOGGER.info("!!!!!!End loading students");
 
         FacesUtils.showDialog("groupInfoDialog");
@@ -59,104 +62,4 @@ public class GroupBean implements Serializable {
         exit();
     }
 
-    private List<Student> groupStudents;
-    private List<Student> filteredGroupStudents;
-
-    private String dialogAction;
-
-
-
-
-
-    public void saveAndExit() {
-        save();
-    }
-
-
-    /*
-        STUDENTS
-    */
-    public void exitStudents() {
-        setSelectedGroup(null);
-        setDialogAction(null);
-        setFilteredGroupStudents(null);
-        sessionBean.updateStudents();
-        closeDialog("groupStudentsDialog");
-    }
-
-    public void addStudent(Student student) {
-        group.getStudents().add(student);
-        EntityDAO.update(group);
-        groupStudents.remove(student);
-        if (filteredGroupStudents != null) {
-            filteredGroupStudents.remove(student);
-        }
-    }
-
-    public void deleteStudent(Student student) {
-        group.getStudents().remove(student);
-        EntityDAO.update(group);
-        groupStudents.remove(student);
-        if (filteredGroupStudents != null) {
-            filteredGroupStudents.remove(student);
-        }
-    }
-
-    /*
-        GETTERS & SETTERS
-     */
-    public List<Group> getGroups() {
-        return sessionBean.getGroups();
-    }
-
-    public Group getSelectedGroup() {
-        return group;
-    }
-
-    public void setSelectedGroup(Group selectedGroup) {
-        this.group = selectedGroup;
-
-        if (selectedGroup != null) {
-            if (selectedGroup.getId() == null) {
-                groupStudents = Collections.emptyList();
-            } else {
-                if ("add".equals(dialogAction)) {
-                    List<Student> allStudents = new ArrayList<>(sessionBean.getStudents());
-                    List<Student> studentsFromGroup = new ArrayList<>(selectedGroup.getStudents());
-                    allStudents.removeAll(studentsFromGroup);
-                    groupStudents = allStudents;
-                } else if ("delete".equals(dialogAction)) {
-                    groupStudents = selectedGroup.getStudents();
-                }
-            }
-        }
-    }
-
-    public List<Student> getGroupStudents() {
-        return groupStudents;
-    }
-
-    public void setGroupStudents(List<Student> groupStudents) {
-        this.groupStudents = groupStudents;
-    }
-
-    public List<Student> getFilteredGroupStudents() {
-        return filteredGroupStudents;
-    }
-
-    public void setFilteredGroupStudents(List<Student> filteredGroupStudents) {
-        this.filteredGroupStudents = filteredGroupStudents;
-    }
-
-    public String getDialogAction() {
-        return dialogAction;
-    }
-
-    public void setDialogAction(String dialogAction) {
-        this.dialogAction = dialogAction;
-    }
-
-    public void setSessionBean(SessionBean sessionBean) {
-        this.sessionBean = sessionBean;
-    }
 }

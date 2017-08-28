@@ -7,7 +7,7 @@
     <h:form id="groupsForm">
         <p:dataTable id="groups"
                      var="group"
-                     value="#{groupsBean.groups}"
+                     value="#{sessionBean.groups}"
                      selection="#{groupsBean.selectedGroup}"
                      rowKey="#{group.id}"
                      selectionMode="single"

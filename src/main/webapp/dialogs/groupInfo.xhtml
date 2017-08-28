@@ -35,6 +35,14 @@
                     <p:inputText id="name" value="#{groupBean.group.name}" required="true">
                         <p:ajax update=":groupInfoForm:groupInfoDetail"/>
                     </p:inputText>
+
+                    <p:outputLabel for="active" value="#{msg['group.active']}"/>
+                    <p:selectBooleanCheckbox id="active" value="#{groupBean.group.active}"/>
+
+                    <p:outputLabel for="expirationDate" value="#{msg['label.expirationDate']}"/>
+                    <p:calendar id="expirationDate" value="#{groupBean.group.expirationDate}"
+                                converter="localDateConverter" pattern="dd.MM.yyyy">
+                    </p:calendar>
                 </p:panelGrid>
 
                 <p:outputLabel for="students" value="#{msg['students']}"/>
@@ -50,11 +58,11 @@
                             filterMatchMode="contains"
                             converter="entityConverter"
                             style="width: 100%">
-                    <p:column style="width:70%">
-                        <h:outputText value="#{student.fullName}" />
+                    <p:column style="width:60%">
+                        <h:outputText value="#{student.fullName}"/>
                     </p:column>
-                    <p:column style="width:30%">
-                        <h:outputText value="#{student.groupNames}" escape="false" />
+                    <p:column style="width:40%">
+                        <h:outputText value="#{student.groupNames}" escape="false"/>
                     </p:column>
                 </p:pickList>
 
@@ -63,7 +71,7 @@
                     <p:commandButton value="#{msg['btn.save.exit']}" icon="fa fa-fw fa-save"
                                      actionListener="#{groupBean.save}"
                                      update=":groupInfoForm:groupInfoDetail">
-                        <f:setPropertyActionListener value="#{null}" target="#{groupsBean.groups}"/>
+                        <f:setPropertyActionListener value="#{null}" target="#{sessionBean.groups}"/>
                     </p:commandButton>
                 </p:outputPanel>
             </p:outputPanel>
