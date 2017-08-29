@@ -1,4 +1,3 @@
-COMMIT;
 BEGIN;
 
 UPDATE STREAM SET active = 1;
