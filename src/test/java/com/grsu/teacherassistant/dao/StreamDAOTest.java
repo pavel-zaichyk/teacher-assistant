@@ -1,6 +1,7 @@
 package com.grsu.teacherassistant.dao;
 
 import com.grsu.teacherassistant.TestConfiguration;
+import com.grsu.teacherassistant.entities.Group;
 import com.grsu.teacherassistant.entities.Stream;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,6 +20,14 @@ public class StreamDAOTest extends TestConfiguration {
 
         assert s != null;
         Assert.assertEquals(2, s.size());
+    }
+
+    @Test
+    public void getAllShowClosedTest() {
+        List<Stream> s = StreamDAO.getAll(true);
+
+        assert s != null;
+        Assert.assertEquals(4, s.size());
     }
 
     @Test

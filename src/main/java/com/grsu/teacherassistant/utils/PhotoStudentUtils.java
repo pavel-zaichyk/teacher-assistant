@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created by pavel on 2/25/17.
+ * @author Pavel Zaychick
  */
 public class PhotoStudentUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PhotoStudentUtils.class);

@@ -1,7 +1,7 @@
 package com.grsu.teacherassistant.models;
 
 /**
- * Created by zaychick-pavel on 2/22/17.
+ * @author Pavel Zaychick
  */
 public enum LessonType {
 	LECTURE(1, "lecture"),

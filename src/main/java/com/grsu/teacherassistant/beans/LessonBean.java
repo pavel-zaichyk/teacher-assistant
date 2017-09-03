@@ -1,10 +1,12 @@
 package com.grsu.teacherassistant.beans;
 
 import com.grsu.teacherassistant.dao.EntityDAO;
+import com.grsu.teacherassistant.dao.StudentDAO;
 import com.grsu.teacherassistant.entities.*;
 import com.grsu.teacherassistant.models.LessonType;
 import com.grsu.teacherassistant.utils.FacesUtils;
 import lombok.Data;
+import org.primefaces.model.DualListModel;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -19,22 +21,30 @@ import static com.grsu.teacherassistant.utils.FacesUtils.update;
 /**
  * @author Pavel Zaychick
  */
-@ManagedBean(name = "newLessonBean")
+@ManagedBean(name = "lessonBean")
 @ViewScoped
 @Data
-public class NewLessonBean implements Serializable {
+public class LessonBean implements Serializable {
 
     @ManagedProperty(value = "#{sessionBean}")
     private SessionBean sessionBean;
 
     private Lesson lesson;
+    private boolean createMode;
 
-    private List<LessonType> lessonTypes =
+    private final List<LessonType> lessonTypes =
         new ArrayList<>(Arrays.asList(LessonType.LECTURE, LessonType.PRACTICAL, LessonType.LAB, LessonType.EXAM));
 
-    public void createNewLesson() {
-        lesson = new Lesson();
-        lesson.setDate(LocalDateTime.now());
+    public void initLesson(Lesson lesson) {
+        if (lesson != null) {
+            this.lesson = lesson;
+            createMode = false;
+        } else {
+            this.lesson = new Lesson();
+            this.lesson.setDate(LocalDateTime.now());
+            createMode = true;
+        }
+
         FacesUtils.showDialog("lessonDialog");
     }
 
@@ -44,8 +54,8 @@ public class NewLessonBean implements Serializable {
         closeDialog("lessonDialog");
     }
 
-    public void createLesson() {
-        if (lesson != null) {
+    public void save() {
+        if (createMode) {
             if (lesson.getType() == null || lesson.getType() == LessonType.LECTURE) {
                 lesson.setGroup(null);
             }
@@ -75,6 +85,8 @@ public class NewLessonBean implements Serializable {
             EntityDAO.add(new ArrayList<>(studentLessons));
 
             sessionBean.updateStudents();
+        } else {
+            EntityDAO.save(lesson);
         }
         exit();
     }

@@ -19,10 +19,19 @@ public class StreamDAO {
     }
 
     public static List<Stream> getAll() {
+        return getAll(false);
+    }
+
+    public static List<Stream> getAll(boolean showClosed) {
+        StringBuilder queryString = new StringBuilder("from Stream ");
+
+        if (!showClosed) {
+            queryString.append(" where active = true and (expirationDate > current_date or expirationDate is null)");
+        }
 
         try (Session session = DBSessionFactory.getSession()) {
             LOGGER.info("Start loading Streams from database.");
-            Query query = session.createQuery("from Stream where active = true and (expirationDate > current_date or expirationDate is null)");
+            Query query = session.createQuery(queryString.toString());
             return query.getResultList();
         } catch (RuntimeException e) {
             LOGGER.error(e.getMessage(), e);

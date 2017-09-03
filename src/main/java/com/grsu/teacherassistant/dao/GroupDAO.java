@@ -32,9 +32,19 @@ public class GroupDAO {
     }
 
     public static List<Group> getAll() {
+        return getAll(false);
+    }
+
+    public static List<Group> getAll(boolean showClosed) {
+        StringBuilder queryString = new StringBuilder("from Group g ");
+
+        if (!showClosed) {
+            queryString.append(" where active = true and (expirationDate > current_date or expirationDate is null)");
+        }
+
         try (Session session = DBSessionFactory.getSession()) {
             LOGGER.info("Start loading Groups from database.");
-            Query query = session.createQuery("from Group g where active = true and (expirationDate > current_date or expirationDate is null)");
+            Query query = session.createQuery(queryString.toString());
             return query.getResultList();
         } catch (RuntimeException e) {
             LOGGER.error(e.getMessage(), e);

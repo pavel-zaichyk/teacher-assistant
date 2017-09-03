@@ -1,17 +1,18 @@
 package com.grsu.teacherassistant.entities;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.faces.bean.ManagedBean;
 import javax.persistence.*;
-import java.util.List;
 
 /**
  * @author Pavel Zaychick
  */
 @Entity
 @ManagedBean(name = "newInstanceOfDepartment")
-@Data
+@Getter
+@Setter
 public class Department implements AssistantEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

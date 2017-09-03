@@ -1,0 +1,11 @@
+BEGIN;
+
+DELETE FROM STUDENT_LESSON
+WHERE lesson_id IN (
+  SELECT DISTINCT lesson_id
+  FROM STUDENT_LESSON sl
+    LEFT JOIN LESSON l ON l.id = sl.lesson_id
+  WHERE l.id IS NULL
+);
+
+COMMIT;

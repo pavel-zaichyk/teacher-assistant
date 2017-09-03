@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
- * Created by pavel on 2/19/17.
+ * @author Pavel Zaychick
  */
 @ManagedBean
 @SessionScoped
