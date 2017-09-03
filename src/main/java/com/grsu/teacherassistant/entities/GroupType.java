@@ -1,13 +1,18 @@
 package com.grsu.teacherassistant.entities;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.List;
 
 /**
- * Created by zaychick-pavel on 2/9/17.
+ * @author Pavel Zaychick
  */
 @Entity
 @Table(name = "GROUP_TYPE")
+@Getter
+@Setter
 public class GroupType implements AssistantEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -18,33 +23,8 @@ public class GroupType implements AssistantEntity {
 	@Column(name = "name")
 	private String name;
 
-	@OneToMany(mappedBy = "type", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "type")
 	private List<Group> groups;
-
-	/* GETTERS & SETTERS */
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public List<Group> getGroups() {
-		return groups;
-	}
-
-	public void setGroups(List<Group> groups) {
-		this.groups = groups;
-	}
 
 	@Override
 	public boolean equals(Object o) {

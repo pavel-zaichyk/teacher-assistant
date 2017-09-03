@@ -9,7 +9,7 @@ import org.hibernate.cfg.Configuration;
 import static com.grsu.teacherassistant.utils.PropertyUtils.getProperty;
 
 /**
- * Created by pavel on 2/9/17.
+ * @author Pavel Zaychick
  */
 public class DBSessionFactory {
 	private static final String DATABASE_URL = "jdbc:" + getProperty("db.protocol") + ":" + FileUtils.DATABASE_PATH;

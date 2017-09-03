@@ -6,7 +6,7 @@ import java.lang.reflect.Field;
 import java.util.Comparator;
 
 /**
- * Created by pavel on 3/3/17.
+ * @author Pavel Zaychick
  */
 public class LazyStudentSorter implements Comparator<LessonStudentModel> {
     private String sortField;

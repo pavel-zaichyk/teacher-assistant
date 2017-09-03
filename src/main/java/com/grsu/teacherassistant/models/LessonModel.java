@@ -4,7 +4,7 @@ import com.grsu.teacherassistant.entities.Lesson;
 import com.grsu.teacherassistant.utils.DateUtils;
 
 /**
- * Created by pavel on 3/20/17.
+ * @author Pavel Zaychick
  */
 public class LessonModel {
 	private Integer id;

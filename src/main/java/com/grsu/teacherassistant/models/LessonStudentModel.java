@@ -7,7 +7,7 @@ import lombok.Data;
 import java.time.LocalTime;
 
 /**
- * Created by pavel on 3/4/17.
+ * @author Pavel Zaychick
  */
 @Data
 public class LessonStudentModel {

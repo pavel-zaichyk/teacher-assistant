@@ -12,7 +12,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 /**
- * Created by zaychick-pavel on 2/21/17.
+ * @author Pavel Zaychick
  */
 public class StudentService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StudentService.class);

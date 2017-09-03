@@ -11,11 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static com.grsu.teacherassistant.utils.FacesUtils.closeDialog;
@@ -26,9 +24,6 @@ import static com.grsu.teacherassistant.utils.FacesUtils.update;
 @Data
 public class GroupBean implements Serializable {
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupBean.class);
-
-    @ManagedProperty(value = "#{sessionBean}")
-    private SessionBean sessionBean;
 
     private Group group;
     private DualListModel<Student> students;
@@ -41,11 +36,9 @@ public class GroupBean implements Serializable {
             this.group.setStudents(new ArrayList<>());
             this.group.setActive(true);
         }
-        LOGGER.info("!!!!!!Start loading students");
         List<Student> source = StudentDAO.getAll();
         source.removeAll(this.group.getStudents());
         students = new DualListModel<>(source, this.group.getStudents());
-        LOGGER.info("!!!!!!End loading students");
 
         FacesUtils.showDialog("groupInfoDialog");
     }

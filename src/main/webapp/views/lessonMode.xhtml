@@ -111,7 +111,7 @@
                     <p:commandButton title="#{msg['menu.new.lesson']}"
                                      icon="fa fa-fw fa-plus"
                                      update=":lessonInfoForm"
-                                     actionListener="#{newLessonBean.createNewLesson}"
+                                     actionListener="#{lessonBean.initLesson(null)}"
                     >
                         <p:resetInput target=":lessonInfoForm:lessonDetail"/>
                     </p:commandButton>

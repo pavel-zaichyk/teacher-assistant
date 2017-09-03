@@ -1,8 +1,8 @@
 package com.grsu.teacherassistant.entities;
 
 /**
- * Created by pavel on 2/10/17.
+ * @author Pavel Zaychick
  */
 public interface Person {
-	String getCardUid();
+    String getCardUid();
 }

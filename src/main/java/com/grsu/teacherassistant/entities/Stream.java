@@ -3,13 +3,9 @@ package com.grsu.teacherassistant.entities;
 import com.grsu.teacherassistant.converters.db.LocalDateTimeAttributeConverter;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
-import javax.faces.bean.ManagedBean;
 import javax.persistence.*;
+import javax.persistence.Entity;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,124 +13,118 @@ import java.util.stream.Collectors;
 import static com.grsu.teacherassistant.constants.Constants.GROUPS_DELIMITER;
 
 /**
- * Created by zaychick-pavel on 2/9/17.
+ * @author Pavel Zaychick
  */
 @Entity
-@ManagedBean(name = "newInstanceOfStream")
 @Getter
 @Setter
 public class Stream implements AssistantEntity {
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
 
-	@Basic
-	@Column(name = "name")
-	private String name;
+    @Basic
+    @Column(name = "name")
+    private String name;
 
-	@Basic
-	@Column(name = "description")
-	private String description;
+    @Basic
+    @Column(name = "description")
+    private String description;
 
-	@Basic
-	@Convert(converter = LocalDateTimeAttributeConverter.class)
-	@Column(name = "create_date")
-	private LocalDateTime createDate;
+    @Basic
+    @Convert(converter = LocalDateTimeAttributeConverter.class)
+    @Column(name = "create_date")
+    private LocalDateTime createDate;
 
-	@Basic
-	@Column(name = "course")
-	private Integer course;
+    @Basic
+    @Column(name = "course")
+    private Integer course;
 
-	@Basic
-	@Column(name = "active")
-	private Boolean active;
+    @Basic
+    @Column(name = "active")
+    private boolean active;
 
-	@Basic
-	@Convert(converter = LocalDateTimeAttributeConverter.class)
-	@Column(name = "expiration_date")
-	private LocalDateTime expirationDate;
+    @Basic
+    @Convert(converter = LocalDateTimeAttributeConverter.class)
+    @Column(name = "expiration_date")
+    private LocalDateTime expirationDate;
 
-	@ManyToMany
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@JoinTable(name = "STREAM_GROUP",
-			joinColumns = @JoinColumn(name = "stream_id", referencedColumnName = "id"),
-			inverseJoinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"))
-	private List<Group> groups;
+    @ManyToMany
+    @JoinTable(name = "STREAM_GROUP",
+        joinColumns = @JoinColumn(name = "stream_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"))
+    private List<Group> groups;
 
-	@OneToMany(mappedBy = "stream", fetch = FetchType.EAGER)
-	private List<Lesson> lessons;
+    @OneToMany(mappedBy = "stream")
+    private List<Lesson> lessons;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "discipline_id", referencedColumnName = "id")
-	private Discipline discipline;
+    @ManyToOne
+    @JoinColumn(name = "discipline_id", referencedColumnName = "id")
+    private Discipline discipline;
 
-	@NotFound(action= NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "department_id", referencedColumnName = "id")
-	private Department department;
+    @ManyToOne
+    @JoinColumn(name = "department_id", referencedColumnName = "id")
+    private Department department;
 
-	public Stream() {
-	}
+    public Stream() {
+    }
 
-	public Stream(Stream stream) {
-		this.name = stream.name;
-		this.description = stream.description;
-		this.createDate = stream.createDate;
-		this.course = stream.course;
-		this.active = stream.active;
-		this.expirationDate = stream.expirationDate;
-		this.groups = stream.groups;
-		this.lessons = stream.lessons;
-		this.discipline = stream.discipline;
-		this.department = stream.department;
-	}
+    public Stream(Stream stream) {
+        this.name = stream.name;
+        this.description = stream.description;
+        this.createDate = stream.createDate;
+        this.course = stream.course;
+        this.active = stream.active;
+        this.expirationDate = stream.expirationDate;
+        this.groups = stream.groups;
+        this.lessons = stream.lessons;
+        this.discipline = stream.discipline;
+        this.department = stream.department;
+    }
 
-	public String getGroupNames() {
-		return groups.stream().map(Group::getName).collect(Collectors.joining(GROUPS_DELIMITER));
-	}
+    public String getGroupNames() {
+        return groups.stream().map(Group::getName).collect(Collectors.joining(GROUPS_DELIMITER));
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-		Stream stream = (Stream) o;
+        Stream stream = (Stream) o;
 
-		if (id != null ? !id.equals(stream.id) : stream.id != null) return false;
-		if (name != null ? !name.equals(stream.name) : stream.name != null) return false;
-		if (description != null ? !description.equals(stream.description) : stream.description != null) return false;
-		if (createDate != null ? !createDate.equals(stream.createDate) : stream.createDate != null) return false;
-		if (course != null ? !course.equals(stream.course) : stream.course != null) return false;
-		if (active != null ? !active.equals(stream.active) : stream.active != null) return false;
-		if (expirationDate != null ? !expirationDate.equals(stream.expirationDate) : stream.expirationDate != null)
-			return false;
+        if (active != stream.active) return false;
+        if (id != null ? !id.equals(stream.id) : stream.id != null) return false;
+        if (name != null ? !name.equals(stream.name) : stream.name != null) return false;
+        if (description != null ? !description.equals(stream.description) : stream.description != null) return false;
+        if (createDate != null ? !createDate.equals(stream.createDate) : stream.createDate != null) return false;
+        if (course != null ? !course.equals(stream.course) : stream.course != null) return false;
+        return expirationDate != null ? expirationDate.equals(stream.expirationDate) : stream.expirationDate == null;
+    }
 
-		return true;
-	}
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (createDate != null ? createDate.hashCode() : 0);
+        result = 31 * result + (course != null ? course.hashCode() : 0);
+        result = 31 * result + (active ? 1 : 0);
+        result = 31 * result + (expirationDate != null ? expirationDate.hashCode() : 0);
+        return result;
+    }
 
-	@Override
-	public int hashCode() {
-		int result = id != null ? id.hashCode() : 0;
-		result = 31 * result + (name != null ? name.hashCode() : 0);
-		result = 31 * result + (description != null ? description.hashCode() : 0);
-		result = 31 * result + (createDate != null ? createDate.hashCode() : 0);
-		result = 31 * result + (course != null ? course.hashCode() : 0);
-		result = 31 * result + (active != null ? active.hashCode() : 0);
-		result = 31 * result + (expirationDate != null ? expirationDate.hashCode() : 0);
-		return result;
-	}
-
-	@Override
-	public String toString() {
-		return "Stream{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", description='" + description + '\'' +
-				", createDate='" + createDate + '\'' +
-				", course=" + course +
-				", active=" + active +
-				", expirationDate='" + expirationDate + '\'' +
-				'}';
-	}
+    @Override
+    public String toString() {
+        return "Stream{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", description='" + description + '\'' +
+            ", createDate='" + createDate + '\'' +
+            ", course=" + course +
+            ", active=" + active +
+            ", expirationDate='" + expirationDate + '\'' +
+            '}';
+    }
 }

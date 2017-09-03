@@ -3,12 +3,10 @@ package com.grsu.teacherassistant.entities;
 import com.grsu.teacherassistant.converters.db.LocalDateTimeAttributeConverter;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,7 +29,7 @@ public class Group implements AssistantEntity {
 
     @Basic
     @Column(name = "active")
-    private Boolean active;
+    private boolean active;
 
     @Basic
     @Convert(converter = LocalDateTimeAttributeConverter.class)
@@ -39,34 +37,27 @@ public class Group implements AssistantEntity {
     private LocalDateTime expirationDate;
 
     @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "STREAM_GROUP",
         joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "stream_id", referencedColumnName = "id"))
     private List<Stream> streams;
 
     @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "STUDENT_GROUP",
         joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "student_id", referencedColumnName = "id"))
     private List<Student> students;
 
-    @NotFound(action = NotFoundAction.IGNORE)
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "department_id", referencedColumnName = "id")
     private Department department;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "type_id", referencedColumnName = "id")
     private GroupType type;
 
-    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "group")
     private List<Lesson> lessons;
-
-    public boolean isActive() {
-        return Boolean.TRUE.equals(active);
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -75,20 +66,17 @@ public class Group implements AssistantEntity {
 
         Group group = (Group) o;
 
+        if (active != group.active) return false;
         if (id != null ? !id.equals(group.id) : group.id != null) return false;
         if (name != null ? !name.equals(group.name) : group.name != null) return false;
-        if (active != null ? !active.equals(group.active) : group.active != null) return false;
-        if (expirationDate != null ? !expirationDate.equals(group.expirationDate) : group.expirationDate != null)
-            return false;
-
-        return true;
+        return expirationDate != null ? expirationDate.equals(group.expirationDate) : group.expirationDate == null;
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (active != null ? active.hashCode() : 0);
+        result = 31 * result + (active ? 1 : 0);
         result = 31 * result + (expirationDate != null ? expirationDate.hashCode() : 0);
         return result;
     }

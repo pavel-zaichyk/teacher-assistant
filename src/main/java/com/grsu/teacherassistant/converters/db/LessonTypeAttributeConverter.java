@@ -6,7 +6,7 @@ import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
 /**
- * Created by pavel on 3/26/17.
+ * @author Pavel Zaychick
  */
 @Converter(autoApply = true)
 public class LessonTypeAttributeConverter implements AttributeConverter<LessonType, Integer> {

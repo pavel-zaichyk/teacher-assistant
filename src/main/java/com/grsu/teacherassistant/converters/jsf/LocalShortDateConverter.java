@@ -1,7 +1,7 @@
 package com.grsu.teacherassistant.converters.jsf;
 
 /**
- * Created by zaychick-pavel on 2/7/17.
+ * @author Pavel Zaychick
  */
 
 import com.grsu.teacherassistant.utils.DateUtils;

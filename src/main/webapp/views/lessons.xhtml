@@ -16,7 +16,7 @@
             </p:calendar>
 
             <p:selectBooleanCheckbox id="showClosed" value="#{lessonsBean.showClosed}"/>
-            <p:outputLabel for="showClosed" value="#{msg['lesson.showClosed']}"/>
+            <p:outputLabel for="showClosed" value="#{msg['label.showClosed']}"/>
 
             <p:outputLabel for="stream" value="#{msg['lesson.stream']}"/>
             <p:selectOneMenu id="stream" value="#{lessonsBean.streamId}">
@@ -38,7 +38,8 @@
                      selectionMode="single"
                      sortBy="#{lesson.date}"
                      sortOrder="descending"
-                     filteredValue="#{lessonsBean.filteredLessons}">
+                     filteredValue="#{lessonsBean.filteredLessons}"
+                     emptyMessage="#{msg['label.emptyMessage']}">
             <p:ajax event="filter" update="@this"/>
             <!--<p:ajax event="rowSelect" listener="#{registrationModeBean.initLesson(lessonsBean.selectedLesson)}"-->
             <!--update="@([id$=wrapper])">-->
@@ -98,6 +99,11 @@
                         actionListener="#{registrationModeBean.initLesson(lessonsBean.selectedLesson)}">
                 <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
                 <f:setPropertyActionListener value="registrationMode" target="#{sessionBean.activeView}"/>
+            </p:menuitem>
+            <p:menuitem value="#{msg['option.edit']}"
+                        update=":lessonInfoForm"
+                        icon="ui-icon-arrowrefresh-1-w"
+                        actionListener="#{lessonBean.initLesson(lessonsBean.selectedLesson)}">
             </p:menuitem>
             <p:menuitem value="#{msg['option.remove']}"
                         update=":lessonsForm"

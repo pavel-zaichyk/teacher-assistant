@@ -5,24 +5,72 @@
                 xmlns:p="http://primefaces.org/ui"
 >
     <h:form id="streamsForm">
-        <p:dataTable var="stream" value="#{streamBean.streams}">
+        <p:panelGrid columns="3" styleClass="noBorder">
+            <p:selectBooleanCheckbox id="showClosed" value="#{streamsBean.showClosed}"/>
+            <p:outputLabel for="showClosed" value="#{msg['label.showClosed']}"/>
+
+            <p:commandButton value="#{msg['btn.search']}" icon="fa fa-fw fa-search"
+                             actionListener="#{streamsBean.search}"
+                             update=":streamsForm"/>
+        </p:panelGrid>
+
+        <p:dataTable id="streams"
+                     var="stream"
+                     value="#{streamsBean.streams}"
+                     selection="#{streamsBean.selectedStream}"
+                     rowKey="#{stream.id}"
+                     selectionMode="single"
+                     sortBy="#{stream.name}"
+                     filteredValue="#{streamsBean.filteredStreams}"
+                     emptyMessage="#{msg['label.emptyMessage']}"
+        >
+
+            <p:ajax event="filter" update="@this"/>
+
             <f:facet name="header">
                 #{msg['streams']}
             </f:facet>
-            <p:column headerText="#{msg['stream.name']}">
+
+            <p:column headerText="#{msg['stream.name']}"
+                      sortBy="#{stream.name}"
+                      filterBy="#{stream.name}"
+                      filterMatchMode="contains"
+            >
                 <h:outputText value="#{stream.name}"/>
             </p:column>
-            <p:column headerText="#{msg['stream.groups']}">
+
+            <p:column headerText="#{msg['stream.groups']}"
+                      sortBy="#{stream.groupNames}"
+                      filterBy="#{stream.groupNames}"
+                      filterMatchMode="contains"
+            >
                 <h:outputText value="#{stream.groupNames}" escape="false"/>
             </p:column>
-            <p:column styleClass="options">
-                <p:commandButton update=":streamInfoForm" oncomplete="PF('streamDialog').show()"
-                                 icon="fa fa-fw fa-search" title="View">
-                    <f:setPropertyActionListener value="#{stream}" target="#{streamBean.selectedStream}"/>
-                    <p:resetInput target=":streamInfoForm:streamDetail"/>
-                </p:commandButton>
-            </p:column>
+
         </p:dataTable>
+
+        <p:contextMenu for="streams">
+            <p:menuitem value="#{msg['option.view']}"
+                        update=":streamInfoForm"
+                        icon="ui-icon-search"
+                        actionListener="#{streamBean.initStream(streamsBean.selectedStream)}">
+                <p:resetInput target=":streamInfoForm:streamDetail"/>
+            </p:menuitem>
+            <p:menuitem value="#{msg['option.remove']}"
+                        update=":streamsForm"
+                        icon="ui-icon-close"
+                        styleClass="red"
+                        actionListener="#{streamsBean.removeStream(streamsBean.selectedStream)}">
+                <p:confirm header="#{msg['warning']}" message="#{msg['warning.sure.delete']}" icon="ui-icon-alert"/>
+            </p:menuitem>
+        </p:contextMenu>
+
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+            <p:commandButton value="#{msg['label.yes']}" type="button" styleClass="ui-confirmdialog-yes"
+                             icon="ui-icon-check"/>
+            <p:commandButton value="#{msg['label.no']}" type="button" styleClass="ui-confirmdialog-no"
+                             icon="ui-icon-close"/>
+        </p:confirmDialog>
 
     </h:form>
 </ui:composition>

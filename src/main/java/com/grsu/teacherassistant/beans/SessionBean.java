@@ -98,7 +98,7 @@ public class SessionBean implements Serializable {
     }
 
     public void loadStudentsPhoto() {
-        PhotoStudentUtils.storeStudentsPhoto(students);
+        PhotoStudentUtils.storeStudentsPhoto(getStudents());
     }
 
     /* GETTERS AND SETTERS*/

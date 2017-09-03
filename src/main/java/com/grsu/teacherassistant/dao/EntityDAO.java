@@ -1,7 +1,9 @@
 package com.grsu.teacherassistant.dao;
 
 import com.grsu.teacherassistant.entities.AssistantEntity;
+import com.grsu.teacherassistant.entities.Student;
 import com.grsu.teacherassistant.utils.db.DBSessionFactory;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.slf4j.Logger;
@@ -10,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
- * Created by zaychick-pavel on 2/10/17.
+ * @author Pavel Zaychick
  */
 public class EntityDAO {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EntityDAO.class);
@@ -188,4 +190,26 @@ public class EntityDAO {
 		}
 		return null;
 	}
+
+	public static Student initialize() {
+        Transaction transaction = null;
+        Session session = DBSessionFactory.getSession();
+        Student student = null;
+
+        try {
+            transaction = session.beginTransaction();
+
+            student = session.get(Student.class, 1);
+            Hibernate.initialize(student.getGroups());
+            transaction.commit();
+        } catch (RuntimeException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            LOGGER.error(e.getMessage(), e);
+        } finally {
+            session.close();
+        }
+        return student;
+    }
 }

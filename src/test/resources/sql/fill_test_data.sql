@@ -27,7 +27,7 @@ INSERT INTO DISCIPLINE (name, description) VALUES ('Курс 1', 'Описани
 INSERT INTO DISCIPLINE (name, description) VALUES ('Курс 2', 'ОписаниеКурс2');
 
 INSERT INTO STREAM (name, description, discipline_id, department_id, course, active) VALUES ('Поток 1', 'ОписаниеПоток1', 1, 1, 1, 1);
-INSERT INTO STREAM (name, description, discipline_id, department_id, course) VALUES ('Поток 2', 'ОписаниеПоток2', 1, 1, 1);
+INSERT INTO STREAM (name, description, discipline_id, department_id, course, active) VALUES ('Поток 2', 'ОписаниеПоток2', 1, 1, 1, 0);
 INSERT INTO STREAM (name, description, discipline_id, department_id, course, active) VALUES ('Поток 3', 'ОписаниеПоток3', 1, 1, 1, 1);
 INSERT INTO STREAM (name, description, discipline_id, department_id, course, expiration_date, active) VALUES ('Поток 4', 'ОписаниеПоток4', 1, 1, 1, '2017-01-10T00:00:00', 1);
 

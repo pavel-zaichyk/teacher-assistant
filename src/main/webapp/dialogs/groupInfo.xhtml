@@ -71,6 +71,7 @@
                     <p:commandButton value="#{msg['btn.save.exit']}" icon="fa fa-fw fa-save"
                                      actionListener="#{groupBean.save}"
                                      update=":groupInfoForm:groupInfoDetail">
+                        <f:setPropertyActionListener value="#{null}" target="#{groupsBean.groups}"/>
                         <f:setPropertyActionListener value="#{null}" target="#{sessionBean.groups}"/>
                     </p:commandButton>
                 </p:outputPanel>

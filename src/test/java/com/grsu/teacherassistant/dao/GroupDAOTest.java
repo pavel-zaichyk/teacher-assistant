@@ -18,4 +18,12 @@ public class GroupDAOTest extends TestConfiguration {
         assert g != null;
         Assert.assertEquals(3, g.size());
     }
+
+    @Test
+    public void getAllShowClosedTest() {
+        List<Group> g = GroupDAO.getAll(true);
+
+        assert g != null;
+        Assert.assertEquals(5, g.size());
+    }
 }
