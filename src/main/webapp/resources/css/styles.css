@@ -308,6 +308,10 @@ body {
 	background: none repeat scroll 0 0 #dddddd;
 }
 
+.lesson-tables a {
+	text-decoration: none;
+}
+
 /*
 	Image
  */

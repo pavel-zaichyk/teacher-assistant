@@ -28,6 +28,9 @@
                                        value="#{registrationModeBean.processedStudent.groupNames}"/>
                         <p:outputLabel styleClass="lowercase" escape="false"
                                        value="#{registrationModeBean.getStudentSkip(registrationModeBean.processedStudent)}"/>
+                        <p:outputLabel value="#{msg['label.reRegistration']}"
+                                       styleClass="font-size-12pt blue margin-top-20px"
+                                       rendered="#{registrationModeBean.reRegistration}" />
                     </p:panel>
                 </p:panelGrid>
             </p:panel>

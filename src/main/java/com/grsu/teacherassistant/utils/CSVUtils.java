@@ -161,6 +161,7 @@ public class CSVUtils {
 			group = new Group();
 			group.setName(groupName);
 			group.setStudents(students);
+			group.setActive(true);
 			Department department = new Department();
 			department.setName(departmentName);
 			group.setDepartment(department);
