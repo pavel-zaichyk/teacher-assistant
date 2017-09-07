@@ -30,7 +30,7 @@
                                        value="#{registrationModeBean.getStudentSkip(registrationModeBean.processedStudent)}"/>
                         <p:outputLabel value="#{msg['label.reRegistration']}"
                                        styleClass="font-size-12pt blue margin-top-20px"
-                                       rendered="#{registrationModeBean.reRegistration}" />
+                                       rendered="#{registrationModeBean.reRegistration}"/>
                     </p:panel>
                 </p:panelGrid>
             </p:panel>
@@ -213,6 +213,10 @@
                                    update="@([id$=wrapper])"
                                    actionListener="#{studentModeBean.initStudentMode(pStudent.student, registrationModeBean.selectedLesson.stream)}">
                         <f:setPropertyActionListener value="studentMode" target="#{sessionBean.activeView}"/>
+                        <f:setPropertyActionListener value="#{registrationModeBean.selectedLesson}"
+                                                     target="#{lessonModeBean.lesson}"/>
+                        <f:setPropertyActionListener value="#{registrationModeBean.selectedLesson.stream}"
+                                                     target="#{lessonModeBean.stream}"/>
                     </p:commandLink>
                 </p:column>
 
@@ -285,6 +289,10 @@
                     <p:commandLink value="#{aStudent.name}" update="@([id$=wrapper])"
                                    actionListener="#{studentModeBean.initStudentMode(aStudent.student, registrationModeBean.selectedLesson.stream)}">
                         <f:setPropertyActionListener value="studentMode" target="#{sessionBean.activeView}"/>
+                        <f:setPropertyActionListener value="#{registrationModeBean.selectedLesson}"
+                                                     target="#{lessonModeBean.lesson}"/>
+                        <f:setPropertyActionListener value="#{registrationModeBean.selectedLesson.stream}"
+                                                     target="#{lessonModeBean.stream}"/>
                     </p:commandLink>
                 </p:column>
 

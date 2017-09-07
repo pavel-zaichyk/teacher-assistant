@@ -304,7 +304,7 @@ body {
 	display: inline;
 }
 
-.lesson-tables .ui-datatable-odd {
+.lesson-tables .ui-datatable-odd:not(.ui-state-hover) {
 	background: none repeat scroll 0 0 #dddddd;
 }
 
