@@ -16,6 +16,7 @@ INSERT INTO STUDENT (card_uid, card_id, first_name, last_name, patronymic, email
 INSERT INTO STUDENT (card_uid, card_id, first_name, last_name, patronymic, email) VALUES ('uidStudent6', '66', 'ИмяСтудент6', 'ФамилияСтудент6', 'ОтчествоСтудент6', 'student6@test.com');
 
 INSERT INTO STUDENT_GROUP (student_id, group_id) VALUES (1, 1);
+INSERT INTO STUDENT_GROUP (student_id, group_id) VALUES (1, 3);
 INSERT INTO STUDENT_GROUP (student_id, group_id) VALUES (2, 1);
 INSERT INTO STUDENT_GROUP (student_id, group_id) VALUES (3, 2);
 INSERT INTO STUDENT_GROUP (student_id, group_id) VALUES (4, 2);

@@ -21,9 +21,9 @@ public class StudentDAO {
         try (Session session = DBSessionFactory.getSession()) {
             LOGGER.info("Start loading Students from database.");
             Query query = session.createQuery("" +
-                "select s " +
+                "select distinct s " +
                 "from Student s " +
-                "   left join s.groups g " +
+                "   left join fetch s.groups g " +
                 "where (g.active = true and (g.expirationDate > current_date or g.expirationDate is null)) or size (s.groups) = 0 " +
                 "order by s.lastName, s.firstName");
             return query.getResultList();
