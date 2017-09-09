@@ -50,6 +50,10 @@ public class FacesUtils {
 		execute("PF('" + id + "').hide();");
 	}
 
+    public static void showDialog(String id) {
+        execute("PF('" + id + "').show();");
+    }
+
 	/**
 	 * Warning: THEY DON'T LIKE NULLS!
 	 * Resource (push endpoint) may not work with nulls

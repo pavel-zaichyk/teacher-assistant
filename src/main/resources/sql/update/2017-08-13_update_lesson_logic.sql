@@ -1,0 +1,6 @@
+BEGIN;
+
+UPDATE STREAM SET active = 1;
+UPDATE "GROUP" SET active = 1;
+
+COMMIT;

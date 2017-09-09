@@ -6,7 +6,7 @@ import org.primefaces.model.SortOrder;
 import java.util.*;
 
 /**
- * Created by pavel on 3/3/17.
+ * @author Pavel Zaychick
  */
 public class LazyStudentDataModel extends LazyDataModel<LessonStudentModel> {
 

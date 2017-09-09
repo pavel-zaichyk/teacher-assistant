@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 /**
- * Created by pavel on 2/9/17.
+ * @author Pavel Zaychick
  */
 @Converter(autoApply = true)
 public class LocalTimeAttributeConverter implements AttributeConverter<LocalTime, String> {

@@ -32,7 +32,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Created by zaychick-pavel on 3/3/17.
+ * @author Pavel Zaychick
  */
 @ManagedBean(name = "lessonModeBean")
 @ViewScoped
