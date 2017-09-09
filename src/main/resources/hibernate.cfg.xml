@@ -6,6 +6,7 @@
 	<session-factory>
 		<property name="dialect">com.grsu.teacherassistant.utils.db.SQLiteDialect</property>
 		<property name="connection.driver_class">org.sqlite.JDBC</property>
+		<property name="hibernate.enable_lazy_load_no_trans">true</property>
 		<mapping class="com.grsu.teacherassistant.entities.Department"/>
 		<mapping class="com.grsu.teacherassistant.entities.Discipline"/>
 		<mapping class="com.grsu.teacherassistant.entities.Group"/>

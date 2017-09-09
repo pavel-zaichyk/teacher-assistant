@@ -5,39 +5,75 @@
                 xmlns:p="http://primefaces.org/ui"
 >
     <h:form id="groupInfoForm">
-        <p:dialog header="#{msg['group.info']}" widgetVar="groupInfoDialog" position="center" draggable="false"
-                  modal="true" showEffect="fade" hideEffect="fade" resizable="false" fitViewport="true"
+        <p:dialog header="#{msg['group.info']}"
+                  widgetVar="groupInfoDialog"
+                  position="center"
+                  draggable="false"
+                  modal="true"
+                  showEffect="fade"
+                  hideEffect="fade"
+                  resizable="false"
+                  fitViewport="true"
                   onHide="PF('groupInfoDialog').content.empty()">
 
-            <p:ajax event="close" listener="#{groupBean.exitInfo}"/>
+            <p:ajax event="close" listener="#{groupBean.exit}"/>
 
-            <p:outputPanel id="groupInfoDetail">
-                <p:commandButton value="#{msg['btn.delete']}" icon="fa fa-fw fa-remove"
-                                 rendered="#{groupBean.selectedGroup != null
-                                             and groupBean.selectedGroup.id != 0}"
-                                 actionListener="#{groupBean.deleteGroup}"/>
+            <p:outputPanel id="groupInfoDetail" rendered="#{groupBean.group ne null}">
+                <p:panelGrid columns="2" columnClasses="label,value" styleClass="noBorder">
 
-                <p:panelGrid columns="2" rendered="#{not empty groupBean.selectedGroup}"
-                             columnClasses="label,value">
-
-					<p:outputLabel for="department" value="#{msg['group.info.department']}"/>
-					<p:selectOneMenu id="department" value="#{groupBean.selectedGroup.department}" converter="entityConverter">
-						<f:selectItem itemValue="#{null}" itemLabel="#{msg['select.department']}"/>
-						<f:selectItems value="#{sessionBean.departments}" var="department"
-									   itemLabel="#{department.name}" itemValue="#{department}"/>
-						<p:ajax update=":groupInfoForm:groupInfoDetail"/>
-					</p:selectOneMenu>
+                    <p:outputLabel for="department" value="#{msg['group.info.department']}"/>
+                    <p:selectOneMenu id="department"
+                                     value="#{groupBean.group.department}"
+                                     converter="entityConverter">
+                        <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.department']}"/>
+                        <f:selectItems value="#{sessionBean.departments}" var="department"
+                                       itemLabel="#{department.name}" itemValue="#{department}"/>
+                        <p:ajax update=":groupInfoForm:groupInfoDetail"/>
+                    </p:selectOneMenu>
 
                     <p:outputLabel for="name" value="#{msg['group.name']}:"/>
-                    <p:inputText id="name" value="#{groupBean.selectedGroup.name}" required="true">
+                    <p:inputText id="name" value="#{groupBean.group.name}" required="true">
                         <p:ajax update=":groupInfoForm:groupInfoDetail"/>
                     </p:inputText>
+
+                    <p:outputLabel for="active" value="#{msg['group.active']}"/>
+                    <p:selectBooleanCheckbox id="active" value="#{groupBean.group.active}"/>
+
+                    <p:outputLabel for="expirationDate" value="#{msg['label.expirationDate']}"/>
+                    <p:calendar id="expirationDate" value="#{groupBean.group.expirationDate}"
+                                converter="localDateConverter" pattern="dd.MM.yyyy">
+                    </p:calendar>
                 </p:panelGrid>
 
-                <p:outputPanel rendered="#{groupBean.infoChanged}">
+                <p:outputLabel for="students" value="#{msg['students']}"/>
+                <p:pickList id="students"
+                            value="#{groupBean.students}"
+                            var="student"
+                            itemValue="#{student}"
+                            itemLabel="#{student.fullName.concat(' ').concat(student.groupNames)}"
+                            responsive="true"
+                            showCheckbox="true"
+                            showSourceFilter="true"
+                            showTargetFilter="true"
+                            filterMatchMode="contains"
+                            converter="entityConverter"
+                            style="width: 100%">
+                    <p:column style="width:60%">
+                        <h:outputText value="#{student.fullName}"/>
+                    </p:column>
+                    <p:column style="width:40%">
+                        <h:outputText value="#{student.groupNames}" escape="false"/>
+                    </p:column>
+                </p:pickList>
+
+
+                <p:outputPanel>
                     <p:commandButton value="#{msg['btn.save.exit']}" icon="fa fa-fw fa-save"
-                                     actionListener="#{groupBean.saveAndExit}"
-                                     update=":groupInfoForm:groupInfoDetail"/>
+                                     actionListener="#{groupBean.save}"
+                                     update=":groupInfoForm:groupInfoDetail">
+                        <f:setPropertyActionListener value="#{null}" target="#{groupsBean.groups}"/>
+                        <f:setPropertyActionListener value="#{null}" target="#{sessionBean.groups}"/>
+                    </p:commandButton>
                 </p:outputPanel>
             </p:outputPanel>
         </p:dialog>

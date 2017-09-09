@@ -304,8 +304,12 @@ body {
 	display: inline;
 }
 
-.lesson-tables .ui-datatable-odd {
+.lesson-tables .ui-datatable-odd:not(.ui-state-hover) {
 	background: none repeat scroll 0 0 #dddddd;
+}
+
+.lesson-tables a {
+	text-decoration: none;
 }
 
 /*
@@ -701,4 +705,9 @@ body {
 	height: 70px;
 	padding: 0;
 	text-align: center;
+}
+
+/* picklist */
+#wrapper .ui-picklist.ui-picklist-responsive .ui-picklist-list-wrapper {
+	width: 450px;
 }

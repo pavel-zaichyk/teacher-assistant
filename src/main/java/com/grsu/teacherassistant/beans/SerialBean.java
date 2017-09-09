@@ -11,7 +11,7 @@ import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 
 /**
- * Created by pavel on 5/29/17.
+ * @author Pavel Zaychick
  */
 @ManagedBean(name = "serialBean")
 @ViewScoped

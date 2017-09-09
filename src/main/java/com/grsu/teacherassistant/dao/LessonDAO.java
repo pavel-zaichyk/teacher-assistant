@@ -8,29 +8,89 @@ import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by pavel on 3/26/17.
+ * Provides a mechanism for working with Lessons. This class contains methods for getting Lessons from database.
+ *
+ * @author Pavel Zaychick
  */
 public class LessonDAO {
-	private static final Logger LOGGER = LoggerFactory.getLogger(LessonDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LessonDAO.class);
 
-	public List<Lesson> getAll() {
-		Session session = DBSessionFactory.getSession();
+    private LessonDAO() {
+    }
 
-		try {
-			LOGGER.info("Start loading Lessons from database.");
-			Query query = session.createQuery("from Lesson where type in (:types)");
-			query.setParameterList("types", Arrays.asList(LessonType.LECTURE, LessonType.PRACTICAL, LessonType.LAB, LessonType.EXAM));
-			return query.getResultList();
-		} catch (RuntimeException e) {
-			LOGGER.error(e.getMessage(), e);
-		} finally {
-			LOGGER.info("End loading Lessons from database.");
-			session.close();
-		}
-		return null;
-	}
+    /**
+     * Return list of lessons from database only next types: Lecture, Practical, Lab and Exam.
+     *
+     * @return list of lessons
+     * @author Pavel Zaychick
+     * @see Lesson
+     * @see LessonType
+     */
+    public static List<Lesson> getAll() {
+        Session session = DBSessionFactory.getSession();
+
+        try {
+            LOGGER.info("Start loading Lessons from database.");
+            Query query = session.createQuery("from Lesson l where l.type in (:types) and l.stream.active = true and (l.stream.expirationDate > current_date or l.stream.expirationDate is null)");
+            query.setParameterList("types", Arrays.asList(LessonType.LECTURE, LessonType.PRACTICAL, LessonType.LAB, LessonType.EXAM));
+            return query.getResultList();
+        } catch (RuntimeException e) {
+            LOGGER.error(e.getMessage(), e);
+        } finally {
+            LOGGER.info("End loading Lessons from database.");
+            session.close();
+        }
+        return null;
+    }
+
+    /**
+     * Return list of lessons which {@link Lesson#date} from <b>dateFrom</b> to <b>dateTo</b>.
+     *
+     * @param dateFrom start of search interval
+     * @param dateTo   end of search interval
+     * @return list of lessons from dateFrom to dateTo
+     * @author Pavel Zaychick
+     * @see Lesson
+     */
+    public static List<Lesson> getAll(LocalDateTime dateFrom, LocalDateTime dateTo, boolean showClosed, Integer streamId) {
+        StringBuilder queryString = new StringBuilder("from Lesson as l where l.type in (:types)");
+
+        if (dateFrom != null && dateTo != null) {
+            queryString.append(" and l.date between :dateFrom and :dateTo");
+        }
+
+        if (!showClosed) {
+            queryString.append(" and l.stream.active = true and (l.stream.expirationDate > current_date or l.stream.expirationDate is null)");
+        }
+
+        if (streamId != null) {
+            queryString.append(" and l.stream.id = :streamId");
+        }
+
+        try (Session session = DBSessionFactory.getSession()) {
+            LOGGER.info("Start loading Lessons from database.");
+            Query query = session.createQuery(queryString.toString());
+            query.setParameterList("types", Arrays.asList(LessonType.LECTURE, LessonType.PRACTICAL, LessonType.LAB, LessonType.EXAM));
+            if (dateFrom != null && dateTo != null) {
+                dateFrom = dateFrom.minusSeconds(1);//TODO: fix bug with from date when date equals from date
+                query.setParameter("dateFrom", dateFrom);
+                query.setParameter("dateTo", dateTo);
+            }
+            if (streamId != null) {
+                query.setParameter("streamId", streamId);
+            }
+            return query.getResultList();
+        } catch (RuntimeException e) {
+            LOGGER.error(e.getMessage(), e);
+        } finally {
+            LOGGER.info("End loading Lessons from database.");
+
+        }
+        return null;
+    }
 }

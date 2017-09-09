@@ -1,6 +1,9 @@
 package com.grsu.teacherassistant.beans;
 
 import com.grsu.teacherassistant.dao.EntityDAO;
+import com.grsu.teacherassistant.dao.GroupDAO;
+import com.grsu.teacherassistant.dao.StreamDAO;
+import com.grsu.teacherassistant.dao.StudentDAO;
 import com.grsu.teacherassistant.entities.Department;
 import com.grsu.teacherassistant.entities.Discipline;
 import com.grsu.teacherassistant.entities.Group;
@@ -26,159 +29,159 @@ import java.util.stream.Collectors;
 @SessionScoped
 public class SessionBean implements Serializable {
 
-	private boolean connected;
-	private String activeView = "lessons";
+    private boolean connected;
+    private String activeView = "lessons";
 
-	private List<Schedule> schedules;
-	private List<Discipline> disciplines;
-	private List<Department> departments;
-	private List<Stream> streams;
-	private List<Group> groups;
-	private List<Student> students;
+    private List<Schedule> schedules;
+    private List<Discipline> disciplines;
+    private List<Department> departments;
+    private List<Stream> streams;
+    private List<Group> groups;
+    private List<Student> students;
 
-	@Getter @Setter
-	private Lesson lesson;
+    @Getter
+    @Setter
+    private Lesson lesson;
 
-	@PostConstruct
-	public void connect() {
-		setConnected(true);
-		initData();
-	}
+    @PostConstruct
+    public void connect() {
+        setConnected(true);
+        initData();
+    }
 
-	@PreDestroy
-	public void disconnect() {
-		SerialUtils.disconnect();
-		setConnected(false);
-	}
+    @PreDestroy
+    public void disconnect() {
+        SerialUtils.disconnect();
+        setConnected(false);
+    }
 
-	public void initData() {
-		updateGroupsFromCSV();
-		updateEntities();
-	}
+    public void initData() {
+        updateGroupsFromCSV();
+        updateEntities();
+    }
 
-	public List<Group> updateGroupsFromCSV() {
-		return CSVUtils.updateGroupsFromCSV();
-	}
+    public List<Group> updateGroupsFromCSV() {
+        return CSVUtils.updateGroupsFromCSV();
+    }
 
-	public void updateEntities() {
-		updateSchedules();
-		updateDisciplines();
-		updateDepartments();
-		updateStreams();
-		updateGroups();
-		updateStudents();
-	}
+    public void updateEntities() {
+        updateSchedules();
+        updateDisciplines();
+        updateDepartments();
+        updateStreams();
+        updateGroups();
+        updateStudents();
+    }
 
-	public void updateSchedules() {
-		schedules = null;
-	}
+    public void updateSchedules() {
+        schedules = null;
+    }
 
-	public void updateDisciplines() {
-		disciplines = null;
-	}
+    public void updateDisciplines() {
+        disciplines = null;
+    }
 
-	public void updateDepartments() {
-		departments = null;
-	}
+    public void updateDepartments() {
+        departments = null;
+    }
 
-	public void updateStreams() {
-		streams = null;
-	}
+    public void updateStreams() {
+        streams = null;
+    }
 
-	public void updateGroups() {
-		groups = null;
-	}
+    public void updateGroups() {
+        groups = null;
+    }
 
-	public void updateStudents() {
-		students = null;
-	}
+    public void updateStudents() {
+        students = null;
+    }
 
-	public void loadStudentsPhoto() {
-		PhotoStudentUtils.storeStudentsPhoto(students);
-	}
+    public void loadStudentsPhoto() {
+        PhotoStudentUtils.storeStudentsPhoto(getStudents());
+    }
 
-	/* GETTERS AND SETTERS*/
-	public boolean isConnected() {
-		return connected;
-	}
+    /* GETTERS AND SETTERS*/
+    public boolean isConnected() {
+        return connected;
+    }
 
-	public void setConnected(boolean connected) {
-		this.connected = connected;
-	}
+    public void setConnected(boolean connected) {
+        this.connected = connected;
+    }
 
-	public String getActiveView() {
-		return activeView;
-	}
+    public String getActiveView() {
+        return activeView;
+    }
 
-	public void setActiveView(String activeView) {
-		this.activeView = activeView;
-	}
+    public void setActiveView(String activeView) {
+        this.activeView = activeView;
+    }
 
-	public List<Schedule> getSchedules() {
-		if (schedules == null) {
-			schedules = EntityDAO.getAll(Schedule.class);
-		}
-		return schedules;
-	}
+    public List<Schedule> getSchedules() {
+        if (schedules == null) {
+            schedules = EntityDAO.getAll(Schedule.class);
+        }
+        return schedules;
+    }
 
-	public void setSchedules(List<Schedule> schedules) {
-		this.schedules = schedules;
-	}
+    public void setSchedules(List<Schedule> schedules) {
+        this.schedules = schedules;
+    }
 
-	public List<Discipline> getDisciplines() {
-		if (disciplines == null) {
-			disciplines = EntityDAO.getAll(Discipline.class);
-		}
-		return disciplines;
-	}
+    public List<Discipline> getDisciplines() {
+        if (disciplines == null) {
+            disciplines = EntityDAO.getAll(Discipline.class);
+        }
+        return disciplines;
+    }
 
-	public void setDisciplines(List<Discipline> disciplines) {
-		this.disciplines = disciplines;
-	}
+    public void setDisciplines(List<Discipline> disciplines) {
+        this.disciplines = disciplines;
+    }
 
-	public List<Department> getDepartments() {
-		if (departments == null) {
-			departments = EntityDAO.getAll(Department.class);
-		}
-		return departments;
-	}
+    public List<Department> getDepartments() {
+        if (departments == null) {
+            departments = EntityDAO.getAll(Department.class);
+        }
+        return departments;
+    }
 
-	public void setDepartments(List<Department> departments) {
-		this.departments = departments;
-	}
+    public void setDepartments(List<Department> departments) {
+        this.departments = departments;
+    }
 
-	public List<Stream> getStreams() {
-		if (streams == null) {
-			streams = EntityDAO.getAll(Stream.class);
-		}
-		return streams;
-	}
+    public List<Stream> getStreams() {
+        if (streams == null) {
+            streams = StreamDAO.getAll();
+        }
+        return streams;
+    }
 
-	public void setStreams(List<Stream> streams) {
-		this.streams = streams;
-	}
+    public void setStreams(List<Stream> streams) {
+        this.streams = streams;
+    }
 
-	public List<Group> getGroups() {
-		if (groups == null) {
-			groups = EntityDAO.getAll(Group.class);
-		}
-		return groups;
-	}
+    public List<Group> getGroups() {
+        if (groups == null) {
+            groups = GroupDAO.getAll();
+        }
+        return groups;
+    }
 
-	public void setGroups(List<Group> groups) {
-		this.groups = groups;
-	}
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
+    }
 
-	public List<Student> getStudents() {
-		if (students == null) {
-			students = EntityDAO.getAll(Student.class);
-			students = students != null ? students.stream().sorted((s1, s2) -> s1.getFullName().compareToIgnoreCase(s2.getFullName())).collect(Collectors.toList()) : null;
-		}
-		return students;
-	}
+    public List<Student> getStudents() {
+        if (students == null) {
+            students = StudentDAO.getAll();
+        }
+        return students;
+    }
 
-	public void setStudents(List<Student> students) {
-		this.students = students;
-	}
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
 
 }

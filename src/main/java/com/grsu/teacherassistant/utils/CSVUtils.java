@@ -57,7 +57,7 @@ public class CSVUtils {
 			}
 
 			List<Student> students = new ArrayList<>(group.getStudents());
-			Group groupFromDB = new GroupDAO().getByName(group.getName());
+			Group groupFromDB = GroupDAO.getByName(group.getName());
 			if (groupFromDB != null) {
 				LOGGER.info("Group [ " + group.getName() + " ] already exists. Updating...");
 				group = groupFromDB;
@@ -161,6 +161,7 @@ public class CSVUtils {
 			group = new Group();
 			group.setName(groupName);
 			group.setStudents(students);
+			group.setActive(true);
 			Department department = new Department();
 			department.setName(departmentName);
 			group.setDepartment(department);
