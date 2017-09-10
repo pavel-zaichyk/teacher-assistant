@@ -5,6 +5,7 @@ import com.grsu.teacherassistant.beans.SerialListenerBean;
 import com.grsu.teacherassistant.beans.SessionBean;
 import com.grsu.teacherassistant.constants.Constants;
 import com.grsu.teacherassistant.dao.EntityDAO;
+import com.grsu.teacherassistant.dao.LessonDAO;
 import com.grsu.teacherassistant.dao.StudentDAO;
 import com.grsu.teacherassistant.entities.*;
 import com.grsu.teacherassistant.models.LazyStudentDataModel;
@@ -27,13 +28,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.grsu.teacherassistant.utils.FacesUtils.closeDialog;
@@ -87,6 +82,8 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
     private List<Note> notes;
 
     private boolean reRegistration;
+    private boolean fastRegistration;
+    private Lesson lastLesson;
 
     public void initLesson(Lesson lesson) {
         serialBean.setCurrentListener(this);
@@ -111,7 +108,43 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
                 absentStudentsLazyModel = new LazyStudentDataModel(lessonAbsentStudents);
                 presentStudentsLazyModel = new LazyStudentDataModel(lessonPresentStudents);
             }
+
+            initLastLesson();
         }
+    }
+
+    private void initLastLesson() {
+        fastRegistration = false;
+        if (lessonPresentStudents.size() == 0) {
+            lastLesson = null;
+            List<Lesson> lessons = LessonDAO.getAll(selectedLesson.getDate(), selectedLesson.getDate(), false, selectedLesson.getStream().getId());
+            for (Lesson lesson : lessons) {
+                if (selectedLesson.getSchedule().getBegin().isAfter(lesson.getSchedule().getBegin())) {
+                    lastLesson = lesson;
+                    break;
+                }
+            }
+
+            if (lastLesson != null) {
+                fastRegistration = true;
+            }
+        }
+    }
+
+    public void fastRegistration() {
+        selectedLesson.getStudentLessons().values().forEach(sl -> {
+            if (!sl.isRegistered()) {
+                StudentLesson studentLesson = lastLesson.getStudentLessons().get(sl.getStudentId());
+                if (studentLesson != null && studentLesson.isRegistered()) {
+                    sl.setRegistered(studentLesson.isRegistered());
+                    sl.setRegistrationTime(LocalTime.now());
+                    sl.setRegistrationType("MANUAL");
+                }
+            }
+        });
+        EntityDAO.update(new ArrayList<>(selectedLesson.getStudentLessons().values()));
+        fastRegistration = false;
+        initLesson(selectedLesson);
     }
 
     public void returnToLessons() {
