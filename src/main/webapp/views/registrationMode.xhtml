@@ -154,6 +154,13 @@
                             <p:outputLabel value="#{registrationModeBean.selectedLesson.date}"
                                            converter="localDateConverter"/>
                             <p:outputLabel value="#{registrationModeBean.selectedLesson.schedule.caption}"/>
+                            <p:commandButton title="#{msg['btn.fastRegistration']}"
+                                             value="#{msg['btn.fastRegistration']}"
+                                             actionListener="#{registrationModeBean.fastRegistration}"
+                                             update="@([id$=views])"
+                                             styleClass="margin-top-10px font-size-14pt"
+                                             rendered="${registrationModeBean.fastRegistration}">
+                            </p:commandButton>
                         </p:panel>
                     </p:panelGrid>
                 </p:panelGrid>

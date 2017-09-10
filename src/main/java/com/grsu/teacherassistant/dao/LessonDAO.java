@@ -58,7 +58,9 @@ public class LessonDAO {
      * @see Lesson
      */
     public static List<Lesson> getAll(LocalDateTime dateFrom, LocalDateTime dateTo, boolean showClosed, Integer streamId) {
-        StringBuilder queryString = new StringBuilder("from Lesson as l where l.type in (:types)");
+        StringBuilder queryString = new StringBuilder("select distinct l from Lesson as l " +
+            "left join fetch l.schedule " +
+            "where l.type in (:types)");
 
         if (dateFrom != null && dateTo != null) {
             queryString.append(" and l.date between :dateFrom and :dateTo");
@@ -71,6 +73,8 @@ public class LessonDAO {
         if (streamId != null) {
             queryString.append(" and l.stream.id = :streamId");
         }
+
+        queryString.append(" order by l.date desc, l.schedule.begin desc");
 
         try (Session session = DBSessionFactory.getSession()) {
             LOGGER.info("Start loading Lessons from database.");
