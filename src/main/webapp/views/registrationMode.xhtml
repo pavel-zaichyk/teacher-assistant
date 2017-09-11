@@ -193,6 +193,8 @@
 
                 <p:ajax event="rowSelect" listener="#{registrationModeBean.onStudentRowSelect}"
                         update=":lessonForm:lastVisitInfo :lessonForm:additionalInfo"/>
+                <p:ajax event="rowDblselect" listener="#{registrationModeBean.onStudentRowDblClckSelect}"
+                        update="@([id$=wrapper])"/>
 
                 <p:column selectionMode="multiple" styleClass="w16px center"/>
 
@@ -216,15 +218,7 @@
                           filterBy="#{pStudent.name}"
                           filterMatchMode="startsWith"
                           styleClass="bold w210px">
-                    <p:commandLink styleClass="bold #{pStudent.additional ? 'blue' : ''}" value="#{pStudent.name}"
-                                   update="@([id$=wrapper])"
-                                   actionListener="#{studentModeBean.initStudentMode(pStudent.student, registrationModeBean.selectedLesson.stream)}">
-                        <f:setPropertyActionListener value="studentMode" target="#{sessionBean.activeView}"/>
-                        <f:setPropertyActionListener value="#{registrationModeBean.selectedLesson}"
-                                                     target="#{lessonModeBean.lesson}"/>
-                        <f:setPropertyActionListener value="#{registrationModeBean.selectedLesson.stream}"
-                                                     target="#{lessonModeBean.stream}"/>
-                    </p:commandLink>
+                    <h:outputText styleClass="bold #{pStudent.additional ? 'blue' : ''}" value="#{pStudent.name}"/>
                 </p:column>
 
                 <p:column headerText="#{msg['total.skip']}"
@@ -270,6 +264,8 @@
 
                 <p:ajax event="rowSelect" listener="#{registrationModeBean.onStudentRowSelect}"
                         update=":lessonForm:lastVisitInfo :lessonForm:additionalInfo"/>
+                <p:ajax event="rowDblselect" listener="#{registrationModeBean.onStudentRowDblClckSelect}"
+                        update="@([id$=wrapper])"/>
 
                 <p:column selectionMode="multiple" styleClass="w16px center"/>
 
@@ -293,14 +289,7 @@
                           filterBy="#{aStudent.name}"
                           filterMatchMode="startsWith"
                           styleClass="bold  w210px">
-                    <p:commandLink value="#{aStudent.name}" update="@([id$=wrapper])"
-                                   actionListener="#{studentModeBean.initStudentMode(aStudent.student, registrationModeBean.selectedLesson.stream)}">
-                        <f:setPropertyActionListener value="studentMode" target="#{sessionBean.activeView}"/>
-                        <f:setPropertyActionListener value="#{registrationModeBean.selectedLesson}"
-                                                     target="#{lessonModeBean.lesson}"/>
-                        <f:setPropertyActionListener value="#{registrationModeBean.selectedLesson.stream}"
-                                                     target="#{lessonModeBean.stream}"/>
-                    </p:commandLink>
+                    <h:outputText styleClass="bold" value="#{aStudent.name}"/>
                 </p:column>
 
                 <p:column headerText="#{msg['total.skip']}"

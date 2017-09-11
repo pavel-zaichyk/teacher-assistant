@@ -297,6 +297,9 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
 
     public void addStudent(Student student) {
         reRegistration = false;
+        if (!selectedLesson.getStudentLessons().containsKey(student.getId())) {
+            student = EntityDAO.get(Student.class, student.getId());
+        }
         presentStudents.add(student);
         if (absentStudents.contains(student)) {
             absentStudents.remove(student);
@@ -318,7 +321,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
                 studentLesson.setRegistrationTime(LocalTime.now());
                 studentLesson.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
                 EntityDAO.add(studentLesson);
-                student.getStudentLessons().put(studentLesson.getId(), studentLesson);
+                student.getStudentLessons().put(selectedLesson.getId(), studentLesson);
                 selectedLesson.getStudentLessons().put(studentLesson.getStudent().getId(), studentLesson);
             } else {
                 studentLesson.setRegistered(true);
@@ -476,6 +479,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             LessonStudentModel lessonStudentModel = new LessonStudentModel(st);
             lessonStudentModel.setRegistrationTime(
                 st.getStudentLessons().get(selectedLesson.getId()).getRegistrationTime());
+            lessonStudentModel.setAdditional(!lessonStudents.contains(st));
             Map<String, Integer> stSkipInfo = skipInfo.get(st.getId());
             if (stSkipInfo != null) {
                 lessonStudentModel.setTotalSkip(stSkipInfo.get(Constants.TOTAL_SKIP));
@@ -530,6 +534,14 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
         notes = new ArrayList<>();
         notes.addAll(processedStudent.getNotes());
         processedStudent.getStudentLessons().values().forEach(sc -> notes.addAll(sc.getNotes()));
+    }
+
+    public void onStudentRowDblClckSelect(SelectEvent event) {
+        lessonModeBean.setLesson(selectedLesson);
+        lessonModeBean.setStream(selectedLesson.getStream());
+        sessionBean.setActiveView("studentMode");
+        StudentModeBean studentModeBean = (StudentModeBean) FacesUtils.getBean("studentModeBean");
+        studentModeBean.initStudentMode( ((LessonStudentModel) event.getObject()).getStudent(), selectedLesson.getStream());
     }
 
     public void onPresentStudentsSelect(ToggleSelectEvent event) {
