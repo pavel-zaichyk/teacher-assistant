@@ -46,6 +46,9 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
     @ManagedProperty(value = "#{lessonModeBean}")
     private LessonModeBean lessonModeBean;
 
+    @ManagedProperty(value = "#{studentModeBean}")
+    private StudentModeBean studentModeBean;
+
     @ManagedProperty(value = "#{serialBean}")
     private SerialBean serialBean;
 
@@ -540,8 +543,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
         lessonModeBean.setLesson(selectedLesson);
         lessonModeBean.setStream(selectedLesson.getStream());
         sessionBean.setActiveView("studentMode");
-        StudentModeBean studentModeBean = (StudentModeBean) FacesUtils.getBean("studentModeBean");
-        studentModeBean.initStudentMode( ((LessonStudentModel) event.getObject()).getStudent(), selectedLesson.getStream());
+        studentModeBean.initStudentMode(((LessonStudentModel) event.getObject()).getStudent(), selectedLesson.getStream());
     }
 
     public void onPresentStudentsSelect(ToggleSelectEvent event) {
