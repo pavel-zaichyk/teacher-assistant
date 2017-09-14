@@ -74,6 +74,7 @@
 #wrapper .font-size-10pt {font-size: 10pt;}
 #wrapper .font-size-11pt {font-size: 11pt;}
 #wrapper .font-size-12pt {font-size: 12pt;}
+#wrapper .font-size-14pt {font-size: 14pt;}
 #wrapper .font-size-20pt {font-size: 20pt;}
 
 /* Font Weight */
@@ -710,4 +711,8 @@ body {
 /* picklist */
 #wrapper .ui-picklist.ui-picklist-responsive .ui-picklist-list-wrapper {
 	width: 450px;
+}
+
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+	text-shadow: none;
 }
