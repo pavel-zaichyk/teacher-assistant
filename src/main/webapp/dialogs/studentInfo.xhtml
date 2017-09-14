@@ -5,7 +5,7 @@
                 xmlns:p="http://primefaces.org/ui"
 >
     <p:socket channel="/register">
-        <p:ajax event="message" update=":studentInfoForm"/>
+        <p:ajax event="message" update=":studentInfoForm:studentDetail"/>
     </p:socket>
     <h:form id="studentInfoForm">
         <p:dialog header="#{msg['student.info']}"
@@ -34,9 +34,19 @@
                     <p:panelGrid columns="2" columnClasses="label,value">
 
                         <p:outputLabel for="cardUid" value="#{msg['student.info.cardUid']}"/>
-                        <p:inputText id="cardUid" value="#{studentBean.student.cardUid}" required="true">
-                            <p:ajax update=":studentInfoForm:studentDetail"/>
-                        </p:inputText>
+                        <h:panelGroup id="cardUidGroup">
+                            <p:inputText id="cardUid" value="#{studentBean.student.cardUid}" required="true">
+                                <p:ajax update=":studentInfoForm:studentDetail"/>
+                            </p:inputText>
+                            <p:commandButton title="#{msg['btn.startRecord']}" icon="fa fa-fw fa-play"
+                                             update=":studentInfoForm:cardUidGroup"
+                                             actionListener="#{serialBean.startRecord}"
+                                             rendered="#{not serialBean.recordStarted}"/>
+                            <p:commandButton title="#{msg['btn.stopRecord']}" icon="fa fa-fw fa-stop"
+                                             update=":studentInfoForm:cardUidGroup"
+                                             actionListener="#{serialBean.stopRecord}"
+                                             rendered="#{serialBean.recordStarted}"/>
+                        </h:panelGroup>
 
                         <p:outputLabel for="cardId" value="#{msg['student.info.cardId']}"/>
                         <p:inputText id="cardId" value="#{studentBean.student.cardId}">
