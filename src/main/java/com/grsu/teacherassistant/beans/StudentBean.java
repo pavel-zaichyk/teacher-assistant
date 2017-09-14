@@ -1,8 +1,11 @@
 package com.grsu.teacherassistant.beans;
 
 import com.grsu.teacherassistant.dao.EntityDAO;
+import com.grsu.teacherassistant.dao.GroupDAO;
 import com.grsu.teacherassistant.entities.Group;
 import com.grsu.teacherassistant.entities.Student;
+import com.grsu.teacherassistant.utils.FacesUtils;
+import lombok.Data;
 import org.primefaces.model.DualListModel;
 
 import javax.faces.bean.ManagedBean;
@@ -10,99 +13,60 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static com.grsu.teacherassistant.utils.FacesUtils.closeDialog;
-import static com.grsu.teacherassistant.utils.FacesUtils.execute;
 import static com.grsu.teacherassistant.utils.FacesUtils.update;
 
 @ManagedBean(name = "studentBean")
 @ViewScoped
-public class StudentBean implements Serializable {
+@Data
+public class StudentBean implements Serializable, SerialListenerBean {
 
-	private Student selectedStudent;
+    @ManagedProperty(value = "#{serialBean}")
+    private SerialBean serialBean;
 
-	private DualListModel<Group> selectedGroups;
-	private List<Student> filteredStudents;
+    private Student student;
+    private SerialListenerBean oldSerialListener;
 
-	private String url;
 
-	@ManagedProperty(value = "#{sessionBean}")
-	private SessionBean sessionBean;
+    private DualListModel<Group> groups;
 
-	public void setSelectedStudent(Student selectedStudent) {
-		this.selectedStudent = selectedStudent;
-	}
+    public void initStudent(Student student) {
+        oldSerialListener = serialBean.getCurrentListener();
+        serialBean.setCurrentListener(this);
+        serialBean.startRecord();
 
-	public DualListModel<Group> getSelectedGroups() {
-		if (selectedStudent == null) {
-			setSelectedGroups(new DualListModel<>(sessionBean.getGroups(), Collections.emptyList()));
-		} else if (selectedGroups == null) {
-			List<Group> sourceGroups = new ArrayList<>(sessionBean.getGroups());
-			if (selectedStudent.getGroups() != null) {
-				sourceGroups.removeAll(selectedStudent.getGroups());
-				setSelectedGroups(new DualListModel<>(sourceGroups, selectedStudent.getGroups()));
-			} else {
-				setSelectedGroups(new DualListModel<>(sourceGroups, Collections.emptyList()));
-			}
+        if (student != null) {
+            this.student = student;
+        } else {
+            this.student = new Student();
+            this.student.setGroups(new ArrayList<>());
+        }
+        List<Group> source = GroupDAO.getAll();
+        source.removeAll(this.student.getGroups());
+        groups = new DualListModel<>(source, this.student.getGroups());
 
-		}
-		return selectedGroups;
-	}
+        FacesUtils.showDialog("studentDialog");
+    }
 
-	public void setSelectedGroups(DualListModel<Group> selectedGroups) {
-		this.selectedGroups = selectedGroups;
-		if (selectedStudent != null) {
-			selectedStudent.setGroups(selectedGroups == null ? null : selectedGroups.getTarget());
-		}
-	}
+    public void exit() {
+        serialBean.setCurrentListener(oldSerialListener);
+        student = null;
+        oldSerialListener = null;
+        closeDialog("studentDialog");
+    }
 
-	public List<Student> getStudents() {
-		return sessionBean.getStudents();
-	}
+    public void save() {
+        student.setGroups(groups.getTarget());
+        EntityDAO.save(student);
+        update("views");
+        exit();
+    }
 
-	public void exit() {
-		setSelectedStudent(null);
-		setSelectedGroups(null);
-		closeDialog("studentDialog");
-	}
-
-	public void save() {
-		EntityDAO.save(selectedStudent);
-		sessionBean.updateStudents();
-		closeDialog("studentDialog");
-		update("views");
-	}
-
-	public void saveAndExit() {
-		save();
-		exit();
-	}
-
-	public void delete() {
-		EntityDAO.delete(selectedStudent);
-		if (filteredStudents != null) {
-			filteredStudents.clear();
-		}
-		sessionBean.updateStudents();
-		execute("PF('studentsTable').clearFilters()");
-		exit();
-	}
-
-	public void setSessionBean(SessionBean sessionBean) {
-		this.sessionBean = sessionBean;
-	}
-
-	public Student getSelectedStudent() {
-		return selectedStudent;
-	}
-
-	public List<Student> getFilteredStudents() {
-		return filteredStudents;
-	}
-
-	public void setFilteredStudents(List<Student> filteredStudents) {
-		this.filteredStudents = filteredStudents;
-	}
+    @Override
+    public boolean process(String uid) {
+        student.setCardUid(uid);
+        return true;
+    }
 }
