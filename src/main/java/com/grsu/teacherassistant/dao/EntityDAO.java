@@ -2,6 +2,7 @@ package com.grsu.teacherassistant.dao;
 
 import com.grsu.teacherassistant.entities.AssistantEntity;
 import com.grsu.teacherassistant.entities.Student;
+import com.grsu.teacherassistant.entities.StudentLesson;
 import com.grsu.teacherassistant.utils.db.DBSessionFactory;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -9,6 +10,7 @@ import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.List;
 
 /**

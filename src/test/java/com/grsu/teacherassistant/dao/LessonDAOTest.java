@@ -22,19 +22,19 @@ public class LessonDAOTest extends TestConfiguration {
     public void setUp() {
         lessons = new ArrayList<>();
 
-        Lesson lesson1 = new Lesson();
-        lesson1.setId(3);
-        lesson1.setName("Занятие3");
-        lesson1.setDescription("ОписаниеЗанятие3");
-        lesson1.setDate(LocalDateTime.parse("2017-02-02T00:00"));
-        lessons.add(lesson1);
-
         Lesson lesson2 = new Lesson();
         lesson2.setId(4);
         lesson2.setName("Занятие4");
         lesson2.setDescription("ОписаниеЗанятие4");
         lesson2.setDate(LocalDateTime.parse("2017-02-03T00:00"));
         lessons.add(lesson2);
+
+        Lesson lesson1 = new Lesson();
+        lesson1.setId(3);
+        lesson1.setName("Занятие3");
+        lesson1.setDescription("ОписаниеЗанятие3");
+        lesson1.setDate(LocalDateTime.parse("2017-02-02T00:00"));
+        lessons.add(lesson1);
     }
 
     @Test

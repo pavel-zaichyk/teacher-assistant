@@ -5,6 +5,7 @@ import com.grsu.teacherassistant.beans.SerialListenerBean;
 import com.grsu.teacherassistant.beans.SessionBean;
 import com.grsu.teacherassistant.constants.Constants;
 import com.grsu.teacherassistant.dao.EntityDAO;
+import com.grsu.teacherassistant.dao.LessonDAO;
 import com.grsu.teacherassistant.dao.StudentDAO;
 import com.grsu.teacherassistant.entities.*;
 import com.grsu.teacherassistant.models.LazyStudentDataModel;
@@ -27,13 +28,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.grsu.teacherassistant.utils.FacesUtils.closeDialog;
@@ -50,6 +45,9 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
 
     @ManagedProperty(value = "#{lessonModeBean}")
     private LessonModeBean lessonModeBean;
+
+    @ManagedProperty(value = "#{studentModeBean}")
+    private StudentModeBean studentModeBean;
 
     @ManagedProperty(value = "#{serialBean}")
     private SerialBean serialBean;
@@ -87,6 +85,8 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
     private List<Note> notes;
 
     private boolean reRegistration;
+    private boolean fastRegistration;
+    private Lesson lastLesson;
 
     public void initLesson(Lesson lesson) {
         serialBean.setCurrentListener(this);
@@ -111,7 +111,43 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
                 absentStudentsLazyModel = new LazyStudentDataModel(lessonAbsentStudents);
                 presentStudentsLazyModel = new LazyStudentDataModel(lessonPresentStudents);
             }
+
+            initLastLesson();
         }
+    }
+
+    private void initLastLesson() {
+        fastRegistration = false;
+        if (lessonPresentStudents.size() == 0) {
+            lastLesson = null;
+            List<Lesson> lessons = LessonDAO.getAll(selectedLesson.getDate(), selectedLesson.getDate(), false, selectedLesson.getStream().getId());
+            for (Lesson lesson : lessons) {
+                if (selectedLesson.getSchedule().getBegin().isAfter(lesson.getSchedule().getBegin())) {
+                    lastLesson = lesson;
+                    break;
+                }
+            }
+
+            if (lastLesson != null) {
+                fastRegistration = true;
+            }
+        }
+    }
+
+    public void fastRegistration() {
+        selectedLesson.getStudentLessons().values().forEach(sl -> {
+            if (!sl.isRegistered()) {
+                StudentLesson studentLesson = lastLesson.getStudentLessons().get(sl.getStudentId());
+                if (studentLesson != null && studentLesson.isRegistered()) {
+                    sl.setRegistered(studentLesson.isRegistered());
+                    sl.setRegistrationTime(LocalTime.now());
+                    sl.setRegistrationType("MANUAL");
+                }
+            }
+        });
+        EntityDAO.update(new ArrayList<>(selectedLesson.getStudentLessons().values()));
+        fastRegistration = false;
+        initLesson(selectedLesson);
     }
 
     public void returnToLessons() {
@@ -264,6 +300,9 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
 
     public void addStudent(Student student) {
         reRegistration = false;
+        if (!selectedLesson.getStudentLessons().containsKey(student.getId())) {
+            student = EntityDAO.get(Student.class, student.getId());
+        }
         presentStudents.add(student);
         if (absentStudents.contains(student)) {
             absentStudents.remove(student);
@@ -285,7 +324,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
                 studentLesson.setRegistrationTime(LocalTime.now());
                 studentLesson.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
                 EntityDAO.add(studentLesson);
-                student.getStudentLessons().put(studentLesson.getId(), studentLesson);
+                student.getStudentLessons().put(selectedLesson.getId(), studentLesson);
                 selectedLesson.getStudentLessons().put(studentLesson.getStudent().getId(), studentLesson);
             } else {
                 studentLesson.setRegistered(true);
@@ -443,6 +482,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             LessonStudentModel lessonStudentModel = new LessonStudentModel(st);
             lessonStudentModel.setRegistrationTime(
                 st.getStudentLessons().get(selectedLesson.getId()).getRegistrationTime());
+            lessonStudentModel.setAdditional(!lessonStudents.contains(st));
             Map<String, Integer> stSkipInfo = skipInfo.get(st.getId());
             if (stSkipInfo != null) {
                 lessonStudentModel.setTotalSkip(stSkipInfo.get(Constants.TOTAL_SKIP));
@@ -497,6 +537,13 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
         notes = new ArrayList<>();
         notes.addAll(processedStudent.getNotes());
         processedStudent.getStudentLessons().values().forEach(sc -> notes.addAll(sc.getNotes()));
+    }
+
+    public void onStudentRowDblClckSelect(SelectEvent event) {
+        lessonModeBean.setLesson(selectedLesson);
+        lessonModeBean.setStream(selectedLesson.getStream());
+        sessionBean.setActiveView("studentMode");
+        studentModeBean.initStudentMode(((LessonStudentModel) event.getObject()).getStudent(), selectedLesson.getStream());
     }
 
     public void onPresentStudentsSelect(ToggleSelectEvent event) {
