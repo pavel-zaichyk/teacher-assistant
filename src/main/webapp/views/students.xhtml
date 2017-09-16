@@ -5,31 +5,67 @@
                 xmlns:p="http://primefaces.org/ui"
 >
     <h:form id="studentsForm">
-        <p:dataTable var="student" widgetVar="studentsTable" value="#{studentBean.students}"
-                     sortBy="#{student.fullName}" filteredValue="#{studentBean.filteredStudents}">
+        <p:dataTable id="students"
+                     var="student"
+                     widgetVar="studentsTable"
+                     value="#{studentsBean.students}"
+                     rowKey="#{student.id}"
+                     selectionMode="single"
+                     selection="#{studentsBean.selectedStudent}"
+                     sortBy="#{student.fullName}"
+                     filteredValue="#{studentsBean.filteredStudents}"
+                     emptyMessage="#{msg['label.emptyMessage']}">
             <p:ajax event="filter" update="@this"/>
+
             <f:facet name="header">
                 #{msg['students']}
             </f:facet>
-            <p:column sortBy="#{student.cardUid}" filterBy="#{student.cardUid}" filterMatchMode="startsWith">
+
+            <p:column sortBy="#{student.cardUid}"
+                      filterBy="#{student.cardUid}"
+                      filterMatchMode="startsWith">
                 <h:outputText value="#{student.cardUid}"/>
             </p:column>
-            <p:column sortBy="#{student.fullName}" filterBy="#{student.fullName}" filterMatchMode="startsWith">
-                <p:commandLink value="#{student.fullName}" update="@([id$=wrapper])"
+
+            <p:column sortBy="#{student.fullName}"
+                      filterBy="#{student.fullName}"
+                      filterMatchMode="startsWith">
+                <p:commandLink value="#{student.fullName}"
+                               update="@([id$=wrapper])"
                                actionListener="#{studentModeBean.initStudentMode(student, null)}">
                     <f:setPropertyActionListener value="studentMode" target="#{sessionBean.activeView}"/>
                 </p:commandLink>
             </p:column>
-            <p:column sortBy="#{student.groupNames}" filterBy="#{student.groupNames}" filterMatchMode="contains">
+
+            <p:column sortBy="#{student.groupNames}"
+                      filterBy="#{student.groupNames}"
+                      filterMatchMode="contains">
                 <h:outputText value="#{student.groupNames}" escape="false"/>
             </p:column>
-            <p:column styleClass="options">
-                <p:commandButton update=":studentInfoForm" oncomplete="PF('studentDialog').show()"
-                                 icon="fa fa-fw fa-search" title="#{msg['option.view']}">
-                    <f:setPropertyActionListener value="#{student}" target="#{studentBean.selectedStudent}"/>
-                    <p:resetInput target=":studentInfoForm:studentDetail"/>
-                </p:commandButton>
-            </p:column>
+
         </p:dataTable>
+
+        <p:contextMenu for="students">
+            <p:menuitem value="#{msg['option.view']}"
+                        update=":studentInfoForm"
+                        icon="ui-icon-search"
+                        actionListener="#{studentBean.initStudent(studentsBean.selectedStudent)}">
+                <p:resetInput target=":studentInfoForm:studentDetail"/>
+            </p:menuitem>
+            <p:menuitem value="#{msg['option.remove']}"
+                        update=":studentsForm"
+                        icon="ui-icon-close"
+                        styleClass="red"
+                        actionListener="#{studentsBean.removeStudent(studentsBean.selectedStudent)}">
+                <p:confirm header="#{msg['warning']}" message="#{msg['warning.sure.delete']}" icon="ui-icon-alert"/>
+            </p:menuitem>
+        </p:contextMenu>
+
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+            <p:commandButton value="#{msg['label.yes']}" type="button" styleClass="ui-confirmdialog-yes"
+                             icon="ui-icon-check"/>
+            <p:commandButton value="#{msg['label.no']}" type="button" styleClass="ui-confirmdialog-no"
+                             icon="ui-icon-close"/>
+        </p:confirmDialog>
     </h:form>
 </ui:composition>

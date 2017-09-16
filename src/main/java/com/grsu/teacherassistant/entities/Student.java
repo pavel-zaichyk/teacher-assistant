@@ -138,7 +138,11 @@ public class Student implements AssistantEntity, Person {
     }
 
     public String getGroupNames() {
-        return groups.stream().map(Group::getName).collect(Collectors.joining(GROUPS_DELIMITER));
+        if (groups != null) {
+            return groups.stream().map(Group::getName).collect(Collectors.joining(GROUPS_DELIMITER));
+        } else {
+            return "";
+        }
     }
 
     public void setCardUidFromCardId(int cardId) {
