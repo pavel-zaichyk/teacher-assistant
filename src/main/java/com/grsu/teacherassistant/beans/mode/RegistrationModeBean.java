@@ -87,6 +87,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
     private boolean reRegistration;
     private boolean fastRegistration;
     private Lesson lastLesson;
+    private boolean studentNotExist;
 
     public void initLesson(Lesson lesson) {
         serialBean.setCurrentListener(this);
@@ -183,6 +184,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
         camera = false;
         notes = null;
         reRegistration = false;
+        studentNotExist = false;
     }
 
     private void initStudents() {
@@ -237,6 +239,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
     @Override
     public boolean process(String uid) {
         reRegistration = false;
+        studentNotExist = false;
         Student student = EntityUtils.getPersonByUid(absentStudents, uid);
         if (student == null) {
             student = EntityUtils.getPersonByUid(presentStudents, uid);
@@ -248,16 +251,17 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
                 student = EntityUtils.getPersonByUid(allStudents, uid);
             }
         }
-        if (student != null) {
-            return processStudent(student);
-        } else {
+        if (student == null) {
             LOGGER.info("Student not registered. Reason: Uid[ " + uid + " ] not exist in database.");
-            return false;
+            studentNotExist = true;
+            student = new Student();
+            student.setCardUid(uid);
         }
+        return processStudent(student);
     }
 
     private boolean processStudent(Student student) {
-        if (!reRegistration) {
+        if (!reRegistration && !studentNotExist) {
             presentStudents.add(student);
             if (absentStudents.contains(student)) {
                 absentStudents.remove(student);
@@ -300,6 +304,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
 
     public void addStudent(Student student) {
         reRegistration = false;
+        studentNotExist = false;
         if (!selectedLesson.getStudentLessons().containsKey(student.getId())) {
             student = EntityDAO.get(Student.class, student.getId());
         }

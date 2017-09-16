@@ -80,6 +80,7 @@
                       sortBy="#{msg[lesson.type.key]}"
                       filterBy="#{msg[lesson.type.key]}"
                       filterMatchMode="startsWith"
+                      styleClass="#{(lesson.type eq 'PRACTICAL' or lesson.type eq 'LAB') ? 'blue' : ''}"
             >
                 <h:outputText value="#{msg[lesson.type.key]}"/>
             </p:column>
