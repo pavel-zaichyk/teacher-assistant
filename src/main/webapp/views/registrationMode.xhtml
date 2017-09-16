@@ -27,10 +27,16 @@
                                        styleClass="font-size-20pt margin-top-20px margin-bottom-20px"
                                        value="#{registrationModeBean.processedStudent.groupNames}"/>
                         <p:outputLabel styleClass="lowercase" escape="false"
-                                       value="#{registrationModeBean.getStudentSkip(registrationModeBean.processedStudent)}"/>
+                                       value="#{registrationModeBean.getStudentSkip(registrationModeBean.processedStudent)}"
+                                       rendered="#{not registrationModeBean.studentNotExist}"/>
                         <p:outputLabel value="#{msg['label.reRegistration']}"
                                        styleClass="font-size-12pt blue margin-top-20px"
                                        rendered="#{registrationModeBean.reRegistration}"/>
+                        <p:outputLabel value="#{registrationModeBean.processedStudent.cardUid}"
+                                       rendered="#{registrationModeBean.studentNotExist}"/>
+                        <p:outputLabel value="#{msg['label.studentNotExist']}"
+                                       styleClass="font-size-12pt red margin-top-20px"
+                                       rendered="#{registrationModeBean.studentNotExist}"/>
                     </p:panel>
                 </p:panelGrid>
             </p:panel>
@@ -288,7 +294,7 @@
                 <p:column sortBy="#{aStudent.name}"
                           filterBy="#{aStudent.name}"
                           filterMatchMode="startsWith"
-                          styleClass="bold  w210px">
+                          styleClass="bold  w210px blue">
                     <h:outputText styleClass="bold" value="#{aStudent.name}"/>
                 </p:column>
 

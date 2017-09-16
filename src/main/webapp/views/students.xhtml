@@ -43,13 +43,6 @@
                 <h:outputText value="#{student.groupNames}" escape="false"/>
             </p:column>
 
-            <p:column styleClass="options">
-                <p:commandButton update=":studentInfoForm" oncomplete="PF('studentDialog').show()"
-                                 icon="fa fa-fw fa-search" title="#{msg['option.view']}">
-                    <f:setPropertyActionListener value="#{student}" target="#{studentsBean.selectedStudent}"/>
-                    <p:resetInput target=":studentInfoForm:studentDetail"/>
-                </p:commandButton>
-            </p:column>
         </p:dataTable>
 
         <p:contextMenu for="students">

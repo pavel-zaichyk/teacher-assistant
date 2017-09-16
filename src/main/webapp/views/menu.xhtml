@@ -38,10 +38,10 @@
                     <p:resetInput target=":groupInfoForm:groupInfoDetail"/>
                 </p:menuitem>
 
-                <p:menuitem value="#{msg['menu.file.new.student']}" icon="fa fa-fw fa-user"
-                            update=":studentInfoForm" oncomplete="PF('studentDialog').show()">
-                    <f:setPropertyActionListener value="#{newInstanceOfStudent}"
-                                                 target="#{studentBean.selectedStudent}"/>
+                <p:menuitem value="#{msg['menu.file.new.student']}"
+                            icon="fa fa-fw fa-user"
+                            update=":studentInfoForm"
+                            actionListener="#{studentBean.initStudent(null)}">
                     <p:resetInput target=":studentInfoForm:studentDetail"/>
                 </p:menuitem>
 
