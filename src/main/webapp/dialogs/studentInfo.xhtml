@@ -25,7 +25,7 @@
             <p:scrollPanel id="studentDetail" mode="native" styleClass="studentDetail"
                            rendered="#{studentBean.student ne null}">
 
-                <p:panelGrid columns="2" styleClass="v-align-top">
+                <p:panelGrid columns="2" styleClass="v-align-top noBorder">
                     <p:panelGrid columns="1" styleClass="image noBorder">
                         <p:graphicImage
                             value="#{imageBean.getImagePath(studentBean.student.cardUid)}"/>
@@ -68,17 +68,6 @@
                             <p:ajax update=":studentInfoForm:studentDetail"/>
                         </h:inputText>
 
-                        <p:outputLabel for="groups" value="#{msg['student.info.groups']}"/>
-                        <p:pickList id="groups" value="#{studentBean.groups}"
-                                    showCheckbox="true" showSourceFilter="true"
-                                    showTargetFilter="true" filterMatchMode="contains"
-                                    var="group" itemValue="#{group}" itemLabel="#{group.name}"
-                                    converter="entityConverter">
-
-                            <p:ajax event="transfer" update=":studentInfoForm:studentDetail"/>
-                        </p:pickList>
-
-
                         <h:outputText value="#{msg['student.info.phone']}"/>
                         <h:inputText value="#{studentBean.student.phone}">
                             <p:ajax update=":studentInfoForm:studentDetail"/>
@@ -92,15 +81,29 @@
                     </p:panelGrid>
                 </p:panelGrid>
 
-                <p:outputPanel>
-                    <p:commandButton value="#{msg['btn.save.exit']}" icon="fa fa-fw fa-save"
-                                     actionListener="#{studentBean.save}"
-                                     update=":studentInfoForm:studentDetail">
-                        <f:setPropertyActionListener value="#{null}" target="#{studentsBean.students}"/>
-                        <f:setPropertyActionListener value="#{null}" target="#{sessionBean.students}"/>
-                    </p:commandButton>
-                </p:outputPanel>
+                <p:outputLabel for="groups" value="#{msg['student.info.groups']}"/>
+                <p:pickList id="groups"
+                            value="#{studentBean.groups}"
+                            var="group"
+                            itemValue="#{group}"
+                            itemLabel="#{group.name}"
+                            responsive="true"
+                            showCheckbox="true"
+                            showSourceFilter="true"
+                            showTargetFilter="true"
+                            filterMatchMode="contains"
+                            converter="entityConverter"
+                            style="width: 100%"/>
             </p:scrollPanel>
+
+            <p:outputPanel>
+                <p:commandButton value="#{msg['btn.save.exit']}" icon="fa fa-fw fa-save"
+                                 actionListener="#{studentBean.save}"
+                                 update=":studentInfoForm:studentDetail">
+                    <f:setPropertyActionListener value="#{null}" target="#{studentsBean.students}"/>
+                    <f:setPropertyActionListener value="#{null}" target="#{sessionBean.students}"/>
+                </p:commandButton>
+            </p:outputPanel>
         </p:dialog>
     </h:form>
 </ui:composition>
