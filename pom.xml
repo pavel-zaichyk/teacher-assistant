@@ -4,7 +4,7 @@
 
 	<groupId>com.grsu.reader</groupId>
 	<artifactId>teacher-assistant</artifactId>
-	<version>1.4</version>
+	<version>1.5-SNAPSHOT</version>
 	<name>Teacher Assistant</name>
 	<packaging>war</packaging>
 
@@ -221,6 +221,6 @@
 
 	<scm>
 		<connection>scm:git:https://github.com/zaychickpavel/teacher-assistant.git</connection>
-		<tag>2017-09-17_1.4</tag>
+		<tag>HEAD</tag>
 	</scm>
 </project>
