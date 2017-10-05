@@ -357,6 +357,10 @@ body {
 	text-align: center;
 }
 
+.lesson-tables .additions .ui-timer {
+	color: #0000ff;
+}
+
 .lesson-tables .additions .time span {
 	border: 0;
 	padding: 0;
