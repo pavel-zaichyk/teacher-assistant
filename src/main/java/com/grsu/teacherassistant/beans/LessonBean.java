@@ -1,12 +1,11 @@
 package com.grsu.teacherassistant.beans;
 
 import com.grsu.teacherassistant.dao.EntityDAO;
-import com.grsu.teacherassistant.dao.StudentDAO;
+import com.grsu.teacherassistant.dao.LessonDAO;
 import com.grsu.teacherassistant.entities.*;
 import com.grsu.teacherassistant.models.LessonType;
 import com.grsu.teacherassistant.utils.FacesUtils;
 import lombok.Data;
-import org.primefaces.model.DualListModel;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -59,6 +58,7 @@ public class LessonBean implements Serializable {
             if (lesson.getType() == null || lesson.getType() == LessonType.LECTURE) {
                 lesson.setGroup(null);
             }
+            lesson.setIndex(LessonDAO.getNextIndex(lesson.getStream().getId(), lesson.getType()));
 
             EntityDAO.add(lesson);
 

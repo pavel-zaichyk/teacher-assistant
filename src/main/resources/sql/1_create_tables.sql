@@ -51,6 +51,9 @@ CREATE TABLE STREAM (
   course            INTEGER,
   active            INTEGER,
   expiration_date   TEXT,
+  lecture_count     INTEGER,
+  practical_count   INTEGER,
+  lab_count         INTEGER,
   FOREIGN KEY (lecturer_id)    REFERENCES LECTURER(id),
   FOREIGN KEY (discipline_id)  REFERENCES [DISCIPLINE](id),
   FOREIGN KEY (department_id)  REFERENCES DEPARTMENT(id)
@@ -117,6 +120,7 @@ CREATE TABLE LESSON (
   group_id          INTEGER,
   date              TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%S','now', 'localtime')),
   schedule_id       INTEGER,
+  index_number      INTEGER,
   FOREIGN KEY (stream_id)      REFERENCES STREAM(id),
   FOREIGN KEY (type_id)        REFERENCES LESSON_TYPE(id),
   FOREIGN KEY (group_id)       REFERENCES [GROUP](id),

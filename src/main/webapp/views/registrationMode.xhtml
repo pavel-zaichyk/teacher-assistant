@@ -156,7 +156,7 @@
                             <p:outputLabel value="#{registrationModeBean.selectedLesson.stream.name}"/>
                             <p:outputLabel rendered="#{registrationModeBean.selectedLesson.group ne null}"
                                            value="#{registrationModeBean.selectedLesson.group.name}"/>
-                            <p:outputLabel value="#{msg[registrationModeBean.selectedLesson.type.key]}"/>
+                            <p:outputLabel value="#{msg[registrationModeBean.selectedLesson.type.key].concat(' ').concat(utility.getLessonCount(registrationModeBean.selectedLesson))}"/>
                             <p:outputLabel value="#{registrationModeBean.selectedLesson.date}"
                                            converter="localDateConverter"/>
                             <p:outputLabel value="#{registrationModeBean.selectedLesson.schedule.caption}"/>
