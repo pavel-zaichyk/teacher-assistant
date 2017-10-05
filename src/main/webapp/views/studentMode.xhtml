@@ -13,7 +13,7 @@
 
 		<h:panelGrid columns="2" styleClass="font-size-20pt w100pc" columnClasses="w50pc, padding-left-10px top">
 			<h:panelGrid columns="2" columnClasses="w250px h280px,">
-				<p:graphicImage value="#{imageBean.getImagePath(studentModeBean.lessonStudent.student.cardUid)}"/>
+				<p:graphicImage value="#{imageBean.getImagePath(studentModeBean.lessonStudent.student.cardUid)}" styleClass="student-photo"/>
 				<h:panelGroup>
 					<p:outputLabel value="#{studentModeBean.lessonStudent.student.lastName}"
 					               styleClass="uppercase bold"/>
