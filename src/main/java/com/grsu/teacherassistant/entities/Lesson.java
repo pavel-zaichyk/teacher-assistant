@@ -57,6 +57,9 @@ public class Lesson implements AssistantEntity {
     @Column(name = "type_id")
     private LessonType type;
 
+    @Column(name = "index_number")
+    private Integer index;
+
     @ManyToOne
     @JoinColumn(name = "group_id", referencedColumnName = "id")
     private Group group;
