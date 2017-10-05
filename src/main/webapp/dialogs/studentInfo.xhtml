@@ -25,11 +25,9 @@
             <p:scrollPanel id="studentDetail" mode="native" styleClass="studentDetail"
                            rendered="#{studentBean.student ne null}">
 
-                <p:panelGrid columns="2" styleClass="v-align-top noBorder">
-                    <p:panelGrid columns="1" styleClass="image noBorder">
-                        <p:graphicImage
+                <p:panelGrid columns="2" columnClasses="w250px h280px," styleClass="v-align-top noBorder">
+                        <p:graphicImage styleClass="student-photo"
                             value="#{imageBean.getImagePath(studentBean.student.cardUid)}"/>
-                    </p:panelGrid>
 
                     <p:panelGrid columns="2" columnClasses="label,value">
 
