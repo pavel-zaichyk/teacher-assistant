@@ -13,51 +13,68 @@
 
             <p:outputPanel id="streamDetail" rendered="#{streamBean.stream ne null}">
 
-                <p:panelGrid columns="2" columnClasses="label,value" styleClass="noBorder">
+                <p:panelGrid columns="2" styleClass="noBorder">
+                    <p:panelGrid columns="2" columnClasses="label,value" styleClass="noBorder">
 
-                    <p:outputLabel for="discipline" value="#{msg['stream.info.discipline']}"/>
-                    <p:selectOneMenu id="discipline" value="#{streamBean.stream.discipline}" converter="entityConverter"
-                                     required="true">
-                        <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.discipline']}"/>
-                        <f:selectItems value="#{sessionBean.disciplines}" var="discipline"
-                                       itemLabel="#{discipline.name}" itemValue="#{discipline}"/>
-                        <p:ajax update=":streamInfoForm:streamDetail"/>
-                    </p:selectOneMenu>
+                        <p:outputLabel for="discipline" value="#{msg['stream.info.discipline']}"/>
+                        <p:selectOneMenu id="discipline" value="#{streamBean.stream.discipline}"
+                                         converter="entityConverter"
+                                         required="true">
+                            <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.discipline']}"/>
+                            <f:selectItems value="#{sessionBean.disciplines}" var="discipline"
+                                           itemLabel="#{discipline.name}" itemValue="#{discipline}"/>
+                            <p:ajax update=":streamInfoForm:streamDetail"/>
+                        </p:selectOneMenu>
 
-                    <p:outputLabel for="department" value="#{msg['stream.info.department']}"/>
-                    <p:selectOneMenu id="department" value="#{streamBean.stream.department}"
-                                     converter="entityConverter">
-                        <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.department']}"/>
-                        <f:selectItems value="#{sessionBean.departments}" var="department"
-                                       itemLabel="#{department.name}" itemValue="#{department}"/>
-                        <p:ajax update=":streamInfoForm:streamDetail"/>
-                    </p:selectOneMenu>
+                        <p:outputLabel for="department" value="#{msg['stream.info.department']}"/>
+                        <p:selectOneMenu id="department" value="#{streamBean.stream.department}"
+                                         converter="entityConverter">
+                            <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.department']}"/>
+                            <f:selectItems value="#{sessionBean.departments}" var="department"
+                                           itemLabel="#{department.name}" itemValue="#{department}"/>
+                            <p:ajax update=":streamInfoForm:streamDetail"/>
+                        </p:selectOneMenu>
 
 
-                    <p:outputLabel for="name" value="#{msg['stream.info.name']}"/>
-                    <p:inputText id="name" value="#{streamBean.stream.name}" required="true">
-                        <p:ajax update=":streamInfoForm:streamDetail"/>
-                    </p:inputText>
+                        <p:outputLabel for="name" value="#{msg['stream.info.name']}"/>
+                        <p:inputText id="name" value="#{streamBean.stream.name}" required="true">
+                            <p:ajax update=":streamInfoForm:streamDetail"/>
+                        </p:inputText>
 
-                    <p:outputLabel for="course" value="#{msg['label.course']}"/>
-                    <p:selectOneMenu id="course" value="#{streamBean.stream.course}">
-                        <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.course']}"/>
-                        <f:selectItem itemValue="#{1}" itemLabel="1"/>
-                        <f:selectItem itemValue="#{2}" itemLabel="2"/>
-                        <f:selectItem itemValue="#{3}" itemLabel="3"/>
-                        <f:selectItem itemValue="#{4}" itemLabel="4"/>
-                        <f:selectItem itemValue="#{5}" itemLabel="5"/>
-                        <f:selectItem itemValue="#{6}" itemLabel="6"/>
-                        <p:ajax update=":streamInfoForm:streamDetail"/>
-                    </p:selectOneMenu>
+                        <p:outputLabel for="course" value="#{msg['label.course']}"/>
+                        <p:selectOneMenu id="course" value="#{streamBean.stream.course}">
+                            <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.course']}"/>
+                            <f:selectItem itemValue="#{1}" itemLabel="1"/>
+                            <f:selectItem itemValue="#{2}" itemLabel="2"/>
+                            <f:selectItem itemValue="#{3}" itemLabel="3"/>
+                            <f:selectItem itemValue="#{4}" itemLabel="4"/>
+                            <f:selectItem itemValue="#{5}" itemLabel="5"/>
+                            <f:selectItem itemValue="#{6}" itemLabel="6"/>
+                            <p:ajax update=":streamInfoForm:streamDetail"/>
+                        </p:selectOneMenu>
 
-                    <p:outputLabel for="active" value="#{msg['stream.active']}"/>
-                    <p:selectBooleanCheckbox id="active" value="#{streamBean.stream.active}"/>
+                        <p:outputLabel for="active" value="#{msg['stream.active']}"/>
+                        <p:selectBooleanCheckbox id="active" value="#{streamBean.stream.active}"/>
 
-                    <p:outputLabel for="expirationDate" value="#{msg['label.expirationDate']}"/>
-                    <p:calendar id="expirationDate" value="#{streamBean.stream.expirationDate}"
-                                converter="localDateConverter" pattern="dd.MM.yyyy">
-                    </p:calendar>
+                        <p:outputLabel for="expirationDate" value="#{msg['label.expirationDate']}"/>
+                        <p:calendar id="expirationDate" value="#{streamBean.stream.expirationDate}"
+                                    converter="localDateConverter" pattern="dd.MM.yyyy">
+                        </p:calendar>
+                    </p:panelGrid>
+
+                    <p:panelGrid columns="2" columnClasses="label,value" styleClass="noBorder">
+
+                        <p:outputLabel for="lectureCount" value="#{msg['label.lectureCount']}"/>
+                        <p:inputText id="lectureCount" value="#{streamBean.stream.lectureCount}"/>
+
+                        <p:outputLabel for="practicalCount" value="#{msg['label.practicalCount']}"/>
+                        <p:inputText id="practicalCount" value="#{streamBean.stream.practicalCount}"/>
+
+                        <p:outputLabel for="labCount" value="#{msg['label.labCount']}"/>
+                        <p:inputText id="labCount" value="#{streamBean.stream.labCount}"/>
+
+                    </p:panelGrid>
+
                 </p:panelGrid>
 
                 <p:outputLabel for="groups" value="#{msg['stream.info.groups']}"/>
@@ -77,7 +94,7 @@
 
                 <!--<p:outputLabel for="description" value="#{msg['label.description']}"/>-->
                 <!--<p:inputTextarea id="description" value="#{streamBean.stream.description}" styleClass="block w100pc">-->
-                    <!--<p:ajax update=":streamInfoForm:streamDetail"/>-->
+                <!--<p:ajax update=":streamInfoForm:streamDetail"/>-->
                 <!--</p:inputTextarea>-->
 
                 <p:outputPanel>
@@ -87,6 +104,7 @@
                                      update=":streamInfoForm:streamDetail">
                         <f:setPropertyActionListener value="#{null}" target="#{streamsBean.streams}"/>
                         <f:setPropertyActionListener value="#{null}" target="#{sessionBean.streams}"/>
+                        <f:setPropertyActionListener value="#{null}" target="#{lessonsBean.lessons}"/>
                     </p:commandButton>
                 </p:outputPanel>
             </p:outputPanel>

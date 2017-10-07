@@ -67,6 +67,15 @@ public class Stream implements AssistantEntity {
     @JoinColumn(name = "department_id", referencedColumnName = "id")
     private Department department;
 
+    @Column(name = "lecture_count")
+    private Integer lectureCount;
+
+    @Column(name = "practical_count")
+    private Integer practicalCount;
+
+    @Column(name = "lab_count")
+    private Integer labCount;
+
     public Stream() {
     }
 
