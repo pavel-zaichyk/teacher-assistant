@@ -41,7 +41,7 @@ INSERT INTO STREAM_GROUP (stream_id, group_id) VALUES (3, 5);
 
 INSERT INTO LESSON (name, description, stream_id, type_id, date, schedule_id) VALUES ('Занятие1', 'ОписаниеЗанятие1', 1, 1, '2017-01-01', 2);
 INSERT INTO LESSON (name, description, stream_id, type_id, date, schedule_id) VALUES ('Занятие2', 'ОписаниеЗанятие2', 1, 1, '2017-01-02', 3);
-INSERT INTO LESSON (name, description, stream_id, type_id, group_id, date, schedule_id) VALUES ('Занятие3', 'ОписаниеЗанятие3', 1, 2, 1, '2017-02-02', 2);
+INSERT INTO LESSON (name, description, stream_id, type_id, group_id, date, schedule_id, index_number) VALUES ('Занятие3', 'ОписаниеЗанятие3', 1, 2, 1, '2017-02-02', 2, 2);
 INSERT INTO LESSON (name, description, stream_id, type_id, group_id, date, schedule_id) VALUES ('Занятие4', 'ОписаниеЗанятие4', 1, 2, 1, '2017-02-03', 2);
 INSERT INTO LESSON (name, description, stream_id, type_id, group_id, date, schedule_id) VALUES ('Занятие5', 'ОписаниеЗанятие5', 2, 2, 1, '2017-02-03', 2);
 INSERT INTO LESSON (name, description, stream_id, type_id, group_id, date, schedule_id) VALUES ('Занятие6', 'ОписаниеЗанятие6', 4, 2, 1, '2017-02-02', 2);

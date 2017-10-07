@@ -82,7 +82,7 @@
                       filterMatchMode="startsWith"
                       styleClass="#{(lesson.type eq 'PRACTICAL' or lesson.type eq 'LAB') ? 'blue' : ''}"
             >
-                <h:outputText value="#{msg[lesson.type.key]}"/>
+                <h:outputText value="#{msg[lesson.type.key].concat(' ').concat(utility.getLessonCount(lesson))}"/>
             </p:column>
             <p:column headerText="#{msg['lesson.group']}"
                       sortBy="#{lesson.group.name}"

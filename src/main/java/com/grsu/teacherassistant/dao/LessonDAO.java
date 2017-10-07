@@ -97,4 +97,20 @@ public class LessonDAO {
         }
         return null;
     }
+
+    public static Integer getNextIndex(int streamId, LessonType lessonType) {
+        LOGGER.info("Start getting lesson index.");
+        try (Session session = DBSessionFactory.getSession()) {
+            Query query = session.createQuery("select case when max(l.index) is null THEN 1 ELSE (max(l.index) + 1) end from Lesson as l where l.stream.id = :streamId and l.type = :type");
+            query.setParameter("streamId", streamId);
+            query.setParameter("type", lessonType);
+            return (Integer) query.getSingleResult();
+        } catch (RuntimeException e) {
+            LOGGER.error(e.getMessage(), e);
+        } finally {
+            LOGGER.info("End getting lesson index.");
+
+        }
+        return 0;
+    }
 }
