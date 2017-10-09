@@ -71,6 +71,7 @@
 #wrapper .inline-block {display: inline-block;}
 
 /* Font Size */
+#wrapper .font-size-8pt {font-size: 8pt;}
 #wrapper .font-size-10pt {font-size: 10pt;}
 #wrapper .font-size-11pt {font-size: 11pt;}
 #wrapper .font-size-12pt {font-size: 12pt;}
@@ -179,7 +180,7 @@ body {
 	height: 90%;
 }
 
-.v-align-top .ui-panelgrid-cell {
+.v-align-top, .v-align-top .ui-panelgrid-cell {
 	vertical-align: top;
 }
 
@@ -545,7 +546,6 @@ body {
 }
 
 .lesson-mode-table .notes-info {
-	display: block;
 	text-align: right;
 }
 

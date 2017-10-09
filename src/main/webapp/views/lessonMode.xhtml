@@ -244,6 +244,9 @@
                         <p:outputLabel value="#{lesson.date}" styleClass="font-size-12pt"/>
                         <p:outputLabel styleClass="block uppercase font-size-10pt"
                                        value="#{msg['label.'.concat(lesson.type.key)]}"/>
+                        <p:outputLabel styleClass="inline-block v-align-top">
+                            <h:outputText styleClass="font-size-8pt block" value="#{utility.getLessonCount(lesson.lesson)}" />
+                        </p:outputLabel>
                         <p:outputLabel id="noteLesson" styleClass="notes-info"
                                        rendered="#{lesson.lesson.notes.size() gt 0}">
                             <i class="fa fa-info-circle"></i>
