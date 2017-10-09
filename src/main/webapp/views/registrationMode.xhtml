@@ -12,11 +12,9 @@
 
         <p:panelGrid id="lessonInfo" columns="2" styleClass="noBorder lesson-info">
             <p:panel id="lastVisitInfo" styleClass="visit-info">
-                <p:panelGrid columns="2">
-                    <p:panel styleClass="image">
-                        <p:graphicImage
-                            value="#{imageBean.getImagePath(registrationModeBean.processedStudent.cardUid)}"/>
-                    </p:panel>
+                <p:panelGrid columns="2" columnClasses="w250px h280px,">
+                    <p:graphicImage styleClass="student-photo"
+                                    value="#{imageBean.getImagePath(registrationModeBean.processedStudent.cardUid)}"/>
                     <p:panel rendered="#{registrationModeBean.processedStudent eq null}">
                         <p:outputLabel value="#{msg['lesson.visit.noData']}"/>
                     </p:panel>
@@ -156,7 +154,8 @@
                             <p:outputLabel value="#{registrationModeBean.selectedLesson.stream.name}"/>
                             <p:outputLabel rendered="#{registrationModeBean.selectedLesson.group ne null}"
                                            value="#{registrationModeBean.selectedLesson.group.name}"/>
-                            <p:outputLabel value="#{msg[registrationModeBean.selectedLesson.type.key].concat(' ').concat(utility.getLessonCount(registrationModeBean.selectedLesson))}"/>
+                            <p:outputLabel
+                                value="#{msg[registrationModeBean.selectedLesson.type.key].concat(' ').concat(utility.getLessonCount(registrationModeBean.selectedLesson))}"/>
                             <p:outputLabel value="#{registrationModeBean.selectedLesson.date}"
                                            converter="localDateConverter"/>
                             <p:outputLabel value="#{registrationModeBean.selectedLesson.schedule.caption}"/>
