@@ -18,12 +18,12 @@ import java.io.Serializable;
 @Getter @Setter
 public class SerialBean implements Serializable {
 	private boolean recordStarted = false;
-	private boolean soundEnabled = true;
+	private boolean soundEnabled = false; //TODO: change to true
 	private SerialListenerBean currentListener;
 
 
-	public boolean process(String uid) {
-		return currentListener.process(uid);
+	public boolean process(String uid, String name) {
+		return currentListener.process(uid, name);
 	}
 
 	public void startRecord() {
@@ -45,7 +45,7 @@ public class SerialBean implements Serializable {
 	}
 
 	public void enableSound() {
-		soundEnabled = true;
+		soundEnabled = false; //TODO: change to true
 	}
 
 	public void disableSound() {
