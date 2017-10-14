@@ -328,7 +328,7 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 	}
 
 	@Override
-	public boolean process(String uid) {
+	public boolean process(String uid, String name) {
 		Student student = EntityUtils.getPersonByUid(sessionBean.getStudents(), uid);
 		if (student != null) {
 			initStudentMode(student, null);
