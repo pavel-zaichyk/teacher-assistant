@@ -7,8 +7,14 @@
 >
     <h:form id="lessonForm">
         <p:socket channel="/register">
-            <p:ajax event="message" update="lastVisitInfo attendanceInfo presentStudents absentStudents"/>
+            <p:ajax event="message" update="lastVisitInfo attendanceInfo presentStudents absentStudents script"
+            oncomplete="notificationScript();"/>
         </p:socket>
+
+        <p:remoteCommand id="script" name = "notificationScript"
+                         oncomplete="spawnNotification('#{(not registrationModeBean.studentNotExist and registrationModeBean.processedStudent ne null) ? registrationModeBean.getStudentSkip(registrationModeBean.processedStudent) : msg['label.studentNotExist']}',
+                    '#{imageBean.getImagePath(registrationModeBean.processedStudent.cardUid)}',
+                    '#{(not registrationModeBean.studentNotExist) ? registrationModeBean.processedStudent.fullName : registrationModeBean.processedStudent.cardUid}');" />
 
         <p:panelGrid id="lessonInfo" columns="2" styleClass="noBorder lesson-info">
             <p:panel id="lastVisitInfo" styleClass="visit-info">
