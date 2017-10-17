@@ -292,12 +292,12 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
 
             processedStudent = student;
             updateLessonStudents();
-            FacesUtils.push("/register", processedStudent);
+            FacesUtils.push("/register", processedStudent.getCardUid());
             LOGGER.info("Student registered");
             return true;
         } else {
             processedStudent = student;
-            FacesUtils.push("/register", processedStudent);
+            FacesUtils.push("/register", processedStudent.getCardUid());
             return false;
         }
     }
