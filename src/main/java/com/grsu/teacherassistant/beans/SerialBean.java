@@ -5,6 +5,8 @@ import com.grsu.teacherassistant.utils.LocaleUtils;
 import com.grsu.teacherassistant.utils.SerialUtils;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -17,12 +19,15 @@ import java.io.Serializable;
 @ViewScoped
 @Getter @Setter
 public class SerialBean implements Serializable {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SerialBean.class);
+
 	private boolean recordStarted = false;
 	private boolean soundEnabled = true;
 	private SerialListenerBean currentListener;
 
 
 	public boolean process(String uid) {
+        LOGGER.info("==> process(); uid = " + uid);
 		return currentListener.process(uid);
 	}
 
