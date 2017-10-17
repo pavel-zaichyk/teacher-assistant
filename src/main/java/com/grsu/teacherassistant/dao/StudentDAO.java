@@ -84,6 +84,8 @@ public class StudentDAO {
     }
 
     public static List<SkipInfo> getStudentSkipInfo(List<Integer> studentId, int streamId, int lessonId) {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==> getStudentSkipInfo(); studentId = " + studentId + "; streamId = " + streamId + "; lessonId = " + lessonId);
         Session session = DBSessionFactory.getSession();
         try {
             Query query = session.createNamedQuery("StudentSkipInfoQuery", SkipInfo.class);
@@ -97,6 +99,7 @@ public class StudentDAO {
             LOGGER.error(e.getMessage(), e);
         } finally {
             session.close();
+            LOGGER.info("<== getStudentSkipInfo(); " + (System.currentTimeMillis() - t));
         }
         return null;
     }

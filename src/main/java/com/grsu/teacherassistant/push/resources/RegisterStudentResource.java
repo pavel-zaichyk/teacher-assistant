@@ -1,20 +1,18 @@
 package com.grsu.teacherassistant.push.resources;
 
-import com.grsu.teacherassistant.entities.Student;
 import org.primefaces.push.annotation.OnMessage;
 import org.primefaces.push.annotation.PushEndpoint;
 import org.primefaces.push.impl.JSONEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @PushEndpoint("/register")
 public class RegisterStudentResource {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RegisterStudentResource.class);
 
-	@OnMessage(encoders = {JSONEncoder.class})
-	public Student onMessage(Student student) {
-		Student st = new Student();
-		st.setCardId(student.getCardId());
-		st.setCardUid(student.getCardUid());
-		st.setLastName(student.getLastName());
-		st.setFirstName(student.getFirstName());
-		return st;
-	}
+    @OnMessage(encoders = {JSONEncoder.class})
+    public String onMessage(String cardUid) {
+        LOGGER.info("==> onMessage(); cardUid = " + cardUid);
+        return cardUid;
+    }
 }
