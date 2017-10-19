@@ -20,6 +20,8 @@ public class EntityDAO {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EntityDAO.class);
 
 	public static void add(AssistantEntity entity) {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==> add(entity);");
 		Transaction transaction = null;
 		Session session = DBSessionFactory.getSession();
 
@@ -36,9 +38,12 @@ public class EntityDAO {
 		} finally {
 			session.close();
 		}
+        LOGGER.info("<== add(entity); " + (System.currentTimeMillis() - t));
 	}
 
 	public static void add(List<AssistantEntity> entities) {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==> add(entities);");
 		Transaction transaction = null;
 		Session session = DBSessionFactory.getSession();
 
@@ -63,9 +68,12 @@ public class EntityDAO {
 		} finally {
 			session.close();
 		}
+        LOGGER.info("<== add(entities); " + (System.currentTimeMillis() - t));
 	}
 
 	public static void delete(AssistantEntity entity) {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==> delete(entity);");
 		Transaction transaction = null;
 		Session session = DBSessionFactory.getSession();
 
@@ -82,9 +90,12 @@ public class EntityDAO {
 		} finally {
 			session.close();
 		}
+        LOGGER.info("<== delete(entity); " + (System.currentTimeMillis() - t));
 	}
 
 	public static void delete(List<AssistantEntity> entities) {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==> delete(entities);");
 		Transaction transaction = null;
 		Session session = DBSessionFactory.getSession();
 
@@ -109,9 +120,12 @@ public class EntityDAO {
 		} finally {
 			session.close();
 		}
+        LOGGER.info("<== delete(entities); " + (System.currentTimeMillis() - t));
 	}
 
 	public static void update(AssistantEntity entity) {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==> update(entity);");
 		Transaction transaction = null;
 		Session session = DBSessionFactory.getSession();
 
@@ -128,9 +142,12 @@ public class EntityDAO {
 		} finally {
 			session.close();
 		}
+        LOGGER.info("<== update(entity); " + (System.currentTimeMillis() - t));
 	}
 
 	public static void update(List<AssistantEntity> entities) {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==> update(entities);");
 		Transaction transaction = null;
 		Session session = DBSessionFactory.getSession();
 
@@ -155,6 +172,7 @@ public class EntityDAO {
 		} finally {
 			session.close();
 		}
+        LOGGER.info("<== update(entities); " + (System.currentTimeMillis() - t));
 	}
 
 	public static void save(AssistantEntity entity) {
@@ -166,6 +184,8 @@ public class EntityDAO {
 	}
 
 	public static <T extends AssistantEntity> T get(Class<T> entityType, int id) {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==> get(); entityType = " + entityType + "; id = " + id);
 		Session session = DBSessionFactory.getSession();
 
 		try {
@@ -174,11 +194,14 @@ public class EntityDAO {
 			LOGGER.error(e.getMessage(), e);
 		} finally {
 			session.close();
+            LOGGER.info("<== get(); " + (System.currentTimeMillis() - t));
 		}
 		return null;
 	}
 
 	public static <T extends AssistantEntity> List<T> getAll(Class<T> entityType) {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==> getAll(); entityType = " + entityType + ";");
 		Session session = DBSessionFactory.getSession();
 
 		try {
@@ -189,11 +212,14 @@ public class EntityDAO {
 		} finally {
 			LOGGER.info("End loading [ " + entityType + " ] from database.");
 			session.close();
+            LOGGER.info("<== getAll(); " + (System.currentTimeMillis() - t));
 		}
 		return null;
 	}
 
 	public static Student initialize() {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==> initialize();");
         Transaction transaction = null;
         Session session = DBSessionFactory.getSession();
         Student student = null;
@@ -211,6 +237,7 @@ public class EntityDAO {
             LOGGER.error(e.getMessage(), e);
         } finally {
             session.close();
+            LOGGER.info("<== initialize(); " + (System.currentTimeMillis() - t));
         }
         return student;
     }
