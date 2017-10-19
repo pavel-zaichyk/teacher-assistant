@@ -55,6 +55,50 @@
                                          update=":lessonForm:lessonButtons"
                                          actionListener="#{serialBean.stopRecord}"
                                          rendered="#{serialBean.recordStarted}"/>
+        <p:remoteCommand id="script" name = "notificationScript"
+                         oncomplete="spawnNotification('#{(not registrationModeBean.studentNotExist and registrationModeBean.processedStudent ne null) ? registrationModeBean.getStudentSkip(registrationModeBean.processedStudent) : msg['label.studentNotExist']}',
+                    '#{imageBean.getImagePath(registrationModeBean.processedStudent.cardUid)}',
+                    '#{(not registrationModeBean.studentNotExist) ? registrationModeBean.processedStudent.fullName : registrationModeBean.processedStudent.cardUid}');" />
+
+        <p:panelGrid id="lessonInfo" columns="2" styleClass="noBorder lesson-info">
+            <p:panel id="lastVisitInfo" styleClass="visit-info">
+                <p:panelGrid columns="2" columnClasses="w250px h280px,">
+                    <p:graphicImage styleClass="student-photo"
+                                    value="#{imageBean.getImagePath(registrationModeBean.processedStudent.cardUid)}"/>
+                    <p:panel rendered="#{registrationModeBean.processedStudent eq null}">
+                        <p:outputLabel value="#{msg['lesson.visit.noData']}"/>
+                    </p:panel>
+                    <p:panel rendered="#{registrationModeBean.processedStudent ne null}" styleClass="visit-label">
+                        <p:outputLabel id="visitLastName" value="#{registrationModeBean.processedStudent.lastName}"/>
+                        <p:outputLabel id="visitFirstName" value="#{registrationModeBean.processedStudent.firstName}"/>
+                        <p:outputLabel id="visitGroup" escape="false"
+                                       styleClass="font-size-20pt margin-top-20px margin-bottom-20px"
+                                       value="#{registrationModeBean.processedStudent.groupNames}"/>
+                        <p:outputLabel styleClass="lowercase" escape="false"
+                                       value="#{registrationModeBean.getStudentSkip(registrationModeBean.processedStudent)}"
+                                       rendered="#{not registrationModeBean.studentNotExist}"/>
+                        <p:outputLabel value="#{msg['label.reRegistration']}"
+                                       styleClass="font-size-12pt blue margin-top-20px"
+                                       rendered="#{registrationModeBean.reRegistration}"/>
+                        <p:outputLabel value="#{registrationModeBean.processedStudent.cardUid}"
+                                       rendered="#{registrationModeBean.studentNotExist}"/>
+                        <p:outputLabel value="#{msg['label.studentNotExist']}"
+                                       styleClass="font-size-12pt red margin-top-20px"
+                                       rendered="#{registrationModeBean.studentNotExist}"/>
+                    </p:panel>
+                </p:panelGrid>
+            </p:panel>
+            <p:panel styleClass="right">
+                <p:panelGrid columns="1" styleClass="inline">
+                    <p:panel id="lessonButtons" styleClass="lesson-buttons">
+                        <p:commandButton title="#{msg['btn.startRecord']}" icon="fa fa-fw fa-play"
+                                         update=":lessonForm:lessonButtons"
+                                         actionListener="#{serialBean.startRecord}"
+                                         rendered="#{not serialBean.recordStarted}"/>
+                        <p:commandButton title="#{msg['btn.stopRecord']}" icon="fa fa-fw fa-stop"
+                                         update=":lessonForm:lessonButtons"
+                                         actionListener="#{serialBean.stopRecord}"
+                                         rendered="#{serialBean.recordStarted}"/>
 
                         <p:commandButton title="#{msg['btn.enableSound']}" icon="fa fa-fw fa-volume-up"
                                          update=":lessonForm:lessonButtons"

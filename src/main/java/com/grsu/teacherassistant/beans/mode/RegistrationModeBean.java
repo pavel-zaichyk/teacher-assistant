@@ -28,7 +28,13 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.grsu.teacherassistant.utils.FacesUtils.closeDialog;
@@ -238,6 +244,8 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
 
     @Override
     public boolean process(String uid) {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==> process(); uid = " + uid);
         reRegistration = false;
         studentNotExist = false;
         Student student = EntityUtils.getPersonByUid(absentStudents, uid);
@@ -245,7 +253,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             student = EntityUtils.getPersonByUid(presentStudents, uid);
             if (student != null) {
                 reRegistration = true;
-                LOGGER.info("Student not registered. Reason: Uid[ " + uid + " ] already exists.");
+                LOGGER.info("Student not registered. Reason: Uid[ " + uid + " ] already registered.");
 //				return false;
             } else {
                 student = EntityUtils.getPersonByUid(allStudents, uid);
@@ -257,10 +265,13 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             student = new Student();
             student.setCardUid(uid);
         }
+        LOGGER.info("<== process(); reRegistration = " + reRegistration + "; studentNotExist " + studentNotExist + "; student = " + student + "; " + (System.currentTimeMillis() - t));
         return processStudent(student);
     }
 
     private boolean processStudent(Student student) {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==> processStudent();");
         if (!reRegistration && !studentNotExist) {
             presentStudents.add(student);
             if (absentStudents.contains(student)) {
@@ -292,12 +303,15 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
 
             processedStudent = student;
             updateLessonStudents();
-            FacesUtils.push("/register", processedStudent);
+            FacesUtils.push("/register", processedStudent.getCardUid());
             LOGGER.info("Student registered");
+            LOGGER.info("<== processStudent(); registered = true" + (System.currentTimeMillis() - t));
             return true;
         } else {
             processedStudent = student;
-            FacesUtils.push("/register", processedStudent);
+            FacesUtils.push("/register", processedStudent.getCardUid());
+            LOGGER.info("Student not registered");
+            LOGGER.info("<== processStudent(); registered = false" + (System.currentTimeMillis() - t));
             return false;
         }
     }
@@ -452,6 +466,8 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
     }
 
     private void updateSkipInfo(List<Student> students) {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==> updateSkipInfo();");
         List<Integer> studentIds = students.stream().map(Student::getId).collect(Collectors.toList());
 
         List<SkipInfo> studentSkipInfo = StudentDAO.getStudentSkipInfo(studentIds, selectedLesson.getStream().getId(), selectedLesson.getId());
@@ -476,7 +492,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             }
         }
 
-
+        LOGGER.info("<== updateSkipInfo(); " + (System.currentTimeMillis() - t));
     }
 
 	/* LESSON STUDENTS TABLES */
@@ -501,8 +517,11 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
     }
 
     private void updateLessonStudents() {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==> updateLessonStudents();");
         generateLessonStudents(lessonAbsentStudents, absentStudents);
         generateLessonStudents(lessonPresentStudents, presentStudents);
+        LOGGER.info("<== updateLessonStudents(); " + (System.currentTimeMillis() - t));
     }
 
     public void addLessonStudent(LessonStudentModel lessonStudentModel) {
