@@ -174,13 +174,4 @@ CREATE TABLE STUDENT_LESSON (
   FOREIGN KEY (lesson_id)      REFERENCES LESSON(id)
 );
 
--- ALARM
-CREATE TABLE ALARM (
-  id          INTEGER PRIMARY KEY AUTOINCREMENT,
-  active      INTEGER DEFAULT 0,
-  time        INTEGER,
-  description TEXT,
-  sound       TEXT
-);
-
 COMMIT;
