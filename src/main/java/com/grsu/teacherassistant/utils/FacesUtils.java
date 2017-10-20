@@ -3,11 +3,15 @@ package com.grsu.teacherassistant.utils;
 import org.primefaces.context.RequestContext;
 import org.primefaces.push.EventBus;
 import org.primefaces.push.EventBusFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 public class FacesUtils {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FacesUtils.class);
+
 	public static void addInfo(String summary, String detail) {
 		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary, detail);
 		FacesContext.getCurrentInstance().addMessage(null, message);
@@ -59,6 +63,7 @@ public class FacesUtils {
 	 * Resource (push endpoint) may not work with nulls
 	 */
 	public static void push(String channel, Object data) {
+        LOGGER.info("==> push(); channel = " + channel + "; data = " + data);
 		EventBus eventBus = EventBusFactory.getDefault().eventBus();
 		eventBus.publish(channel, data);
 	}
