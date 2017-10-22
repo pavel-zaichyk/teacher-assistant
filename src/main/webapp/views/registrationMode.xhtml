@@ -6,6 +6,7 @@
                 xmlns:pe="http://primefaces.org/ui/extensions"
 >
     <h:form id="lessonForm">
+        <p:socket onMessage="spawnNotification" channel="/notify"/>
         <p:socket channel="/register">
             <p:ajax event="message" update="lastVisitInfo attendanceInfo presentStudents absentStudents"/>
         </p:socket>
