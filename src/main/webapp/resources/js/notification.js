@@ -2,13 +2,11 @@ Notification.requestPermission().then(function (result) {
 	console.log(result);
 });
 
-function spawnNotification(theBody, theIcon, theTitle) {
+function spawnNotification(notification) {
 	var options = {
-		body: theBody,
-		icon: theIcon
+		body: notification.body,
+		icon: notification.image
 	};
-	console.log("body = " + theBody);
-	console.log("title = " + theTitle);
-	var n = new Notification(theTitle, options);
-	setTimeout(n.close.bind(n), 2000);
+	var n = new Notification(notification.title, options);
+	setTimeout(n.close.bind(n), notification.timeout);
 }
