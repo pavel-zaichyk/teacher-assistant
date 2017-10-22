@@ -14,67 +14,70 @@ import java.util.*;
  */
 public class LocaleUtils extends ResourceBundle {
 
-	protected static final String BUNDLE_NAME = "messages.messages";
-	protected static final String BUNDLE_EXTENSION = "properties";
-	protected static final Control UTF8_CONTROL = new UTF8Control();
+    protected static final String BUNDLE_NAME = "messages.messages";
+    protected static final String BUNDLE_EXTENSION = "properties";
+    protected static final Control UTF8_CONTROL = new UTF8Control();
 
-	public LocaleUtils() {
-		setParent(ResourceBundle.getBundle(BUNDLE_NAME,
-				FacesContext.getCurrentInstance().getViewRoot().getLocale(), UTF8_CONTROL));
-	}
+    public LocaleUtils() {
+        this(FacesContext.getCurrentInstance().getViewRoot().getLocale());
+    }
 
-	@Override
-	protected Object handleGetObject(String key) {
-		return parent.getObject(key);
-	}
+    public LocaleUtils(Locale locale) {
+        setParent(ResourceBundle.getBundle(BUNDLE_NAME, locale, UTF8_CONTROL));
+    }
 
-	@Override
-	public Enumeration getKeys() {
-		return parent.getKeys();
-	}
+    @Override
+    protected Object handleGetObject(String key) {
+        return parent.getObject(key);
+    }
 
-	public String getMessage(String key) {
-		return parent.getString(key);
-	}
+    @Override
+    public Enumeration getKeys() {
+        return parent.getKeys();
+    }
 
-	public String getMessage(String key, Object... params) {
-		try {
-			return MessageFormat.format(parent.getString(key), params);
-		} catch (MissingResourceException e) {
-			return '!' + key + '!';
-		}
-	}
+    public String getMessage(String key) {
+        return parent.getString(key);
+    }
 
-	protected static class UTF8Control extends Control {
-		public ResourceBundle newBundle
-				(String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
-				throws IllegalAccessException, InstantiationException, IOException {
-			// The below code is copied from default Control#newBundle() implementation.
-			// Only the PropertyResourceBundle line is changed to read the file as UTF-8.
-			String bundleName = toBundleName(baseName, locale);
-			String resourceName = toResourceName(bundleName, BUNDLE_EXTENSION);
-			ResourceBundle bundle = null;
-			InputStream stream = null;
-			if (reload) {
-				URL url = loader.getResource(resourceName);
-				if (url != null) {
-					URLConnection connection = url.openConnection();
-					if (connection != null) {
-						connection.setUseCaches(false);
-						stream = connection.getInputStream();
-					}
-				}
-			} else {
-				stream = loader.getResourceAsStream(resourceName);
-			}
-			if (stream != null) {
-				try {
-					bundle = new PropertyResourceBundle(new InputStreamReader(stream, "UTF-8"));
-				} finally {
-					stream.close();
-				}
-			}
-			return bundle;
-		}
-	}
+    public String getMessage(String key, Object... params) {
+        try {
+            return MessageFormat.format(parent.getString(key), params);
+        } catch (MissingResourceException e) {
+            return '!' + key + '!';
+        }
+    }
+
+    protected static class UTF8Control extends Control {
+        public ResourceBundle newBundle
+            (String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
+            throws IllegalAccessException, InstantiationException, IOException {
+            // The below code is copied from default Control#newBundle() implementation.
+            // Only the PropertyResourceBundle line is changed to read the file as UTF-8.
+            String bundleName = toBundleName(baseName, locale);
+            String resourceName = toResourceName(bundleName, BUNDLE_EXTENSION);
+            ResourceBundle bundle = null;
+            InputStream stream = null;
+            if (reload) {
+                URL url = loader.getResource(resourceName);
+                if (url != null) {
+                    URLConnection connection = url.openConnection();
+                    if (connection != null) {
+                        connection.setUseCaches(false);
+                        stream = connection.getInputStream();
+                    }
+                }
+            } else {
+                stream = loader.getResourceAsStream(resourceName);
+            }
+            if (stream != null) {
+                try {
+                    bundle = new PropertyResourceBundle(new InputStreamReader(stream, "UTF-8"));
+                } finally {
+                    stream.close();
+                }
+            }
+            return bundle;
+        }
+    }
 }
