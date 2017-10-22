@@ -52,7 +52,10 @@
                             actionListener="#{menuBean.loadCSV}"/>
             </p:submenu>
 
-            <p:submenu label="#{msg['menu.connection']}" icon="fa fa-fw fa-exchange">
+            <p:submenu label="#{msg['menu.settings']}" icon="fa fa-fw fa-wrench">
+                <p:menuitem value="#{msg['menu.alarm']}" icon="fa fa-fw #{alarmBean.active ? 'fa-toggle-on' : 'fa-toggle-off'}"
+                            actionListener="#{alarmBean.changeActive}" update=":menuForm:menu"/>
+                <p:separator/>
                 <p:menuitem value="#{msg['menu.connection.connect']}" icon="fa fa-fw fa-toggle-on"
                             actionListener="#{menuBean.connect}" update="@([id$=wrapper])"
                             disabled="#{sessionBean.connected}"/>
