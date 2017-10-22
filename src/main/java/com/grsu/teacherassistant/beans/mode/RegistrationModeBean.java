@@ -1,17 +1,12 @@
 package com.grsu.teacherassistant.beans.mode;
 
-import com.grsu.teacherassistant.beans.SerialBean;
-import com.grsu.teacherassistant.beans.SerialListenerBean;
-import com.grsu.teacherassistant.beans.SessionBean;
+import com.grsu.teacherassistant.beans.*;
 import com.grsu.teacherassistant.constants.Constants;
 import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.LessonDAO;
 import com.grsu.teacherassistant.dao.StudentDAO;
 import com.grsu.teacherassistant.entities.*;
-import com.grsu.teacherassistant.models.LazyStudentDataModel;
-import com.grsu.teacherassistant.models.LessonStudentModel;
-import com.grsu.teacherassistant.models.LessonType;
-import com.grsu.teacherassistant.models.SkipInfo;
+import com.grsu.teacherassistant.models.*;
 import com.grsu.teacherassistant.utils.EntityUtils;
 import com.grsu.teacherassistant.utils.FacesUtils;
 import com.grsu.teacherassistant.utils.LocaleUtils;
@@ -57,6 +52,12 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
 
     @ManagedProperty(value = "#{serialBean}")
     private SerialBean serialBean;
+
+    @ManagedProperty(value = "#{imageBean}")
+    private ImageBean imageBean;
+
+    @ManagedProperty(value = "#{localeBean}")
+    private LocaleBean localeBean;
 
     private Lesson selectedLesson;
     private Student processedStudent;
@@ -304,14 +305,16 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             processedStudent = student;
             updateLessonStudents();
             FacesUtils.push("/register", processedStudent.getCardUid());
+            pushStudentNotification();
             LOGGER.info("Student registered");
             LOGGER.info("<== processStudent(); registered = true" + (System.currentTimeMillis() - t));
             return true;
         } else {
             processedStudent = student;
             FacesUtils.push("/register", processedStudent.getCardUid());
+            pushStudentNotification();
             LOGGER.info("Student not registered");
-            LOGGER.info("<== processStudent(); registered = false" + (System.currentTimeMillis() - t));
+            LOGGER.info("<== processStudent(); registered = false; " + (System.currentTimeMillis() - t));
             return false;
         }
     }
@@ -539,7 +542,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
 
 
     public String getStudentSkip(Student student) {
-        LocaleUtils localeUtils = new LocaleUtils();
+        LocaleUtils localeUtils = new LocaleUtils(localeBean.getLocale());
         Map<String, Integer> studentSkipInfoMap = skipInfo.get(student.getId());
         if (studentSkipInfoMap != null) {
             Integer total = studentSkipInfoMap.get(Constants.TOTAL_SKIP);
@@ -604,4 +607,24 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
         closeDialog("addStudentsDialog");
     }
 
+    private Notification createStudentNotification() {
+        LocaleUtils localeUtils = new LocaleUtils(localeBean.getLocale());
+        Notification notification = new Notification();
+        notification.setTimeout(3000);
+
+        if (!studentNotExist) {
+            notification.setBody(getStudentSkip(processedStudent));
+            notification.setTitle(processedStudent.getFullName());
+        } else {
+            notification.setBody(localeUtils.getMessage("label.studentNotExist"));
+            notification.setTitle(processedStudent.getCardUid());
+        }
+
+        notification.setImage(imageBean.getImagePath(processedStudent.getCardUid()));
+        return notification;
+    }
+
+    private void pushStudentNotification() {
+        FacesUtils.push("/notify", createStudentNotification());
+    }
 }
