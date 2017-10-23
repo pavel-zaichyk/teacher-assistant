@@ -5,7 +5,9 @@ import com.grsu.teacherassistant.dao.LessonDAO;
 import com.grsu.teacherassistant.entities.Alarm;
 import com.grsu.teacherassistant.entities.Lesson;
 import com.grsu.teacherassistant.models.AlarmTask;
+import com.grsu.teacherassistant.utils.FacesUtils;
 import lombok.Data;
+import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +39,22 @@ public class AlarmBean implements Serializable {
 
     private Timer timer;
 
+    private List<Alarm> alarms;
+
+    private UploadedFile file;
+
+    public void initAlarm() {
+        FacesUtils.showDialog("alarmsDialog");
+    }
+
+
+    public List<Alarm> getAlarms() {
+        if (alarms == null) {
+            alarms = EntityDAO.getAll(Alarm.class);
+        }
+        return alarms;
+    }
+
     public void setAlarms() {
         LOGGER.info("==> setAlarms();");
 
@@ -47,11 +65,10 @@ public class AlarmBean implements Serializable {
 
         if (active) {
             List<Lesson> lessons = LessonDAO.getAll(LocalDate.now().atStartOfDay(), LocalDate.now().atStartOfDay(), false, null);
-            List<Alarm> alarms = EntityDAO.getAll(Alarm.class);
 
             for (Lesson lesson : lessons) {
                 if (lesson.getDate().toLocalDate().equals(LocalDate.now()) && lesson.getSchedule().getEnd().isAfter(LocalTime.now())) {
-                    for (Alarm alarm : alarms) {
+                    for (Alarm alarm : getAlarms()) {
                         if (alarm.isActive()) {
                             Date startTime = new Date(lesson.getSchedule().getBegin().atDate(LocalDate.now()).plusMinutes(alarm.getTime()).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
                             if (startTime.getTime() > new Date().getTime()) {
