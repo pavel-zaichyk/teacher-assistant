@@ -98,6 +98,11 @@
                 <p:resetInput target=":lessonInfoForm:lessonDetail"/>
             </p:menuitem>
 
+            <p:menuitem value="Alarm"
+                        icon="fa fa-fw fa-book"
+                        update=":alarmsForm"
+                        actionListener="#{alarmBean.initAlarm}">
+            </p:menuitem>
 
         </p:menubar>
     </h:form>
