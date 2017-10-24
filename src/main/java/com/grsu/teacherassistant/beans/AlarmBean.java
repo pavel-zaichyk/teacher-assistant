@@ -1,5 +1,6 @@
 package com.grsu.teacherassistant.beans;
 
+import com.grsu.teacherassistant.dao.AlarmDAO;
 import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.LessonDAO;
 import com.grsu.teacherassistant.entities.Alarm;
@@ -7,6 +8,7 @@ import com.grsu.teacherassistant.entities.Lesson;
 import com.grsu.teacherassistant.models.AlarmTask;
 import com.grsu.teacherassistant.utils.FacesUtils;
 import lombok.Data;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,9 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
+
+import static com.grsu.teacherassistant.utils.FacesUtils.closeDialog;
+import static com.grsu.teacherassistant.utils.FacesUtils.update;
 
 /**
  * @author Pavel Zaychick
@@ -41,16 +46,9 @@ public class AlarmBean implements Serializable {
 
     private List<Alarm> alarms;
 
-    private UploadedFile file;
-
-    public void initAlarm() {
-        FacesUtils.showDialog("alarmsDialog");
-    }
-
-
     public List<Alarm> getAlarms() {
         if (alarms == null) {
-            alarms = EntityDAO.getAll(Alarm.class);
+            alarms = AlarmDAO.getAll();
         }
         return alarms;
     }
@@ -69,7 +67,7 @@ public class AlarmBean implements Serializable {
             for (Lesson lesson : lessons) {
                 if (lesson.getDate().toLocalDate().equals(LocalDate.now()) && lesson.getSchedule().getEnd().isAfter(LocalTime.now())) {
                     for (Alarm alarm : getAlarms()) {
-                        if (alarm.isActive()) {
+                        if (Boolean.TRUE.equals(alarm.getActive())) {
                             Date startTime = new Date(lesson.getSchedule().getBegin().atDate(LocalDate.now()).plusMinutes(alarm.getTime()).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
                             if (startTime.getTime() > new Date().getTime()) {
                                 timer.schedule(new AlarmTask(alarm, this), startTime);
@@ -81,5 +79,30 @@ public class AlarmBean implements Serializable {
             }
         }
         LOGGER.info("<== setAlarms();");
+    }
+
+    public void initAlarm() {
+        FacesUtils.showDialog("alarmsDialog");
+    }
+
+    public void exit() {
+        closeDialog("alarmsDialog");
+    }
+
+    public void save() {
+        AlarmDAO.save(alarms);
+        update("views");
+        exit();
+    }
+
+    public void handleFileUpload(FileUploadEvent event) {
+        LOGGER.info("!!!!!!!!!!!!!!");
+        LOGGER.info("!!!!!!!!!!!!!!");
+        LOGGER.info("!!!!!!!!!!!!!!");
+        LOGGER.info("!!!!!!!!!!!!!!");
+LOGGER.info(event.getFile().getFileName());
+        LOGGER.info("!!!!!!!!!!!!!!");
+        LOGGER.info("!!!!!!!!!!!!!!");
+        LOGGER.info("!!!!!!!!!!!!!!");
     }
 }

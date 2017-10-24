@@ -10,7 +10,7 @@ CREATE TABLE ALARM (
 );
 
 INSERT INTO ALARM (active, time, description) VALUES (1, 0, 'Начало пары.');
-INSERT INTO ALARM (active, time, description) VALUES (1, 115, 'До окончания пары осталась 5 минут.');
-INSERT INTO ALARM (active, time, description) VALUES (1, 119, 'До окончания пары осталась 1 минута.');
+INSERT INTO ALARM (active, time, description) VALUES (1, 75, 'До окончания пары осталось 5 минут.');
+INSERT INTO ALARM (active, time, description) VALUES (1, 79, 'До окончания пары осталось 1 минута.');
 
 COMMIT;

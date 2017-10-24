@@ -145,7 +145,7 @@ public class EntityDAO {
         LOGGER.info("<== update(entity); " + (System.currentTimeMillis() - t));
 	}
 
-	public static void update(List<AssistantEntity> entities) {
+	public static void update(List<? extends AssistantEntity> entities) {
         final long t = System.currentTimeMillis();
         LOGGER.info("==> update(entities);");
 		Transaction transaction = null;
