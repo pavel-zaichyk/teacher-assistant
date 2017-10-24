@@ -4,7 +4,7 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
 >
-    <h:form id="alarmsForm">
+    <h:form id="alarmsForm" enctype="multipart/form-data">
         <p:dialog header="#{msg['alarms.info']}"
                   widgetVar="alarmsDialog"
                   position="center"
@@ -23,15 +23,39 @@
 
                 <ui:repeat value="#{alarmBean.alarms}" var="alarm">
                     <p:panelGrid columns="4">
-                        <p:inputText id="time" value="#{alarm.time}"/>
                         <p:selectBooleanCheckbox id="active" value="#{alarm.active}"/>
-                        <p:inputText id="description" value="#{alarm.description}"/>
-                        <p:fileUpload value="#{alarmBean.file}" mode="simple" skinSimple="true"/>
+                        <p:selectOneMenu id="time" value="#{alarm.time}">
+                            <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.time']}"/>
+                            <f:selectItem itemValue="0" itemLabel="В начале пары"/>
+                            <f:selectItem itemValue="75" itemLabel="За 5 минут"/>
+                            <f:selectItem itemValue="79" itemLabel="За 1 минуту"/>
+                        </p:selectOneMenu>
+
+
+                        <p:inputTextarea id="description" value="#{alarm.description}"/>
+                        <p:fileUpload value="#{alarm.file}" mode="advanced" auto="true"
+                                      fileUploadListener="#{alarmBean.handleFileUpload}"
+                                      skinSimple="true" label="#{msg['label.choose']}"/>
+                        <script>
+                            $('input[type=file]').change(function () {
+                                console.log(this.files[0].mozFullPath);
+
+                                console.log($('input[type=file]').val());
+                            });
+                        </script>
 
                     </p:panelGrid>
                 </ui:repeat>
 
 
+            </p:outputPanel>
+
+            <p:outputPanel>
+                <p:commandButton value="#{msg['btn.save.exit']}" icon="fa fa-fw fa-save"
+                                 actionListener="#{alarmBean.save}"
+                                 update=":alarmsForm">
+                    <f:setPropertyActionListener value="#{null}" target="#{alarmBean.alarms}"/>
+                </p:commandButton>
             </p:outputPanel>
         </p:dialog>
     </h:form>
