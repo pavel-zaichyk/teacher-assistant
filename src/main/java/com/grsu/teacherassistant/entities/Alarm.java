@@ -21,7 +21,7 @@ public class Alarm implements AssistantEntity {
 
     private String description;
 
-    private String sound;
+    private byte[] sound;
 
     @Transient
     private UploadedFile file;

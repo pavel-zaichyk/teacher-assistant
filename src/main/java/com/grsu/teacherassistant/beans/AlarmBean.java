@@ -8,17 +8,19 @@ import com.grsu.teacherassistant.entities.Lesson;
 import com.grsu.teacherassistant.models.AlarmTask;
 import com.grsu.teacherassistant.utils.FacesUtils;
 import lombok.Data;
+import org.primefaces.component.fileupload.FileUpload;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -36,6 +38,8 @@ public class AlarmBean implements Serializable {
     private static final Logger LOGGER = LoggerFactory.getLogger(AlarmBean.class);
 
     private boolean active = true;
+
+    private Alarm currentAlarm;
 
     public void changeActive() {
         active = !active;
@@ -90,6 +94,12 @@ public class AlarmBean implements Serializable {
     }
 
     public void save() {
+//        for (Alarm alarm : alarms) {
+//            if (alarm.getFile() != null) {
+//                System.out.println(alarm.getFile().getContents());
+//                System.out.println(new String(Base64.getEncoder().encode(alarm.getFile().getContents())));
+//            }
+//        }
         AlarmDAO.save(alarms);
         update("views");
         exit();
@@ -100,9 +110,36 @@ public class AlarmBean implements Serializable {
         LOGGER.info("!!!!!!!!!!!!!!");
         LOGGER.info("!!!!!!!!!!!!!!");
         LOGGER.info("!!!!!!!!!!!!!!");
-LOGGER.info(event.getFile().getFileName());
+        if (currentAlarm != null)
+        LOGGER.info(currentAlarm.toString());
+        Alarm currentAlarm =alarms.get(Integer.parseInt(((FileUpload) event.getSource()).getClientId().split(":")[2]));
+if (event.getFile() != null) {
+    currentAlarm.setSound(event.getFile().getContents());
+} else {
+    currentAlarm.setSound(null);
+}/*
+
+        if (event.getFile() != null && currentAlarm != null) {
+            LOGGER.info(event.getFile().getFileName());
+            System.out.println(event.getFile().getContents());
+            System.out.println(new String(Base64.getEncoder().encode(event.getFile().getContents())));
+            System.out.println(new String(event.getFile().getContents()));
+            currentAlarm.setSound(event.getFile().getContents());
+        } else {
+            currentAlarm.setSound(null);
+        }*/
         LOGGER.info("!!!!!!!!!!!!!!");
         LOGGER.info("!!!!!!!!!!!!!!");
         LOGGER.info("!!!!!!!!!!!!!!");
+    }
+
+    public void al() {
+        Alarm alarm = EntityDAO.get(Alarm.class, 1);
+
+        if (alarm != null) {
+            FacesUtils.push("/audio", alarm.getSound());
+        }
+
+
     }
 }

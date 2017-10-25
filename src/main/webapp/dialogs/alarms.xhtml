@@ -33,16 +33,15 @@
 
 
                         <p:inputTextarea id="description" value="#{alarm.description}"/>
-                        <p:fileUpload value="#{alarm.file}" mode="advanced" auto="true"
+                        <p:fileUpload
+                            id="file"
+                                      mode="advanced"
+                                      auto="true"
                                       fileUploadListener="#{alarmBean.handleFileUpload}"
-                                      skinSimple="true" label="#{msg['label.choose']}"/>
-                        <script>
-                            $('input[type=file]').change(function () {
-                                console.log(this.files[0].mozFullPath);
-
-                                console.log($('input[type=file]').val());
-                            });
-                        </script>
+                                      skinSimple="true"
+                                      label="#{msg['label.choose']}"
+                                     >
+                        </p:fileUpload>
 
                     </p:panelGrid>
                 </ui:repeat>
