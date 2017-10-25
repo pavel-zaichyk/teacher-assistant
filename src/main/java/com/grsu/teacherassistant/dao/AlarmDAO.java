@@ -18,23 +18,23 @@ public class AlarmDAO {
     public static List<Alarm> getAll() {
         List<Alarm> alarms = EntityDAO.getAll(Alarm.class);
 
-        if (alarms != null) {
-            for (Alarm alarm : alarms) {
-                alarm.setFile(getFile(alarm.getSound()));
-            }
-        }
+//        if (alarms != null) {
+//            for (Alarm alarm : alarms) {
+//                alarm.setFile(getFile(alarm.getSound()));
+//            }
+//        }
 
         return alarms;
     }
 
     public static void save(List<Alarm> alarms) {
-        for (Alarm alarm : alarms) {
-            if (alarm.getFile() != null) {
-                alarm.setSound(alarm.getFile().getFileName());
-            } else {
-                alarm.setSound(null);
-            }
-        }
+//        for (Alarm alarm : alarms) {
+//            if (alarm.getFile() != null) {
+//                alarm.setSound(alarm.getFile().getFileName());
+//            } else {
+//                alarm.setSound(null);
+//            }
+//        }
         EntityDAO.update(alarms);
     }
 
