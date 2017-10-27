@@ -22,6 +22,7 @@
 .w55px {width: 55px;}
 .w70px {width: 70px;}
 .w90px {width: 90px;}
+.w100px {width: 100px;}
 .w200px {width: 200px;}
 .w210px {width: 210px;}
 .w250px {width: 250px;}
@@ -90,6 +91,7 @@
 .margin-bottom-10px {margin-bottom: 10px;}
 .margin-bottom-20px {margin-bottom: 20px;}
 .margin-bottom-70px {margin-bottom: 70px;}
+.margin-right-10px {margin-right: 10px;}
 
 /* Padding */
 #wrapper .padding-0px {padding: 0;}
@@ -719,4 +721,21 @@ body {
 
 .ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
 	text-shadow: none;
+}
+
+
+/*alarms-form*/
+.alarms-form .ui-inputnumber input {
+	width: 25px;
+}
+
+/* file upload*/
+.ui-fileupload .ui-fileupload-buttonbar {
+	background: none;
+	border: none;
+	widows: 0;
+}
+
+.ui-fileupload .ui-fileupload-content {
+	display: none;
 }
