@@ -1,9 +1,11 @@
 package com.grsu.teacherassistant.entities;
 
+import com.grsu.teacherassistant.constants.Constants;
+import com.grsu.teacherassistant.utils.FacesUtils;
 import lombok.Data;
-import org.primefaces.model.UploadedFile;
 
 import javax.persistence.*;
+import java.util.Base64;
 
 /**
  * @author Pavel Zaychick
@@ -19,21 +21,24 @@ public class Alarm implements AssistantEntity {
 
     private Integer time;
 
-    private String description;
-
     private byte[] sound;
 
-    @Transient
-    private UploadedFile file;
+    private double volume = 1.0;
 
-    public UploadedFile getFile() {
-        return file;
+    public String getSoundData() {
+        if (sound != null && sound.length > 0) {
+            return "data:audio/mpeg;base64," + new String(Base64.getEncoder().encode(sound));
+        } else {
+            return Constants.DEFAULT_ALARM_SOUND;
+        }
     }
 
-    public void setFile(UploadedFile file) {
-        this.file = file;
+    @Override
+    public String toString() {
+        return "Alarm{" +
+            "id=" + id +
+            ", active=" + active +
+            ", time=" + time +
+            '}';
     }
-//    public boolean isActive() {
-//        return Boolean.TRUE.equals(active);
-//    }
 }

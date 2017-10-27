@@ -4,7 +4,7 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
 >
-    <h:form id="alarmsForm" enctype="multipart/form-data">
+    <h:form id="alarmsForm" enctype="multipart/form-data" styleClass="alarms-form">
         <p:dialog header="#{msg['alarms.info']}"
                   widgetVar="alarmsDialog"
                   position="center"
@@ -16,38 +16,58 @@
                   fitViewport="true"
                   onHide="PF('alarmsDialog').content.empty()">
 
-            <p:ajax event="close" listener="#{streamBean.exit}"/>
+            <p:ajax event="close" listener="#{alarmBean.exit}"/>
 
-            <p:outputPanel id="alarmsDetail" rendered="#{alarmBean.alarms ne null}">
+            <p:outputPanel id="alarmsDetail" rendered="#{alarmBean.alarms ne null}" styleClass="noBorder">
 
+                <p:selectBooleanCheckbox id="alarmsActive" value="#{alarmBean.active}" styleClass="margin-right-10px">
+                    <p:ajax update=":alarmsForm:alarmsDetail"/>
+                </p:selectBooleanCheckbox>
+                <p:outputLabel for="alarmsActive" value="#{msg['menu.alarm']}"/>
 
                 <ui:repeat value="#{alarmBean.alarms}" var="alarm">
-                    <p:panelGrid columns="4">
-                        <p:selectBooleanCheckbox id="active" value="#{alarm.active}"/>
-                        <p:selectOneMenu id="time" value="#{alarm.time}">
-                            <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.time']}"/>
-                            <f:selectItem itemValue="0" itemLabel="В начале пары"/>
-                            <f:selectItem itemValue="75" itemLabel="За 5 минут"/>
-                            <f:selectItem itemValue="79" itemLabel="За 1 минуту"/>
-                        </p:selectOneMenu>
+                    <p:panelGrid columns="6">
+                        <p:selectBooleanCheckbox id="active" value="#{alarm.active}" disabled="#{not alarmBean.active}">
+                            <p:ajax update=":alarmsForm:alarmsDetail"/>
+                        </p:selectBooleanCheckbox>
 
+                        <p:inputNumber id="time" minValue="-15" maxValue="80" value="#{alarm.time}"
+                                       disabled="#{not alarm.active or not alarmBean.active}"/>
 
-                        <p:inputTextarea id="description" value="#{alarm.description}"/>
+                        <p:commandButton
+                            icon="fa fa-fw fa-play"
+                            actionListener="#{alarmBean.play(alarm)}"
+                            disabled="#{not alarm.active or not alarmBean.active}"/>
+
+                        <h:panelGroup>
+                            <h:inputHidden id="volume" value="#{alarm.volume}"/>
+                            <p:slider for="volume" step="0.1" minValue="0.0" maxValue="1" styleClass="w100px"/>
+                        </h:panelGroup>
+
                         <p:fileUpload
                             id="file"
-                                      mode="advanced"
-                                      auto="true"
-                                      fileUploadListener="#{alarmBean.handleFileUpload}"
-                                      skinSimple="true"
-                                      label="#{msg['label.choose']}"
-                                     >
-                        </p:fileUpload>
+                            mode="advanced"
+                            auto="true"
+                            fileUploadListener="#{alarmBean.handleFileUpload}"
+                            skinSimple="true"
+                            label="#{msg['label.choose']}"
+                            disabled="#{not alarm.active or not alarmBean.active}"/>
 
+                        <p:commandButton title="#{msg['btn.delete']}" icon="fa fa-fw fa-minus" styleClass="red"
+                                         actionListener="#{alarmBean.remove(alarm)}"
+                                         update=":alarmsForm:alarmsDetail">
+                        </p:commandButton>
                     </p:panelGrid>
+
+
                 </ui:repeat>
 
-
             </p:outputPanel>
+            <p:commandButton value="#{msg['btn.add']}" icon="fa fa-fw fa-plus"
+                             styleClass="margin-bottom-10px"
+                             actionListener="#{alarmBean.add}"
+                             update=":alarmsForm:alarmsDetail">
+            </p:commandButton>
 
             <p:outputPanel>
                 <p:commandButton value="#{msg['btn.save.exit']}" icon="fa fa-fw fa-save"

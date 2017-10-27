@@ -1,6 +1,5 @@
 package com.grsu.teacherassistant.beans;
 
-import com.grsu.teacherassistant.dao.AlarmDAO;
 import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.LessonDAO;
 import com.grsu.teacherassistant.entities.Alarm;
@@ -15,15 +14,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
-import java.util.Timer;
+import java.util.*;
 
 import static com.grsu.teacherassistant.utils.FacesUtils.closeDialog;
 import static com.grsu.teacherassistant.utils.FacesUtils.update;
@@ -39,20 +34,14 @@ public class AlarmBean implements Serializable {
 
     private boolean active = true;
 
-    private Alarm currentAlarm;
-
-    public void changeActive() {
-        active = !active;
-        setAlarms();
-    }
-
     private Timer timer;
 
     private List<Alarm> alarms;
+    private List<Alarm> removeAlarms;
 
     public List<Alarm> getAlarms() {
         if (alarms == null) {
-            alarms = AlarmDAO.getAll();
+            alarms = EntityDAO.getAll(Alarm.class);
         }
         return alarms;
     }
@@ -87,59 +76,45 @@ public class AlarmBean implements Serializable {
 
     public void initAlarm() {
         FacesUtils.showDialog("alarmsDialog");
+        removeAlarms = new ArrayList<>();
     }
 
     public void exit() {
+        alarms = null;
+        setAlarms();
         closeDialog("alarmsDialog");
     }
 
     public void save() {
-//        for (Alarm alarm : alarms) {
-//            if (alarm.getFile() != null) {
-//                System.out.println(alarm.getFile().getContents());
-//                System.out.println(new String(Base64.getEncoder().encode(alarm.getFile().getContents())));
-//            }
-//        }
-        AlarmDAO.save(alarms);
+        EntityDAO.delete(removeAlarms);
+        EntityDAO.save(alarms);
         update("views");
         exit();
     }
 
-    public void handleFileUpload(FileUploadEvent event) {
-        LOGGER.info("!!!!!!!!!!!!!!");
-        LOGGER.info("!!!!!!!!!!!!!!");
-        LOGGER.info("!!!!!!!!!!!!!!");
-        LOGGER.info("!!!!!!!!!!!!!!");
-        if (currentAlarm != null)
-        LOGGER.info(currentAlarm.toString());
-        Alarm currentAlarm =alarms.get(Integer.parseInt(((FileUpload) event.getSource()).getClientId().split(":")[2]));
-if (event.getFile() != null) {
-    currentAlarm.setSound(event.getFile().getContents());
-} else {
-    currentAlarm.setSound(null);
-}/*
+    public void add() {
+        Alarm alarm = new Alarm();
+        alarm.setActive(true);
+        alarm.setTime(0);
+        alarm.setVolume(1);
+        alarms.add(alarm);
+    }
 
-        if (event.getFile() != null && currentAlarm != null) {
-            LOGGER.info(event.getFile().getFileName());
-            System.out.println(event.getFile().getContents());
-            System.out.println(new String(Base64.getEncoder().encode(event.getFile().getContents())));
-            System.out.println(new String(event.getFile().getContents()));
+    public void remove(Alarm alarm) {
+        removeAlarms.add(alarm);
+        alarms.remove(alarm);
+    }
+
+    public void handleFileUpload(FileUploadEvent event) {
+        Alarm currentAlarm = alarms.get(Integer.parseInt(((FileUpload) event.getSource()).getClientId().split(":")[2]));
+        if (event.getFile() != null) {
             currentAlarm.setSound(event.getFile().getContents());
         } else {
             currentAlarm.setSound(null);
-        }*/
-        LOGGER.info("!!!!!!!!!!!!!!");
-        LOGGER.info("!!!!!!!!!!!!!!");
-        LOGGER.info("!!!!!!!!!!!!!!");
+        }
     }
 
-    public void al() {
-        Alarm alarm = EntityDAO.get(Alarm.class, 1);
-
-        if (alarm != null) {
-            FacesUtils.push("/audio", alarm.getSound());
-        }
-
-
+    public void play(Alarm alarm) {
+        FacesUtils.execute("playAudio('" + alarm.getSoundData() + "', " + alarm.getVolume() + ")");
     }
 }
