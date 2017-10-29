@@ -1,5 +1,6 @@
 package com.grsu.teacherassistant.push.resources;
 
+import com.grsu.teacherassistant.models.Sound;
 import org.primefaces.push.annotation.OnMessage;
 import org.primefaces.push.annotation.PushEndpoint;
 import org.primefaces.push.impl.JSONEncoder;
@@ -11,7 +12,7 @@ import org.primefaces.push.impl.JSONEncoder;
 public class AudioResource {
 
     @OnMessage(encoders = {JSONEncoder.class})
-    public String onMessage(String soundPath) {
-        return soundPath;
+    public Sound onMessage(Sound sound) {
+        return sound;
     }
 }

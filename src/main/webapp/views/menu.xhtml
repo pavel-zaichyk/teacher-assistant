@@ -53,8 +53,11 @@
             </p:submenu>
 
             <p:submenu label="#{msg['menu.settings']}" icon="fa fa-fw fa-wrench">
-                <p:menuitem value="#{msg['menu.alarm']}" icon="fa fa-fw #{alarmBean.active ? 'fa-toggle-on' : 'fa-toggle-off'}"
-                            actionListener="#{alarmBean.changeActive}" update=":menuForm:menu"/>
+                <p:menuitem value="#{msg['menu.alarm']}"
+                            icon="fa fa-fw fa-clock-o"
+                            actionListener="#{alarmBean.initAlarm}"
+                            update=":alarmsForm"
+                            disabled="#{not sessionBean.connected}"/>
                 <p:separator/>
                 <p:menuitem value="#{msg['menu.connection.connect']}" icon="fa fa-fw fa-toggle-on"
                             actionListener="#{menuBean.connect}" update="@([id$=wrapper])"
@@ -97,7 +100,6 @@
                         rendered="#{sessionBean.connected}">
                 <p:resetInput target=":lessonInfoForm:lessonDetail"/>
             </p:menuitem>
-
 
         </p:menubar>
     </h:form>
