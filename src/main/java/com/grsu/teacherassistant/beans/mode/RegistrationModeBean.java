@@ -617,7 +617,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
         notification.setTimeout(3000);
 
         if (!studentNotExist) {
-            notification.setBody(getStudentSkip(processedStudent));
+            notification.setBody(getStudentSkip(processedStudent).replace(localeUtils.getMessage("label.skips") + ": ", "").replace("&nbsp;&nbsp;&nbsp;", " - "));
             notification.setTitle(processedStudent.getFullName());
         } else {
             notification.setBody(localeUtils.getMessage("label.studentNotExist"));
