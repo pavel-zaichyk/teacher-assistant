@@ -347,5 +347,30 @@
                 </p:panel>
             </p:panel>
         </p:panelGrid>
+
+        <p:contextMenu for="presentStudents">
+            <p:menuitem value="#{msg['option.edit']}"
+                        update=":studentInfoForm"
+                        icon="ui-icon-arrowrefresh-1-w"
+                        actionListener="#{studentBean.initStudent(registrationModeBean.selectedPresentStudents.get(0).student)}">
+                <p:resetInput target=":studentInfoForm:studentDetail"/>
+            </p:menuitem>
+        </p:contextMenu>
+
+        <p:contextMenu for="absentStudents">
+            <p:menuitem value="#{msg['option.edit']}"
+                        update=":studentInfoForm"
+                        icon="ui-icon-arrowrefresh-1-w"
+                        actionListener="#{studentBean.initStudent(registrationModeBean.selectedAbsentStudents.get(0).student)}">
+                <p:resetInput target=":studentInfoForm:studentDetail"/>
+            </p:menuitem>
+        </p:contextMenu>
+
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+            <p:commandButton value="#{msg['label.yes']}" type="button" styleClass="ui-confirmdialog-yes"
+                             icon="ui-icon-check"/>
+            <p:commandButton value="#{msg['label.no']}" type="button" styleClass="ui-confirmdialog-no"
+                             icon="ui-icon-close"/>
+        </p:confirmDialog>
     </h:form>
 </ui:composition>

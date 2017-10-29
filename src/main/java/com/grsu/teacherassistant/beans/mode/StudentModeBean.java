@@ -333,7 +333,7 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 		if (student != null) {
 			initStudentMode(student, null);
 
-			FacesUtils.push("/register", student);
+			FacesUtils.push("/register", uid);
 			return true;
 		} else {
 			LOGGER.info("Student not registered. Reason: Uid[ " + uid + " ] not exist in database.");
