@@ -59,6 +59,9 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
     @ManagedProperty(value = "#{localeBean}")
     private LocaleBean localeBean;
 
+    @ManagedProperty(value = "#{alarmBean}")
+    private AlarmBean alarmBean;
+
     private Lesson selectedLesson;
     private Student processedStudent;
 
@@ -97,6 +100,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
     private boolean studentNotExist;
 
     public void initLesson(Lesson lesson) {
+        alarmBean.setAlarms();
         serialBean.setCurrentListener(this);
         serialBean.startRecord();
 
