@@ -27,15 +27,16 @@ public class StudentBean implements Serializable, SerialListenerBean {
     private SerialBean serialBean;
 
     private Student student;
-    private SerialListenerBean oldSerialListener;
-
 
     private DualListModel<Group> groups;
 
+    private boolean recordStarted = false;
+    private SerialListenerBean oldSerialListener;
+    private boolean oldRecordStarted;
+
     public void initStudent(Student student) {
         oldSerialListener = serialBean.getCurrentListener();
-        serialBean.setCurrentListener(this);
-        serialBean.startRecord();
+        oldRecordStarted = serialBean.isRecordStarted();
 
         if (student != null) {
             this.student = student;
@@ -51,7 +52,7 @@ public class StudentBean implements Serializable, SerialListenerBean {
     }
 
     public void exit() {
-        serialBean.setCurrentListener(oldSerialListener);
+        stopRecord();
         student = null;
         oldSerialListener = null;
         closeDialog("studentDialog");
@@ -67,7 +68,22 @@ public class StudentBean implements Serializable, SerialListenerBean {
     @Override
     public boolean process(String uid) {
         student.setCardUid(uid);
-        FacesUtils.push("/register", student);
+        FacesUtils.push("/register", uid);
         return true;
+    }
+
+    public void startRecord() {
+        serialBean.setCurrentListener(this);
+        serialBean.startRecord();
+        recordStarted = serialBean.isRecordStarted();
+    }
+
+    public void stopRecord() {
+        recordStarted = false;
+        serialBean.setCurrentListener(oldSerialListener);
+        serialBean.setRecordStarted(oldRecordStarted);
+        if (!serialBean.isRecordStarted()) {
+            serialBean.stopRecord();
+        }
     }
 }

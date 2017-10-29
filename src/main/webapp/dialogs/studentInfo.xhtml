@@ -26,8 +26,8 @@
                            rendered="#{studentBean.student ne null}">
 
                 <p:panelGrid columns="2" columnClasses="w250px h280px," styleClass="v-align-top noBorder">
-                        <p:graphicImage styleClass="student-photo"
-                            value="#{imageBean.getImagePath(studentBean.student.cardUid)}"/>
+                    <p:graphicImage styleClass="student-photo"
+                                    value="#{imageBean.getImagePath(studentBean.student.cardUid)}"/>
 
                     <p:panelGrid columns="2" columnClasses="label,value">
 
@@ -38,12 +38,12 @@
                             </p:inputText>
                             <p:commandButton title="#{msg['btn.startRecord']}" icon="fa fa-fw fa-play"
                                              update=":studentInfoForm:cardUidGroup"
-                                             actionListener="#{serialBean.startRecord}"
-                                             rendered="#{not serialBean.recordStarted}"/>
+                                             actionListener="#{studentBean.startRecord}"
+                                             rendered="#{not studentBean.recordStarted}"/>
                             <p:commandButton title="#{msg['btn.stopRecord']}" icon="fa fa-fw fa-stop"
                                              update=":studentInfoForm:cardUidGroup"
-                                             actionListener="#{serialBean.stopRecord}"
-                                             rendered="#{serialBean.recordStarted}"/>
+                                             actionListener="#{studentBean.stopRecord}"
+                                             rendered="#{studentBean.recordStarted}"/>
                         </h:panelGroup>
 
                         <p:outputLabel for="cardId" value="#{msg['student.info.cardId']}"/>
