@@ -1,8 +1,11 @@
 package com.grsu.teacherassistant.entities;
 
+import com.grsu.teacherassistant.constants.Constants;
+import com.grsu.teacherassistant.utils.FacesUtils;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Base64;
 
 /**
  * @author Pavel Zaychick
@@ -18,11 +21,24 @@ public class Alarm implements AssistantEntity {
 
     private Integer time;
 
-    private String description;
+    private byte[] sound;
 
-    private String sound;
+    private double volume = 1.0;
 
-    public boolean isActive() {
-        return Boolean.TRUE.equals(active);
+    public String getSoundData() {
+        if (sound != null && sound.length > 0) {
+            return "data:audio/mpeg;base64," + new String(Base64.getEncoder().encode(sound));
+        } else {
+            return Constants.DEFAULT_ALARM_SOUND;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Alarm{" +
+            "id=" + id +
+            ", active=" + active +
+            ", time=" + time +
+            '}';
     }
 }

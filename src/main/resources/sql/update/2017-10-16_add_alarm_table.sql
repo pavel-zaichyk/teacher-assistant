@@ -2,15 +2,15 @@ BEGIN;
 
 -- ALARM
 CREATE TABLE ALARM (
-	id          INTEGER PRIMARY KEY AUTOINCREMENT,
-	active      INTEGER DEFAULT 0,
-	time        INTEGER,
-	description TEXT,
-	sound       TEXT
+  id     INTEGER PRIMARY KEY AUTOINCREMENT,
+  active INTEGER             DEFAULT 0,
+  time   INTEGER,
+  volume DECIMAL(1, 1),
+  sound  TEXT
 );
 
-INSERT INTO ALARM (active, time, description) VALUES (1, 0, 'Начало пары.');
-INSERT INTO ALARM (active, time, description) VALUES (1, 115, 'До окончания пары осталась 5 минут.');
-INSERT INTO ALARM (active, time, description) VALUES (1, 119, 'До окончания пары осталась 1 минута.');
+INSERT INTO ALARM (active, time, volume) VALUES (1, 0, 1);
+INSERT INTO ALARM (active, time, volume) VALUES (1, 75, 1);
+INSERT INTO ALARM (active, time, volume) VALUES (1, 79, 1);
 
 COMMIT;

@@ -176,11 +176,11 @@ CREATE TABLE STUDENT_LESSON (
 
 -- ALARM
 CREATE TABLE ALARM (
-  id          INTEGER PRIMARY KEY AUTOINCREMENT,
-  active      INTEGER DEFAULT 0,
-  time        INTEGER,
-  description TEXT,
-  sound       TEXT
+  id     INTEGER PRIMARY KEY AUTOINCREMENT,
+  active INTEGER             DEFAULT 0,
+  time   INTEGER,
+  volume DECIMAL(1, 1),
+  sound  TEXT
 );
 
 COMMIT;

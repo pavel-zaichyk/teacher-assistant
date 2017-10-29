@@ -6,92 +6,106 @@
 	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          id="WebApp_ID" version="2.5">
 
-	<display-name>JSF Web Application</display-name>
+    <display-name>JSF Web Application</display-name>
 
-	<!-- Change to "Production" when you are ready to deploy -->
-	<context-param>
-		<param-name>javax.faces.PROJECT_STAGE</param-name>
-		<param-value>Development</param-value>
-	</context-param>
+    <!-- Change to "Production" when you are ready to deploy -->
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+    </context-param>
 
-	<context-param>
-		<param-name>primefaces.FONT_AWESOME</param-name>
-		<param-value>true</param-value>
-	</context-param>
+    <context-param>
+        <param-name>primefaces.FONT_AWESOME</param-name>
+        <param-value>true</param-value>
+    </context-param>
 
-	<!-- Welcome page -->
-	<welcome-file-list>
-		<welcome-file>/index.xhtml</welcome-file>
-	</welcome-file-list>
+    <context-param>
+        <param-name>primefaces.UPLOADER</param-name>
+        <param-value>auto</param-value>
+    </context-param>
+    <!-- Welcome page -->
+    <welcome-file-list>
+        <welcome-file>/index.xhtml</welcome-file>
+    </welcome-file-list>
 
-	<!-- JSF mapping -->
-	<servlet>
-		<servlet-name>Faces Servlet</servlet-name>
-		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
+    <!-- JSF mapping -->
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
 
-	<!-- Map these files with JSF -->
-	<!--<servlet-mapping>-->
-		<!--<servlet-name>Faces Servlet</servlet-name>-->
-		<!--<url-pattern>/faces/*</url-pattern>-->
-	<!--</servlet-mapping>-->
-	<!--<servlet-mapping>-->
-		<!--<servlet-name>Faces Servlet</servlet-name>-->
-		<!--<url-pattern>*.jsf</url-pattern>-->
-	<!--</servlet-mapping>-->
-	<!--<servlet-mapping>-->
-		<!--<servlet-name>Faces Servlet</servlet-name>-->
-		<!--<url-pattern>*.faces</url-pattern>-->
-	<!--</servlet-mapping>-->
-	<servlet-mapping>
-		<servlet-name>Faces Servlet</servlet-name>
-		<url-pattern>*.xhtml</url-pattern>
-	</servlet-mapping>
+    <!-- Map these files with JSF -->
+    <!--<servlet-mapping>-->
+    <!--<servlet-name>Faces Servlet</servlet-name>-->
+    <!--<url-pattern>/faces/*</url-pattern>-->
+    <!--</servlet-mapping>-->
+    <!--<servlet-mapping>-->
+    <!--<servlet-name>Faces Servlet</servlet-name>-->
+    <!--<url-pattern>*.jsf</url-pattern>-->
+    <!--</servlet-mapping>-->
+    <!--<servlet-mapping>-->
+    <!--<servlet-name>Faces Servlet</servlet-name>-->
+    <!--<url-pattern>*.faces</url-pattern>-->
+    <!--</servlet-mapping>-->
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
 
-	<session-config>
-		<session-timeout>0</session-timeout>
-	</session-config>
+    <session-config>
+        <session-timeout>0</session-timeout>
+    </session-config>
 
-	<error-page>
-		<exception-type>javax.faces.application.ViewExpiredException</exception-type>
-		<location>/pages/sessionExpired.xhtml</location>
-	</error-page>
+    <error-page>
+        <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+        <location>/pages/sessionExpired.xhtml</location>
+    </error-page>
 
-	<mime-mapping>
-		<extension>woff2</extension>
-		<mime-type>application/x-font-woff2</mime-type>
-	</mime-mapping>
-	<!-- Probably unused -->
-	<!--<mime-mapping>-->
-		<!--<extension>eot</extension>-->
-		<!--<mime-type>application/vnd.ms-fontobject</mime-type>-->
-	<!--</mime-mapping>-->
-	<!--<mime-mapping>-->
-		<!--<extension>otf</extension>-->
-		<!--<mime-type>font/opentype</mime-type>-->
-	<!--</mime-mapping>-->
-	<!--<mime-mapping>-->
-		<!--<extension>ttf</extension>-->
-		<!--<mime-type>application/x-font-ttf</mime-type>-->
-	<!--</mime-mapping>-->
-	<!--<mime-mapping>-->
-		<!--<extension>woff</extension>-->
-		<!--<mime-type>application/x-font-woff</mime-type>-->
-	<!--</mime-mapping>-->
-	<!--<mime-mapping>-->
-		<!--<extension>svg</extension>-->
-		<!--<mime-type>image/svg+xml</mime-type>-->
-	<!--</mime-mapping>-->
+    <mime-mapping>
+        <extension>woff2</extension>
+        <mime-type>application/x-font-woff2</mime-type>
+    </mime-mapping>
+    <!-- Probably unused -->
+    <!--<mime-mapping>-->
+    <!--<extension>eot</extension>-->
+    <!--<mime-type>application/vnd.ms-fontobject</mime-type>-->
+    <!--</mime-mapping>-->
+    <!--<mime-mapping>-->
+    <!--<extension>otf</extension>-->
+    <!--<mime-type>font/opentype</mime-type>-->
+    <!--</mime-mapping>-->
+    <!--<mime-mapping>-->
+    <!--<extension>ttf</extension>-->
+    <!--<mime-type>application/x-font-ttf</mime-type>-->
+    <!--</mime-mapping>-->
+    <!--<mime-mapping>-->
+    <!--<extension>woff</extension>-->
+    <!--<mime-type>application/x-font-woff</mime-type>-->
+    <!--</mime-mapping>-->
+    <!--<mime-mapping>-->
+    <!--<extension>svg</extension>-->
+    <!--<mime-type>image/svg+xml</mime-type>-->
+    <!--</mime-mapping>-->
 
-	<!-- Push -->
-	<servlet>
-		<servlet-name>Push Servlet</servlet-name>
-		<servlet-class>org.primefaces.push.PushServlet</servlet-class>
-		<async-supported>true</async-supported>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Push Servlet</servlet-name>
-		<url-pattern>/primepush/*</url-pattern>
-	</servlet-mapping>
+    <!-- Push -->
+    <servlet>
+        <servlet-name>Push Servlet</servlet-name>
+        <servlet-class>org.primefaces.push.PushServlet</servlet-class>
+        <async-supported>true</async-supported>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Push Servlet</servlet-name>
+        <url-pattern>/primepush/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- file upload -->
+    <filter>
+        <filter-name>PrimeFaces FileUpload Filter</filter-name>
+        <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>PrimeFaces FileUpload Filter</filter-name>
+        <servlet-name>Faces Servlet</servlet-name>
+    </filter-mapping>
 </web-app>

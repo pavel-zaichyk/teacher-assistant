@@ -1,7 +1,6 @@
 package com.grsu.teacherassistant.models;
 
 import com.grsu.teacherassistant.beans.AlarmBean;
-import com.grsu.teacherassistant.constants.Constants;
 import com.grsu.teacherassistant.entities.Alarm;
 import com.grsu.teacherassistant.utils.FacesUtils;
 import lombok.AllArgsConstructor;
@@ -23,7 +22,7 @@ public class AlarmTask extends TimerTask {
     public void run() {
         if (alarmBean.isActive()) {
             LOGGER.info("==> run(): alarm = " + alarm);
-            FacesUtils.push("/audio", alarm.getSound() == null ? Constants.DEFAULT_ALARM_SOUND : alarm.getSound());
+            FacesUtils.push("/audio", new Sound(alarm.getSoundData(), alarm.getVolume()));
         }
     }
 }
