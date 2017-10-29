@@ -1,6 +1,6 @@
 <!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="#{localeBean.language}"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
@@ -15,9 +15,11 @@
         <h:outputStylesheet name="css/styles.css"/>
         <h:outputScript name="js/scripts.js"/>
         <h:outputScript name="js/notification.js"/>
+        <h:outputScript name="js/audio.js"/>
     </h:head>
 
     <h:body>
+        <p:socket onMessage="playSound" channel="/audio"/>
         <h:panelGroup id="wrapper">
             <ui:include src="views/menu.xhtml"/>
 
@@ -29,7 +31,7 @@
 
         <p:ajaxStatus id="ajaxStatus" styleClass="loader">
             <f:facet name="start">
-                <p:graphicImage name="images/loader_circle.gif" />
+                <p:graphicImage name="images/loader_circle.gif"/>
             </f:facet>
         </p:ajaxStatus>
     </h:body>
