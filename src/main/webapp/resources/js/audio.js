@@ -3,6 +3,7 @@ function playAudio(soundPath, volume) {
 	audio.preload = 'auto';
 	audio.src = soundPath;
 	audio.volume = volume;
+	audio.type = "audio/mpeg";
 	audio.play();
 }
 

@@ -24,6 +24,7 @@
             <ui:include src="views/menu.xhtml"/>
 
             <h:panelGroup id="views" rendered="#{sessionBean.connected}">
+                <p:socket onMessage="playSound" channel="/audio"/>
                 <ui:include src="views/dialogs.xhtml"/>
                 <ui:include src="views/#{sessionBean.activeView}.xhtml"/>
             </h:panelGroup>
