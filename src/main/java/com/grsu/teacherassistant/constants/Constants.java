@@ -37,4 +37,9 @@ public final class Constants {
 
     //ALARM
     public static final String DEFAULT_ALARM_SOUND = "/resources/audio/default_alarm.mp3";
+
+    //NOTIFICATION
+    public static final String DEFAULT_NOTIFICATION_SOUND = "/resources/audio/default_notification.mp3";
+
+    public static final String NOTIFICATION_SETTINGS_DIALOG_NAME = "notificationSettingsDialog";
 }

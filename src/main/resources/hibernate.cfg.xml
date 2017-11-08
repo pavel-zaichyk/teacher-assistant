@@ -19,6 +19,8 @@
         <mapping class="com.grsu.teacherassistant.entities.StudentLesson"/>
         <mapping class="com.grsu.teacherassistant.entities.Note"/>
         <mapping class="com.grsu.teacherassistant.entities.Alarm"/>
+        <mapping class="com.grsu.teacherassistant.entities.NotificationSetting"/>
+        <mapping class="com.grsu.teacherassistant.entities.StudentNotification"/>
         <!-- <property name="connection.username"/> -->
         <!-- <property name="connection.password"/> -->
 

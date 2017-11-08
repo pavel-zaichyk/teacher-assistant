@@ -1,5 +1,7 @@
 package com.grsu.teacherassistant.beans;
 
+import com.grsu.teacherassistant.beans.utility.SerialBean;
+import com.grsu.teacherassistant.beans.utility.SerialListenerBean;
 import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.GroupDAO;
 import com.grsu.teacherassistant.entities.Group;

@@ -1,6 +1,6 @@
 package com.grsu.teacherassistant.utils;
 
-import com.grsu.teacherassistant.beans.SerialBean;
+import com.grsu.teacherassistant.beans.utility.SerialBean;
 import com.grsu.teacherassistant.serial.SerialListener;
 import jssc.SerialPort;
 import jssc.SerialPortException;
