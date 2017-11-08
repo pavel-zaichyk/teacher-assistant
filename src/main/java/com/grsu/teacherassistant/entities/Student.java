@@ -139,6 +139,12 @@ public class Student implements AssistantEntity, Person {
     private List<StudentNotification> notifications;
 
     public String getFullName() {
+        if (lastName == null) {
+            return firstName;
+        }
+        if (firstName == null) {
+            return lastName;
+        }
         return String.join(" ", lastName, firstName);
     }
 

@@ -304,7 +304,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
                 }
             }
 
-            processedStudent = student;
+            selectStudent(student);
             updateLessonStudents();
             FacesUtils.push("/register", processedStudent.getCardUid());
             checkStudentNotifications(student);
@@ -313,7 +313,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             LOGGER.info("<== processStudent(); registered = true" + (System.currentTimeMillis() - t));
             return true;
         } else {
-            processedStudent = student;
+            selectStudent(student);
             FacesUtils.push("/register", processedStudent.getCardUid());
             pushStudentDesktopNotification();
             LOGGER.info("Student not registered");
@@ -361,7 +361,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             checkStudentNotifications(student);
         }
 
-        processedStudent = student;
+        selectStudent(student);
         updateLessonStudents();
         FacesUtils.execute("PF('aStudentsTable').clearFilters()");
         FacesUtils.execute("PF('pStudentsTable').clearFilters()");
@@ -421,7 +421,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             updateLessonStudents();
         }
 
-        processedStudent = null;
+        selectStudent(null);
         FacesUtils.execute("PF('aStudentsTable').clearFilters()");
         FacesUtils.execute("PF('pStudentsTable').clearFilters()");
     }
@@ -563,10 +563,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
     }
 
     public void onStudentRowSelect(SelectEvent event) {
-        processedStudent = ((LessonStudentModel) event.getObject()).getStudent();
-        notes = new ArrayList<>();
-        notes.addAll(processedStudent.getNotes());
-        processedStudent.getStudentLessons().values().forEach(sc -> notes.addAll(sc.getNotes()));
+        selectStudent(((LessonStudentModel) event.getObject()).getStudent());
     }
 
     public void onStudentRowDblClckSelect(SelectEvent event) {
@@ -608,6 +605,22 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
         setFilteredAllStudents(null);
         update("views");
         closeDialog("addStudentsDialog");
+    }
+
+    private void selectStudent(Student student) {
+        if (student != null) {
+            processedStudent = student;
+            notes = new ArrayList<>();
+            if (processedStudent.getNotes() != null) {
+                notes.addAll(processedStudent.getNotes());
+            }
+            if (processedStudent.getStudentLessons() != null) {
+                processedStudent.getStudentLessons().values().forEach(sc -> notes.addAll(sc.getNotes()));
+            }
+        } else {
+            processedStudent = null;
+            notes = null;
+        }
     }
 
     /**
@@ -668,6 +681,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             if (studentNotificationSettings != null && studentNotificationSettings.getActive()) {
                 if (student.getNotifications().parallelStream().anyMatch(StudentNotification::getActive)) {
                     notificationSettingsBean.play(studentNotificationSettings);
+                    return;
                 }
             }
 
@@ -677,6 +691,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
                     Integer totalSkip = skipInfo.get(student.getId()).get(Constants.TOTAL_SKIP);
                     if (totalSkip != null && totalSkip >= absenceNotificationSettings.getData()) {
                         notificationSettingsBean.play(absenceNotificationSettings);
+                        return;
                     }
                 }
             }
@@ -684,6 +699,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             NotificationSetting praepostorNotificationSettings = notificationSettingsBean.getSettings().get(NotificationType.ABSENCE.name());
             if (praepostorNotificationSettings != null && praepostorNotificationSettings.getActive()) {
                 //TODO: check if the student praepostor?
+                return;
             }
 
         }
