@@ -2,12 +2,8 @@ package com.grsu.teacherassistant.beans;
 
 import com.grsu.teacherassistant.constants.Constants;
 import com.grsu.teacherassistant.dao.EntityDAO;
-import com.grsu.teacherassistant.dao.LessonDAO;
-import com.grsu.teacherassistant.entities.Alarm;
-import com.grsu.teacherassistant.entities.Lesson;
 import com.grsu.teacherassistant.entities.NotificationSetting;
-import com.grsu.teacherassistant.models.AlarmTask;
-import com.grsu.teacherassistant.models.NotificationType;
+import com.grsu.teacherassistant.models.Sound;
 import com.grsu.teacherassistant.utils.FacesUtils;
 import lombok.Data;
 import org.primefaces.component.fileupload.FileUpload;
@@ -18,9 +14,6 @@ import org.slf4j.LoggerFactory;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.*;
 
 import static com.grsu.teacherassistant.utils.FacesUtils.closeDialog;
@@ -77,6 +70,6 @@ public class NotificationSettingsBean implements Serializable {
     }
 
     public void play(NotificationSetting notificationSetting) {
-        FacesUtils.execute("playAudio('" + notificationSetting.getSoundData() + "', " + notificationSetting.getVolume() + ")");
+        FacesUtils.push("/audio", new Sound(notificationSetting.getSoundData(), notificationSetting.getVolume()));
     }
 }
