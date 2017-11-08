@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
@@ -8,7 +9,7 @@
     <h:form id="lessonForm">
         <p:socket onMessage="spawnNotification" channel="/notify"/>
         <p:socket channel="/register">
-            <p:ajax event="message" update="lastVisitInfo attendanceInfo presentStudents absentStudents"/>
+            <p:ajax event="message" update="lastVisitInfo attendanceInfo presentStudents absentStudents additionalInfo"/>
         </p:socket>
 
         <p:panelGrid id="lessonInfo" columns="2" styleClass="noBorder lesson-info">
@@ -278,14 +279,14 @@
                 <p:column styleClass="transparent-button w20px center">
                     <f:facet name="header">
                         <p:commandButton id="addAbsentStudentsBtn"
-                                         update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:lastVisitInfo :lessonForm:attendanceInfo"
+                                         update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:lastVisitInfo :lessonForm:attendanceInfo :lessonForm:additionalInfo"
                                          icon="fa fa-angle-double-left" title="Add"
                                          styleClass="w25px"
                                          actionListener="#{registrationModeBean.addAbsentStudents}"
                                          disabled="#{registrationModeBean.selectedAbsentStudents eq null or registrationModeBean.selectedAbsentStudents.size() eq 0}"/>
                     </f:facet>
                     <p:commandButton
-                        update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:lastVisitInfo :lessonForm:attendanceInfo"
+                        update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:lastVisitInfo :lessonForm:attendanceInfo :lessonForm:additionalInfo"
                         icon="fa fa-fw fa-angle-left" title="Add"
                         styleClass="w25px"
                         actionListener="#{registrationModeBean.addLessonStudent(aStudent)}"/>
