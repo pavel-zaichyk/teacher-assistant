@@ -2,6 +2,7 @@ package com.grsu.teacherassistant.dao;
 
 
 import com.grsu.teacherassistant.TestConfiguration;
+import com.grsu.teacherassistant.entities.Group;
 import com.grsu.teacherassistant.entities.Lesson;
 import com.grsu.teacherassistant.models.LessonType;
 import org.junit.Assert;
@@ -74,7 +75,11 @@ public class LessonDAOTest extends TestConfiguration {
 
     @Test
     public void getNextIndex() {
-        Assert.assertEquals(1, LessonDAO.getNextIndex(1, LessonType.LECTURE).intValue());
-        Assert.assertEquals(3, LessonDAO.getNextIndex(1, LessonType.PRACTICAL).intValue());
+        Assert.assertEquals(1, LessonDAO.getNextIndex(1, LessonType.LECTURE, null).intValue());
+        Group group = new Group();
+        group.setId(3);
+        Assert.assertEquals(1, LessonDAO.getNextIndex(1, LessonType.PRACTICAL, group).intValue());
+        group.setId(1);
+        Assert.assertEquals(3, LessonDAO.getNextIndex(1, LessonType.PRACTICAL, group).intValue());
     }
 }

@@ -1,5 +1,6 @@
 package com.grsu.teacherassistant.dao;
 
+import com.grsu.teacherassistant.entities.Group;
 import com.grsu.teacherassistant.entities.Lesson;
 import com.grsu.teacherassistant.models.LessonType;
 import com.grsu.teacherassistant.utils.db.DBSessionFactory;
@@ -98,12 +99,13 @@ public class LessonDAO {
         return null;
     }
 
-    public static Integer getNextIndex(int streamId, LessonType lessonType) {
+    public static Integer getNextIndex(int streamId, LessonType lessonType, Group group) {
         LOGGER.info("Start getting lesson index.");
         try (Session session = DBSessionFactory.getSession()) {
-            Query query = session.createQuery("select case when max(l.index) is null THEN 1 ELSE (max(l.index) + 1) end from Lesson as l where l.stream.id = :streamId and l.type = :type");
+            Query query = session.createQuery("select case when max(l.index) is null THEN 1 ELSE (max(l.index) + 1) end from Lesson as l where l.stream.id = :streamId and l.type = :type and (l.group = :group or :group is null)");
             query.setParameter("streamId", streamId);
             query.setParameter("type", lessonType);
+            query.setParameter("group", group);
             return (Integer) query.getSingleResult();
         } catch (RuntimeException e) {
             LOGGER.error(e.getMessage(), e);

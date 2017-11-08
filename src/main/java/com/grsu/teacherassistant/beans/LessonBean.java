@@ -59,7 +59,7 @@ public class LessonBean implements Serializable {
             if (lesson.getType() == null || lesson.getType() == LessonType.LECTURE) {
                 lesson.setGroup(null);
             }
-            lesson.setIndex(LessonDAO.getNextIndex(lesson.getStream().getId(), lesson.getType()));
+            lesson.setIndex(LessonDAO.getNextIndex(lesson.getStream().getId(), lesson.getType(), lesson.getGroup()));
 
             EntityDAO.add(lesson);
 
