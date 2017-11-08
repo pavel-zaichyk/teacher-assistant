@@ -1,5 +1,6 @@
 package com.grsu.teacherassistant.beans;
 
+import com.grsu.teacherassistant.beans.utility.UtilityBean;
 import com.grsu.teacherassistant.entities.Lesson;
 import com.grsu.teacherassistant.entities.Stream;
 import com.grsu.teacherassistant.models.LessonType;

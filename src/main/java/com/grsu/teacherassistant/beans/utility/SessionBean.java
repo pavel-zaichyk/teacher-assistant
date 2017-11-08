@@ -1,4 +1,4 @@
-package com.grsu.teacherassistant.beans;
+package com.grsu.teacherassistant.beans.utility;
 
 import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.GroupDAO;

@@ -10,6 +10,7 @@
 	color: #ff0000 !important;
 }
 .blue {color: #0000ff !important;}
+.dark-red {color: #5b040d !important;}
 
 /* Width */
 .w5px {width: 5px;}
@@ -725,7 +726,8 @@ body {
 
 
 /*alarms-form*/
-.alarms-form .ui-inputnumber input {
+.alarms-form .ui-inputnumber input,
+.notification-form .ui-inputnumber input {
 	width: 25px;
 }
 

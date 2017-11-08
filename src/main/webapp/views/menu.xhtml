@@ -58,6 +58,11 @@
                             actionListener="#{alarmBean.initAlarm}"
                             update=":alarmsForm"
                             disabled="#{not sessionBean.connected}"/>
+                <p:menuitem value="#{msg['notification']}"
+                            icon="fa fa-fw fa-exclamation-triangle"
+                            actionListener="#{notificationSettingsBean.init}"
+                            update=":notificationSettingForm"
+                            disabled="#{not sessionBean.connected}"/>
                 <p:separator/>
                 <p:menuitem value="#{msg['menu.connection.connect']}" icon="fa fa-fw fa-toggle-on"
                             actionListener="#{menuBean.connect}" update="@([id$=wrapper])"

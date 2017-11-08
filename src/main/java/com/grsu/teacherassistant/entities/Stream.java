@@ -34,7 +34,7 @@ public class Stream implements AssistantEntity {
 
     @Basic
     @Convert(converter = LocalDateTimeAttributeConverter.class)
-    @Column(name = "create_date")
+    @Column(name = "create_date", insertable = false, updatable = false)
     private LocalDateTime createDate;
 
     @Basic

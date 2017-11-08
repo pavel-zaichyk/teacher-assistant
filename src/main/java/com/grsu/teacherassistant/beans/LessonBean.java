@@ -1,5 +1,6 @@
 package com.grsu.teacherassistant.beans;
 
+import com.grsu.teacherassistant.beans.utility.SessionBean;
 import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.LessonDAO;
 import com.grsu.teacherassistant.entities.*;
