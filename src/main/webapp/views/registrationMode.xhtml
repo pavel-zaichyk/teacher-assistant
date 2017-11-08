@@ -384,6 +384,13 @@
                         actionListener="#{studentBean.initStudent(registrationModeBean.selectedPresentStudents.get(0).student)}">
                 <p:resetInput target=":studentInfoForm:studentDetail"/>
             </p:menuitem>
+            <p:menuitem value="#{msg['notification']}"
+                        update=":lessonForm:notifications"
+                        icon="fa fa-fw fa-exclamation-triangle"
+                        oncomplete="PF('notificationDialog').show()"
+                        actionListener="#{registrationModeBean.setSelectedStudent(registrationModeBean.selectedPresentStudents.get(0))}">
+                <f:setPropertyActionListener value="#{null}" target="#{registrationModeBean.newNotification}"/>
+            </p:menuitem>
         </p:contextMenu>
 
         <p:contextMenu for="absentStudents">
