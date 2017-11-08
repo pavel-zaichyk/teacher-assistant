@@ -1,6 +1,5 @@
 package com.grsu.teacherassistant.utils;
 
-import com.grsu.teacherassistant.beans.LocaleBean;
 import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.GroupDAO;
 import com.grsu.teacherassistant.dao.StudentDAO;

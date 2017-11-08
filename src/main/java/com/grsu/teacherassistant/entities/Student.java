@@ -133,6 +133,11 @@ public class Student implements AssistantEntity, Person {
     @Where(clause = "type = 'STUDENT'")
     private List<Note> notes;
 
+    @Cascade(CascadeType.DELETE)
+    @OneToMany
+    @JoinColumn(name = "student_id", referencedColumnName = "id")
+    private List<StudentNotification> notifications;
+
     public String getFullName() {
         return String.join(" ", lastName, firstName);
     }

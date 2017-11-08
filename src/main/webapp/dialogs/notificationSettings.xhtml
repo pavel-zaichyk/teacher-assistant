@@ -1,0 +1,140 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+    <h:form id="notificationSettingForm" enctype="multipart/form-data" styleClass="notification-form">
+        <p:dialog header="#{msg['notification.settings']}"
+                  widgetVar="notificationSettingsDialog"
+                  position="center"
+                  draggable="false"
+                  modal="true"
+                  showEffect="fade"
+                  hideEffect="fade"
+                  resizable="false"
+                  fitViewport="true"
+                  onHide="PF('notificationSettingsDialog').content.empty()">
+
+            <p:ajax event="close" listener="#{notificationSettingsBean.exit}"/>
+
+            <p:outputPanel id="settingsDetail" rendered="#{notificationSettingsBean.settings ne null}"
+                           styleClass="noBorder">
+
+                <p:selectBooleanCheckbox id="notificationActive" value="#{notificationSettingsBean.active}"
+                                         styleClass="margin-right-10px">
+                    <p:ajax update=":notificationSettingForm:settingsDetail"/>
+                </p:selectBooleanCheckbox>
+                <p:outputLabel for="notificationActive" value="#{msg['notification.active']}"/>
+
+                <c:set var="praepostor" value="#{notificationSettingsBean.settings['PRAEPOSTOR']}" />
+                <p:panelGrid id="praepostor" columns="3" styleClass="margin-top-10px">
+                    <p:selectBooleanCheckbox id="activePraepostor"
+                                             value="#{praepostor.active}"
+                                             disabled="#{not notificationSettingsBean.active}">
+                        <p:ajax update=":notificationSettingForm:praepostor"/>
+                    </p:selectBooleanCheckbox>
+                    <p:outputLabel for="activePraepostor" value="${msg['notification.praepostor']}" styleClass="bold"/>
+                    <p:column/>
+
+                    <p:commandButton
+                        icon="fa fa-fw fa-play"
+                        actionListener="#{notificationSettingsBean.play(praepostor)}"
+                        disabled="#{not praepostor.active or not notificationSettingsBean.active}"/>
+
+                    <h:panelGroup>
+                        <h:inputHidden id="volumePraepostor" value="#{praepostor.volume}"/>
+                        <p:slider for="volumePraepostor" step="0.1" minValue="0.0" maxValue="1" styleClass="w100px"
+                                  disabled="#{not praepostor.active or not notificationSettingsBean.active}"/>
+                    </h:panelGroup>
+
+                    <p:fileUpload
+                        id="file_PRAEPOSTOR"
+                        mode="advanced"
+                        auto="true"
+                        fileUploadListener="#{notificationSettingsBean.handleFileUpload}"
+                        skinSimple="true"
+                        label="#{msg['label.choose']}"
+                        disabled="#{not praepostor.active or not notificationSettingsBean.active}"/>
+                </p:panelGrid>
+
+                <c:set var="absence" value="#{notificationSettingsBean.settings['ABSENCE']}" />
+                <p:panelGrid id="absence" columns="3" styleClass="margin-top-10px">
+                    <p:selectBooleanCheckbox id="activeAbsence"
+                                             value="#{absence.active}"
+                                             disabled="#{not notificationSettingsBean.active}">
+                        <p:ajax update=":notificationSettingForm:absence"/>
+                    </p:selectBooleanCheckbox>
+                    <p:outputLabel for="activeAbsence" value="${msg['notification.absence']}" styleClass="bold"/>
+                    <p:column/>
+
+                    <p:inputNumber id="absenceNumber" minValue="1" maxValue="100"
+                                   value="#{absence.data}"
+                                   disabled="#{not absence.active or not notificationSettingsBean.active}"/>
+                    <p:outputLabel for="absenceNumber" value="${msg['notification.absence.number']}"/>
+                    <p:column/>
+
+                    <p:commandButton
+                        icon="fa fa-fw fa-play"
+                        actionListener="#{notificationSettingsBean.play(absence)}"
+                        disabled="#{not absence.active or not notificationSettingsBean.active}"/>
+
+                    <h:panelGroup>
+                        <h:inputHidden id="volumeAbsence" value="#{absence.volume}"/>
+                        <p:slider for="volumeAbsence" step="0.1" minValue="0.0" maxValue="1" styleClass="w100px"
+                                  disabled="#{not absence.active or not notificationSettingsBean.active}"/>
+                    </h:panelGroup>
+
+                    <p:fileUpload
+                        id="file_ABSENCE"
+                        mode="advanced"
+                        auto="true"
+                        fileUploadListener="#{notificationSettingsBean.handleFileUpload}"
+                        skinSimple="true"
+                        label="#{msg['label.choose']}"
+                        disabled="#{not absence.active or not notificationSettingsBean.active}"/>
+                </p:panelGrid>
+
+                <c:set var="student" value="#{notificationSettingsBean.settings['STUDENT']}" />
+                <p:panelGrid id="student" columns="3" styleClass="margin-top-10px">
+                    <p:selectBooleanCheckbox id="activeStudent"
+                                             value="#{student.active}"
+                                             disabled="#{not notificationSettingsBean.active}">
+                        <p:ajax update=":notificationSettingForm:student"/>
+                    </p:selectBooleanCheckbox>
+                    <p:outputLabel for="activeStudent" value="${msg['notification.student']}" styleClass="bold"/>
+                    <p:column/>
+
+                    <p:commandButton
+                        icon="fa fa-fw fa-play"
+                        actionListener="#{notificationSettingsBean.play(student)}"
+                        disabled="#{not student.active or not notificationSettingsBean.active}"/>
+
+                    <h:panelGroup>
+                        <h:inputHidden id="volumeStudent" value="#{student.volume}"/>
+                        <p:slider for="volumeStudent" step="0.1" minValue="0.0" maxValue="1" styleClass="w100px"
+                                  disabled="#{not student.active or not notificationSettingsBean.active}"/>
+                    </h:panelGroup>
+
+                    <p:fileUpload
+                        id="file_STUDENT"
+                        mode="advanced"
+                        auto="true"
+                        fileUploadListener="#{notificationSettingsBean.handleFileUpload}"
+                        skinSimple="true"
+                        label="#{msg['label.choose']}"
+                        disabled="#{not student.active or not notificationSettingsBean.active}"/>
+                </p:panelGrid>
+
+            </p:outputPanel>
+
+            <p:outputPanel styleClass="margin-top-10px">
+                <p:commandButton value="#{msg['btn.save.exit']}" icon="fa fa-fw fa-save"
+                                 actionListener="#{notificationSettingsBean.save}"
+                                 update=":notificationSettingForm">
+                    <f:setPropertyActionListener value="#{null}" target="#{notificationSettingsBean.settings}"/>
+                </p:commandButton>
+            </p:outputPanel>
+        </p:dialog>
+    </h:form>
+</ui:composition>

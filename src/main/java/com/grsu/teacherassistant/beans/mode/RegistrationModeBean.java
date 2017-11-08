@@ -1,6 +1,7 @@
 package com.grsu.teacherassistant.beans.mode;
 
 import com.grsu.teacherassistant.beans.*;
+import com.grsu.teacherassistant.beans.utility.*;
 import com.grsu.teacherassistant.constants.Constants;
 import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.LessonDAO;
@@ -23,13 +24,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.grsu.teacherassistant.utils.FacesUtils.closeDialog;
@@ -61,6 +56,9 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
 
     @ManagedProperty(value = "#{alarmBean}")
     private AlarmBean alarmBean;
+
+    @ManagedProperty(value = "#{notificationSettingsBean}")
+    private NotificationSettingsBean notificationSettingsBean;
 
     private Lesson selectedLesson;
     private Student processedStudent;
@@ -309,14 +307,15 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             processedStudent = student;
             updateLessonStudents();
             FacesUtils.push("/register", processedStudent.getCardUid());
-            pushStudentNotification();
+            checkStudentNotifications(student);
+            pushStudentDesktopNotification();
             LOGGER.info("Student registered");
             LOGGER.info("<== processStudent(); registered = true" + (System.currentTimeMillis() - t));
             return true;
         } else {
             processedStudent = student;
             FacesUtils.push("/register", processedStudent.getCardUid());
-            pushStudentNotification();
+            pushStudentDesktopNotification();
             LOGGER.info("Student not registered");
             LOGGER.info("<== processStudent(); registered = false; " + (System.currentTimeMillis() - t));
             return false;
@@ -359,7 +358,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
                 EntityDAO.update(studentLesson);
                 updateSkipInfo(Arrays.asList(student));
             }
-
+            checkStudentNotifications(student);
         }
 
         processedStudent = student;
@@ -611,7 +610,12 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
         closeDialog("addStudentsDialog");
     }
 
-    private Notification createStudentNotification() {
+    /**
+     * Генерация всплывабщего уведомления с информацией о студенте
+     *
+     * @return уведомление
+     */
+    private Notification createStudentDesktopNotification() {
         LocaleUtils localeUtils = new LocaleUtils(localeBean.getLocale());
         Notification notification = new Notification();
         notification.setTimeout(3000);
@@ -628,7 +632,60 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
         return notification;
     }
 
-    private void pushStudentNotification() {
-        FacesUtils.push("/notify", createStudentNotification());
+    /**
+     * Отправка сгенерированного уведомления клиенту (браузеру).
+     */
+    private void pushStudentDesktopNotification() {
+        FacesUtils.push("/notify", createStudentDesktopNotification());
+    }
+
+    private String newNotification;
+    private LessonStudentModel selectedStudent;
+
+    public void removeNotification(StudentNotification notification) {
+        EntityDAO.delete(notification);
+        selectedStudent.getStudent().getNotifications().remove(notification);
+    }
+
+    public void saveNotification() {
+        if (newNotification != null && !newNotification.isEmpty()) {
+            StudentNotification studentNotification = new StudentNotification();
+            studentNotification.setActive(Boolean.TRUE);
+            studentNotification.setDescription(newNotification);
+            studentNotification.setStudent(selectedStudent.getStudent());
+            studentNotification.setCreateDate(LocalDateTime.now());
+            selectedStudent.getStudent().getNotifications().add(studentNotification);
+        }
+        newNotification = null;
+        EntityDAO.save(selectedStudent.getStudent().getNotifications());
+        FacesUtils.closeDialog("notificationDialog");
+    }
+
+    private void checkStudentNotifications(Student student) {
+        if (notificationSettingsBean.isActive()) {
+
+            NotificationSetting studentNotificationSettings = notificationSettingsBean.getSettings().get(NotificationType.STUDENT.name());
+            if (studentNotificationSettings != null && studentNotificationSettings.getActive()) {
+                if (student.getNotifications().parallelStream().anyMatch(StudentNotification::getActive)) {
+                    notificationSettingsBean.play(studentNotificationSettings);
+                }
+            }
+
+            NotificationSetting absenceNotificationSettings = notificationSettingsBean.getSettings().get(NotificationType.ABSENCE.name());
+            if (absenceNotificationSettings != null && absenceNotificationSettings.getActive()) {
+                if (skipInfo.containsKey(student.getId())) {
+                    Integer totalSkip = skipInfo.get(student.getId()).get(Constants.TOTAL_SKIP);
+                    if (totalSkip != null && totalSkip >= absenceNotificationSettings.getData()) {
+                        notificationSettingsBean.play(absenceNotificationSettings);
+                    }
+                }
+            }
+
+            NotificationSetting praepostorNotificationSettings = notificationSettingsBean.getSettings().get(NotificationType.ABSENCE.name());
+            if (praepostorNotificationSettings != null && praepostorNotificationSettings.getActive()) {
+                //TODO: check if the student praepostor?
+            }
+
+        }
     }
 }
