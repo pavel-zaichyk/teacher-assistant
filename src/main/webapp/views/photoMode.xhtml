@@ -11,10 +11,7 @@
 						 update="@([id$=views])">
 		</p:commandButton>
 		<p:commandButton id="modeBtn" icon="fa fa-fw fa-forward"/>
-		<p:overlayPanel for="modeBtn" showEvent="mouseover"
-		                hideEvent="mousedown"
-		                style="position: fixed;"
-		                dismissable="false" showCloseIcon="true">
+		<p:overlayPanel for="modeBtn" hideEffect="fade" style="position: fixed;">
 			<p:commandButton title="#{msg['btn.studentMode']}" value="#{msg['btn.studentMode']}"
 			                 update="@([id$=views])"
 			                 styleClass="block w100pc margin-bottom-10px"

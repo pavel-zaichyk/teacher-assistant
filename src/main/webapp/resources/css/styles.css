@@ -339,6 +339,12 @@ body {
 	padding: 0;
 }
 
+.additional-info .ui-panel-titlebar {
+	text-align: center;
+	color: blue;
+	text-transform: uppercase;
+}
+
 .image img {
 	max-width: 185px;
 	height: auto;
@@ -350,6 +356,14 @@ body {
 .camera, .camera video {
 	width: 100% !important;
 	height: 100% !important;
+}
+
+.additions .registration-progress {
+	height: 30px;
+}
+
+.additions .registration-progress .ui-progressbar-label {
+	padding-top: 5px;
 }
 
 .lesson-tables .additions .ui-panel-content {
