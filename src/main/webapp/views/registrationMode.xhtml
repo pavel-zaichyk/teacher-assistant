@@ -9,7 +9,7 @@
     <h:form id="lessonForm">
         <p:socket onMessage="spawnNotification" channel="/notify"/>
         <p:socket channel="/register">
-            <p:ajax event="message" update="lastVisitInfo attendanceInfo presentStudents absentStudents additionalInfo"/>
+            <p:ajax event="message" update="lastVisitInfo attendanceInfo presentStudents absentStudents additionalInfo registrationProgress"/>
         </p:socket>
 
         <p:panelGrid id="lessonInfo" columns="2" styleClass="noBorder lesson-info">
@@ -21,12 +21,12 @@
                         <p:outputLabel value="#{msg['lesson.visit.noData']}"/>
                     </p:panel>
                     <p:panel rendered="#{registrationModeBean.processedStudent ne null}" styleClass="visit-label">
-                        <p:outputLabel id="visitLastName" value="#{registrationModeBean.processedStudent.lastName}"/>
-                        <p:outputLabel id="visitFirstName" value="#{registrationModeBean.processedStudent.firstName}"/>
+                        <p:outputLabel id="visitLastName" value="#{registrationModeBean.processedStudent.lastName}" styleClass="blue"/>
+                        <p:outputLabel id="visitFirstName" value="#{registrationModeBean.processedStudent.firstName}" styleClass="blue"/>
                         <p:outputLabel id="visitGroup" escape="false"
                                        styleClass="font-size-20pt margin-top-20px margin-bottom-20px"
                                        value="#{registrationModeBean.processedStudent.groupNames}"/>
-                        <p:outputLabel styleClass="lowercase" escape="false"
+                        <p:outputLabel styleClass="lowercase dark-red" escape="false"
                                        value="#{registrationModeBean.getStudentSkip(registrationModeBean.processedStudent)}"
                                        rendered="#{not registrationModeBean.studentNotExist}"/>
                         <p:outputLabel value="#{msg['label.reRegistration']}"
@@ -81,13 +81,6 @@
                             <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
                         </p:commandButton>
 
-                        <p:commandButton title="#{msg['btn.backToLessons']}"
-                                         icon="fa fa-fw fa-arrow-left"
-                                         actionListener="#{registrationModeBean.returnToLessons}"
-                                         update="@([id$=wrapper])">
-                            <f:setPropertyActionListener value="#{true}" target="#{menuBean.showMenu}"/>
-                        </p:commandButton>
-
                         <p:commandButton title="#{msg['btn.hide.menu']}" icon="fa fa-fw fa-align-center"
                                          update=":menuForm :lessonForm:lessonButtons"
                                          actionListener="#{menuBean.hideMenu}"
@@ -98,10 +91,7 @@
                                          rendered="#{not menuBean.showMenu}"/>
 
                         <p:commandButton id="modeBtn" icon="fa fa-fw fa-forward"/>
-                        <p:overlayPanel for="modeBtn" showEvent="mouseover"
-                                        hideEvent="mousedown"
-                                        style="position: fixed;"
-                                        dismissable="false" showCloseIcon="true">
+                        <p:overlayPanel for="modeBtn" hideEffect="fade" style="position: fixed;">
                             <p:commandButton title="#{msg['btn.studentMode']}" value="#{msg['btn.studentMode']}"
                                              update="@([id$=views])"
                                              styleClass="block w100pc margin-bottom-10px"
@@ -208,14 +198,14 @@
                 <p:column styleClass="transparent-button w20px center">
                     <f:facet name="header">
                         <p:commandButton id="removePresentStudentsBtn"
-                                         update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:attendanceInfo"
+                                         update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:attendanceInfo :lessonForm:registrationProgress"
                                          styleClass="w25px"
                                          icon="fa fa-fw fa-angle-double-right" title="Remove"
                                          actionListener="#{registrationModeBean.removePresentStudents}"
                                          disabled="#{registrationModeBean.selectedPresentStudents eq null or registrationModeBean.selectedPresentStudents.size() eq 0}"/>
                     </f:facet>
                     <p:commandButton
-                        update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:attendanceInfo"
+                        update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:attendanceInfo :lessonForm:registrationProgress"
                         icon="fa fa-fw fa-angle-right" title="Remove"
                         styleClass="w25px"
                         actionListener="#{registrationModeBean.removeLessonStudent(pStudent)}"/>
@@ -279,14 +269,14 @@
                 <p:column styleClass="transparent-button w20px center">
                     <f:facet name="header">
                         <p:commandButton id="addAbsentStudentsBtn"
-                                         update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:lastVisitInfo :lessonForm:attendanceInfo :lessonForm:additionalInfo"
+                                         update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:lastVisitInfo :lessonForm:attendanceInfo :lessonForm:additionalInfo :lessonForm:registrationProgress"
                                          icon="fa fa-angle-double-left" title="Add"
                                          styleClass="w25px"
                                          actionListener="#{registrationModeBean.addAbsentStudents}"
                                          disabled="#{registrationModeBean.selectedAbsentStudents eq null or registrationModeBean.selectedAbsentStudents.size() eq 0}"/>
                     </f:facet>
                     <p:commandButton
-                        update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:lastVisitInfo :lessonForm:attendanceInfo :lessonForm:additionalInfo"
+                        update=":lessonForm:presentStudents :lessonForm:absentStudents :lessonForm:lastVisitInfo :lessonForm:attendanceInfo :lessonForm:additionalInfo :lessonForm:registrationProgress"
                         icon="fa fa-fw fa-angle-left" title="Add"
                         styleClass="w25px"
                         actionListener="#{registrationModeBean.addLessonStudent(aStudent)}"/>
@@ -326,9 +316,10 @@
                     <p:clock pattern="HH:mm:ss"/>
                 </p:panel>
 
-                <p:panel styleClass="ui-widget-header margin-bottom-10px margin-top-10px h30px">
-
-                </p:panel>
+                <p:progressBar id="registrationProgress"
+                               styleClass="registration-progress ui-widget-header margin-bottom-10px margin-top-10px"
+                               value="#{((registrationModeBean.presentStudents.size() - registrationModeBean.additionalStudents.size()) / registrationModeBean.lessonStudents.size()) * 100}"
+                               labelTemplate="{value}%" displayOnly="true"/>
 
                 <p:photoCam id="camera"
                             widgetVar="camera"
