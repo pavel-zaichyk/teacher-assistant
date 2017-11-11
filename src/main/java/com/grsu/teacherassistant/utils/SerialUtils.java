@@ -1,6 +1,6 @@
 package com.grsu.teacherassistant.utils;
 
-import com.grsu.teacherassistant.beans.SerialBean;
+import com.grsu.teacherassistant.beans.utility.SerialBean;
 import com.grsu.teacherassistant.serial.SerialListener;
 import jssc.SerialPort;
 import jssc.SerialPortException;
@@ -20,20 +20,23 @@ public class SerialUtils {
 	private static final String EXCEPTION_PORT_NOT_FOUND = "Port not found";
 	private static final String EXCEPTION_PORT_BUSY = "Port busy";
 
-	public static void sendResponse(SerialPort serialPort, boolean success, boolean soundEnabled) throws SerialPortException {
-		if (success && soundEnabled) {
-			serialPort.writeString(SERIAL_STATUS_OK);
-		}
-		if (success && !soundEnabled) {
-			serialPort.writeString(SERIAL_STATUS_OL);
-		}
-		if (!success && soundEnabled) {
-			serialPort.writeString(SERIAL_STATUS_ER);
-		}
-		if (!success && !soundEnabled) {
-			serialPort.writeString(SERIAL_STATUS_EL);
-		}
-	}
+    public static void sendResponse(SerialPort serialPort, boolean success, boolean soundEnabled) throws SerialPortException {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==> sendResponse(); success = " + success + "; soundEnabled = " + soundEnabled);
+        if (success && soundEnabled) {
+            serialPort.writeString(SERIAL_STATUS_OK);
+        }
+        if (success && !soundEnabled) {
+            serialPort.writeString(SERIAL_STATUS_OL);
+        }
+        if (!success && soundEnabled) {
+            serialPort.writeString(SERIAL_STATUS_ER);
+        }
+        if (!success && !soundEnabled) {
+            serialPort.writeString(SERIAL_STATUS_EL);
+        }
+        LOGGER.info("<== sendResponse()" + (System.currentTimeMillis() - t));
+    }
 
 	public static boolean disconnect() {
 		if (serialPort != null && serialPort.isOpened()) {

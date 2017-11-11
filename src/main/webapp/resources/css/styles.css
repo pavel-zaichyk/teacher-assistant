@@ -10,6 +10,7 @@
 	color: #ff0000 !important;
 }
 .blue {color: #0000ff !important;}
+.dark-red {color: #5b040d !important;}
 
 /* Width */
 .w5px {width: 5px;}
@@ -22,6 +23,7 @@
 .w55px {width: 55px;}
 .w70px {width: 70px;}
 .w90px {width: 90px;}
+.w100px {width: 100px;}
 .w200px {width: 200px;}
 .w210px {width: 210px;}
 .w250px {width: 250px;}
@@ -71,6 +73,7 @@
 #wrapper .inline-block {display: inline-block;}
 
 /* Font Size */
+#wrapper .font-size-8pt {font-size: 8pt;}
 #wrapper .font-size-10pt {font-size: 10pt;}
 #wrapper .font-size-11pt {font-size: 11pt;}
 #wrapper .font-size-12pt {font-size: 12pt;}
@@ -89,6 +92,7 @@
 .margin-bottom-10px {margin-bottom: 10px;}
 .margin-bottom-20px {margin-bottom: 20px;}
 .margin-bottom-70px {margin-bottom: 70px;}
+.margin-right-10px {margin-right: 10px;}
 
 /* Padding */
 #wrapper .padding-0px {padding: 0;}
@@ -179,7 +183,7 @@ body {
 	height: 90%;
 }
 
-.v-align-top .ui-panelgrid-cell {
+.v-align-top, .v-align-top .ui-panelgrid-cell {
 	vertical-align: top;
 }
 
@@ -335,6 +339,12 @@ body {
 	padding: 0;
 }
 
+.additional-info .ui-panel-titlebar {
+	text-align: center;
+	color: blue;
+	text-transform: uppercase;
+}
+
 .image img {
 	max-width: 185px;
 	height: auto;
@@ -346,6 +356,14 @@ body {
 .camera, .camera video {
 	width: 100% !important;
 	height: 100% !important;
+}
+
+.additions .registration-progress {
+	height: 30px;
+}
+
+.additions .registration-progress .ui-progressbar-label {
+	padding-top: 5px;
 }
 
 .lesson-tables .additions .ui-panel-content {
@@ -545,7 +563,6 @@ body {
 }
 
 .lesson-mode-table .notes-info {
-	display: block;
 	text-align: right;
 }
 
@@ -719,4 +736,22 @@ body {
 
 .ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
 	text-shadow: none;
+}
+
+
+/*alarms-form*/
+.alarms-form .ui-inputnumber input,
+.notification-form .ui-inputnumber input {
+	width: 25px;
+}
+
+/* file upload*/
+.ui-fileupload .ui-fileupload-buttonbar {
+	background: none;
+	border: none;
+	widows: 0;
+}
+
+.ui-fileupload .ui-fileupload-content {
+	display: none;
 }

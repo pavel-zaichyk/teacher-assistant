@@ -1,5 +1,6 @@
 package com.grsu.teacherassistant.beans;
 
+import com.grsu.teacherassistant.beans.utility.SessionBean;
 import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.LessonDAO;
 import com.grsu.teacherassistant.entities.*;
@@ -58,7 +59,7 @@ public class LessonBean implements Serializable {
             if (lesson.getType() == null || lesson.getType() == LessonType.LECTURE) {
                 lesson.setGroup(null);
             }
-            lesson.setIndex(LessonDAO.getNextIndex(lesson.getStream().getId(), lesson.getType()));
+            lesson.setIndex(LessonDAO.getNextIndex(lesson.getStream().getId(), lesson.getType(), lesson.getGroup()));
 
             EntityDAO.add(lesson);
 

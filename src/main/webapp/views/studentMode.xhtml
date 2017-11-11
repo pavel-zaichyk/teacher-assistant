@@ -92,11 +92,7 @@
 						</p:commandButton>
 
 						<p:commandButton id="modeBtn" icon="fa fa-fw fa-forward"/>
-						<p:overlayPanel for="modeBtn" showEvent="mouseover"
-						                hideEvent="mousedown"
-						                dismissable="false"
-						                style="position: fixed;"
-						                showCloseIcon="true">
+						<p:overlayPanel for="modeBtn" hideEffect="fade" style="position: fixed;">
 							<p:commandButton title="#{msg['btn.lessonMode']}" value="#{msg['btn.lessonMode']}"
 							                 actionListener="#{lessonModeBean.initLessonMode}"
 							                 disabled="#{lessonModeBean.lesson eq null}"

@@ -57,10 +57,7 @@
                         <f:ajax event="click" listener="#{registrationModeBean.clear}"/>
                     </p:commandButton>
                     <p:commandButton id="modeBtn" icon="fa fa-fw fa-forward"/>
-                    <p:overlayPanel for="modeBtn" showEvent="mouseover"
-                                    hideEvent="mousedown"
-                                    style="position: fixed;"
-                                    dismissable="false" showCloseIcon="true">
+                    <p:overlayPanel for="modeBtn" hideEffect="fade" style="position: fixed;">
                         <p:commandButton title="#{msg['btn.studentMode']}" value="#{msg['btn.studentMode']}"
                                          update="@([id$=views])"
                                          styleClass="block w100pc margin-bottom-10px"
@@ -244,6 +241,9 @@
                         <p:outputLabel value="#{lesson.date}" styleClass="font-size-12pt"/>
                         <p:outputLabel styleClass="block uppercase font-size-10pt"
                                        value="#{msg['label.'.concat(lesson.type.key)]}"/>
+                        <p:outputLabel styleClass="inline-block v-align-top">
+                            <h:outputText styleClass="font-size-8pt block" value="#{utility.getLessonCount(lesson.lesson)}" />
+                        </p:outputLabel>
                         <p:outputLabel id="noteLesson" styleClass="notes-info"
                                        rendered="#{lesson.lesson.notes.size() gt 0}">
                             <i class="fa fa-info-circle"></i>

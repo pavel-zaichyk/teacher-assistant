@@ -1,17 +1,13 @@
 package com.grsu.teacherassistant.beans.mode;
 
-import com.grsu.teacherassistant.beans.SerialBean;
-import com.grsu.teacherassistant.beans.SerialListenerBean;
-import com.grsu.teacherassistant.beans.SessionBean;
+import com.grsu.teacherassistant.beans.*;
+import com.grsu.teacherassistant.beans.utility.*;
 import com.grsu.teacherassistant.constants.Constants;
 import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.LessonDAO;
 import com.grsu.teacherassistant.dao.StudentDAO;
 import com.grsu.teacherassistant.entities.*;
-import com.grsu.teacherassistant.models.LazyStudentDataModel;
-import com.grsu.teacherassistant.models.LessonStudentModel;
-import com.grsu.teacherassistant.models.LessonType;
-import com.grsu.teacherassistant.models.SkipInfo;
+import com.grsu.teacherassistant.models.*;
 import com.grsu.teacherassistant.utils.EntityUtils;
 import com.grsu.teacherassistant.utils.FacesUtils;
 import com.grsu.teacherassistant.utils.LocaleUtils;
@@ -52,6 +48,18 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
     @ManagedProperty(value = "#{serialBean}")
     private SerialBean serialBean;
 
+    @ManagedProperty(value = "#{imageBean}")
+    private ImageBean imageBean;
+
+    @ManagedProperty(value = "#{localeBean}")
+    private LocaleBean localeBean;
+
+    @ManagedProperty(value = "#{alarmBean}")
+    private AlarmBean alarmBean;
+
+    @ManagedProperty(value = "#{notificationSettingsBean}")
+    private NotificationSettingsBean notificationSettingsBean;
+
     private Lesson selectedLesson;
     private Student processedStudent;
 
@@ -90,6 +98,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
     private boolean studentNotExist;
 
     public void initLesson(Lesson lesson) {
+        alarmBean.setAlarms();
         serialBean.setCurrentListener(this);
         serialBean.startRecord();
 
@@ -238,6 +247,8 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
 
     @Override
     public boolean process(String uid, String name) {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==> process(); uid = " + uid);
         reRegistration = false;
         studentNotExist = false;
         Student student = EntityUtils.getPersonByUid(absentStudents, uid);
@@ -245,7 +256,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             student = EntityUtils.getPersonByUid(presentStudents, uid);
             if (student != null) {
                 reRegistration = true;
-                LOGGER.info("Student not registered. Reason: Uid[ " + uid + " ] already exists.");
+                LOGGER.info("Student not registered. Reason: Uid[ " + uid + " ] already registered.");
 //				return false;
             } else {
                 student = EntityUtils.getPersonByUid(allStudents, uid);
@@ -269,10 +280,13 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
                 }
             }
         }
+        LOGGER.info("<== process(); reRegistration = " + reRegistration + "; studentNotExist " + studentNotExist + "; student = " + student + "; " + (System.currentTimeMillis() - t));
         return processStudent(student);
     }
 
     private boolean processStudent(Student student) {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==> processStudent();");
         if (!reRegistration && !studentNotExist) {
             presentStudents.add(student);
             if (absentStudents.contains(student)) {
@@ -297,19 +311,26 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
                     studentLesson.setRegistered(true);
                     studentLesson.setRegistrationTime(LocalTime.now());
                     studentLesson.setRegistrationType(Constants.REGISTRATION_TYPE_AUTOMATIC);
+                    studentLesson.setNotes(new ArrayList<>());
                     EntityDAO.update(studentLesson);
                     updateSkipInfo(Arrays.asList(student));
                 }
             }
 
-            processedStudent = student;
+            selectStudent(student);
             updateLessonStudents();
-            FacesUtils.push("/register", processedStudent);
+            FacesUtils.push("/register", processedStudent.getCardUid());
+            checkStudentNotifications(student);
+            pushStudentDesktopNotification();
             LOGGER.info("Student registered");
+            LOGGER.info("<== processStudent(); registered = true" + (System.currentTimeMillis() - t));
             return true;
         } else {
-            processedStudent = student;
-            FacesUtils.push("/register", processedStudent);
+            selectStudent(student);
+            FacesUtils.push("/register", processedStudent.getCardUid());
+            pushStudentDesktopNotification();
+            LOGGER.info("Student not registered");
+            LOGGER.info("<== processStudent(); registered = false; " + (System.currentTimeMillis() - t));
             return false;
         }
     }
@@ -347,13 +368,14 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
                 studentLesson.setRegistered(true);
                 studentLesson.setRegistrationTime(LocalTime.now());
                 studentLesson.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
+                studentLesson.setNotes(new ArrayList<>());
                 EntityDAO.update(studentLesson);
                 updateSkipInfo(Arrays.asList(student));
             }
-
+            checkStudentNotifications(student);
         }
 
-        processedStudent = student;
+        selectStudent(student);
         updateLessonStudents();
         FacesUtils.execute("PF('aStudentsTable').clearFilters()");
         FacesUtils.execute("PF('pStudentsTable').clearFilters()");
@@ -413,7 +435,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             updateLessonStudents();
         }
 
-        processedStudent = null;
+        selectStudent(null);
         FacesUtils.execute("PF('aStudentsTable').clearFilters()");
         FacesUtils.execute("PF('pStudentsTable').clearFilters()");
     }
@@ -464,6 +486,8 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
     }
 
     private void updateSkipInfo(List<Student> students) {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==> updateSkipInfo();");
         List<Integer> studentIds = students.stream().map(Student::getId).collect(Collectors.toList());
 
         List<SkipInfo> studentSkipInfo = StudentDAO.getStudentSkipInfo(studentIds, selectedLesson.getStream().getId(), selectedLesson.getId());
@@ -488,7 +512,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             }
         }
 
-
+        LOGGER.info("<== updateSkipInfo(); " + (System.currentTimeMillis() - t));
     }
 
 	/* LESSON STUDENTS TABLES */
@@ -513,8 +537,11 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
     }
 
     private void updateLessonStudents() {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==> updateLessonStudents();");
         generateLessonStudents(lessonAbsentStudents, absentStudents);
         generateLessonStudents(lessonPresentStudents, presentStudents);
+        LOGGER.info("<== updateLessonStudents(); " + (System.currentTimeMillis() - t));
     }
 
     public void addLessonStudent(LessonStudentModel lessonStudentModel) {
@@ -532,7 +559,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
 
 
     public String getStudentSkip(Student student) {
-        LocaleUtils localeUtils = new LocaleUtils();
+        LocaleUtils localeUtils = new LocaleUtils(localeBean.getLocale());
         Map<String, Integer> studentSkipInfoMap = skipInfo.get(student.getId());
         if (studentSkipInfoMap != null) {
             Integer total = studentSkipInfoMap.get(Constants.TOTAL_SKIP);
@@ -550,10 +577,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
     }
 
     public void onStudentRowSelect(SelectEvent event) {
-        processedStudent = ((LessonStudentModel) event.getObject()).getStudent();
-        notes = new ArrayList<>();
-        notes.addAll(processedStudent.getNotes());
-        processedStudent.getStudentLessons().values().forEach(sc -> notes.addAll(sc.getNotes()));
+        selectStudent(((LessonStudentModel) event.getObject()).getStudent());
     }
 
     public void onStudentRowDblClckSelect(SelectEvent event) {
@@ -597,4 +621,101 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
         closeDialog("addStudentsDialog");
     }
 
+    private void selectStudent(Student student) {
+        if (student != null) {
+            processedStudent = student;
+            notes = new ArrayList<>();
+            if (processedStudent.getNotes() != null) {
+                notes.addAll(processedStudent.getNotes());
+            }
+            if (processedStudent.getStudentLessons() != null) {
+                processedStudent.getStudentLessons().values().forEach(sc -> notes.addAll(sc.getNotes()));
+            }
+        } else {
+            processedStudent = null;
+            notes = null;
+        }
+    }
+
+    /**
+     * Генерация всплывабщего уведомления с информацией о студенте
+     *
+     * @return уведомление
+     */
+    private Notification createStudentDesktopNotification() {
+        LocaleUtils localeUtils = new LocaleUtils(localeBean.getLocale());
+        Notification notification = new Notification();
+        notification.setTimeout(3000);
+
+        if (!studentNotExist) {
+            notification.setBody(getStudentSkip(processedStudent).replace(localeUtils.getMessage("label.skips") + ": ", "").replace("&nbsp;&nbsp;&nbsp;", " - "));
+            notification.setTitle(processedStudent.getFullName());
+        } else {
+            notification.setBody(localeUtils.getMessage("label.studentNotExist"));
+            notification.setTitle(processedStudent.getCardUid());
+        }
+
+        notification.setImage(imageBean.getImagePath(processedStudent.getCardUid()));
+        return notification;
+    }
+
+    /**
+     * Отправка сгенерированного уведомления клиенту (браузеру).
+     */
+    private void pushStudentDesktopNotification() {
+        FacesUtils.push("/notify", createStudentDesktopNotification());
+    }
+
+    private String newNotification;
+    private LessonStudentModel selectedStudent;
+
+    public void removeNotification(StudentNotification notification) {
+        EntityDAO.delete(notification);
+        selectedStudent.getStudent().getNotifications().remove(notification);
+    }
+
+    public void saveNotification() {
+        if (newNotification != null && !newNotification.isEmpty()) {
+            StudentNotification studentNotification = new StudentNotification();
+            studentNotification.setActive(Boolean.TRUE);
+            studentNotification.setDescription(newNotification);
+            studentNotification.setStudent(selectedStudent.getStudent());
+            studentNotification.setCreateDate(LocalDateTime.now());
+            selectedStudent.getStudent().getNotifications().add(studentNotification);
+        }
+        newNotification = null;
+        EntityDAO.save(selectedStudent.getStudent().getNotifications());
+        FacesUtils.closeDialog("notificationDialog");
+    }
+
+    private void checkStudentNotifications(Student student) {
+        if (notificationSettingsBean.isActive()) {
+
+            NotificationSetting studentNotificationSettings = notificationSettingsBean.getSettings().get(NotificationType.STUDENT.name());
+            if (studentNotificationSettings != null && studentNotificationSettings.getActive()) {
+                if (student.getNotifications().parallelStream().anyMatch(StudentNotification::getActive)) {
+                    notificationSettingsBean.play(studentNotificationSettings);
+                    return;
+                }
+            }
+
+            NotificationSetting absenceNotificationSettings = notificationSettingsBean.getSettings().get(NotificationType.ABSENCE.name());
+            if (absenceNotificationSettings != null && absenceNotificationSettings.getActive()) {
+                if (skipInfo.containsKey(student.getId())) {
+                    Integer totalSkip = skipInfo.get(student.getId()).get(Constants.TOTAL_SKIP);
+                    if (totalSkip != null && totalSkip >= absenceNotificationSettings.getData()) {
+                        notificationSettingsBean.play(absenceNotificationSettings);
+                        return;
+                    }
+                }
+            }
+
+            NotificationSetting praepostorNotificationSettings = notificationSettingsBean.getSettings().get(NotificationType.ABSENCE.name());
+            if (praepostorNotificationSettings != null && praepostorNotificationSettings.getActive()) {
+                //TODO: check if the student praepostor?
+                return;
+            }
+
+        }
+    }
 }

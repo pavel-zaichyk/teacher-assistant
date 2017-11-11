@@ -1,8 +1,8 @@
 package com.grsu.teacherassistant.beans.mode;
 
-import com.grsu.teacherassistant.beans.SerialBean;
-import com.grsu.teacherassistant.beans.SerialListenerBean;
-import com.grsu.teacherassistant.beans.SessionBean;
+import com.grsu.teacherassistant.beans.utility.SerialBean;
+import com.grsu.teacherassistant.beans.utility.SerialListenerBean;
+import com.grsu.teacherassistant.beans.utility.SessionBean;
 import com.grsu.teacherassistant.constants.Constants;
 import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.StudentDAO;
@@ -333,7 +333,7 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 		if (student != null) {
 			initStudentMode(student, null);
 
-			FacesUtils.push("/register", student);
+			FacesUtils.push("/register", uid);
 			return true;
 		} else {
 			LOGGER.info("Student not registered. Reason: Uid[ " + uid + " ] not exist in database.");

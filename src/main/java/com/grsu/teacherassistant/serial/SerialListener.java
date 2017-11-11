@@ -1,6 +1,6 @@
 package com.grsu.teacherassistant.serial;
 
-import com.grsu.teacherassistant.beans.SerialBean;
+import com.grsu.teacherassistant.beans.utility.SerialBean;
 import com.grsu.teacherassistant.utils.SerialUtils;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
@@ -30,6 +30,10 @@ public class SerialListener implements SerialPortEventListener {
     private String uid;
 
     public void serialEvent(SerialPortEvent event) {
+        final long t = System.currentTimeMillis();
+        LOGGER.info("==>");
+        LOGGER.info("==>");
+        LOGGER.info("==> serialEvent()");
         if (event.isRXCHAR() && event.getEventValue() > 0) {
             LOGGER.info("---");
             try {
@@ -67,6 +71,10 @@ public class SerialListener implements SerialPortEventListener {
                 LOGGER.error(ex.getMessage(), ex);
             }
         }
+
+        LOGGER.info("<== serialEvent()" + (System.currentTimeMillis() - t));
+        LOGGER.info("<==");
+        LOGGER.info("<==");
     }
 
     private String decodeHexToText(String hexString) {
