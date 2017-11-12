@@ -59,6 +59,10 @@ public class Group implements AssistantEntity {
     @OneToMany(mappedBy = "group")
     private List<Lesson> lessons;
 
+    @ManyToOne
+    @JoinColumn(name = "praepostor_id", referencedColumnName = "id")
+    private Student praepostor;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

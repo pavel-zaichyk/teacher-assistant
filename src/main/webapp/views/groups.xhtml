@@ -44,6 +44,14 @@
             >
                 <h:outputText value="#{group.department.name}"/>
             </p:column>
+
+            <p:column headerText="#{msg['group.praepostor']}"
+                      sortBy="#{group.praepostor.fullName}"
+                      filterBy="#{group.praepostor.fullName}"
+                      filterMatchMode="startsWith"
+            >
+                <h:outputText value="#{group.praepostor.fullName}"/>
+            </p:column>
         </p:dataTable>
 
         <p:contextMenu for="groups">

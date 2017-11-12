@@ -698,10 +698,17 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
                 }
             }
 
-            NotificationSetting praepostorNotificationSettings = notificationSettingsBean.getSettings().get(NotificationType.ABSENCE.name());
+            NotificationSetting praepostorNotificationSettings = notificationSettingsBean.getSettings().get(NotificationType.PRAEPOSTOR.name());
             if (praepostorNotificationSettings != null && praepostorNotificationSettings.getActive()) {
-                //TODO: check if the student praepostor?
-                return;
+                if (selectedLesson.getGroup() == null) {
+                    if (selectedLesson.getStream().getGroups().parallelStream().anyMatch(g -> student.getPraepostorGroups().contains(g))) {
+                        notificationSettingsBean.play(praepostorNotificationSettings);
+                    }
+                } else {
+                    if (student.getPraepostorGroups().contains(selectedLesson.getGroup())) {
+                        notificationSettingsBean.play(praepostorNotificationSettings);
+                    }
+                }
             }
 
         }

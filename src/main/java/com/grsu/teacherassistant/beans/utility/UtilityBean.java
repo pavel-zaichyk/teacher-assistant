@@ -1,10 +1,13 @@
 package com.grsu.teacherassistant.beans.utility;
 
+import com.grsu.teacherassistant.entities.Group;
 import com.grsu.teacherassistant.entities.Lesson;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Pavel Zaychick
@@ -37,5 +40,9 @@ public class UtilityBean implements Serializable {
 
         messageBuilder.append(")");
         return messageBuilder.toString();
+    }
+
+    public String getGroupNames(List<Group> groups) {
+        return String.join(", ", groups.stream().map(Group::getName).collect(Collectors.toList()));
     }
 }

@@ -138,6 +138,9 @@ public class Student implements AssistantEntity, Person {
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private List<StudentNotification> notifications;
 
+    @OneToMany(mappedBy = "praepostor")
+    private List<Group> praepostorGroups;
+
     public String getFullName() {
         if (lastName == null) {
             return firstName;
