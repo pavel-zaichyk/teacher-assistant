@@ -176,6 +176,7 @@ body {
 
 .studentDetail {
 	max-height: 90%;
+	width: 800px;
 }
 
 .groupStudentsDialog {

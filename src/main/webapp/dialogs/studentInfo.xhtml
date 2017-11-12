@@ -79,19 +79,30 @@
                     </p:panelGrid>
                 </p:panelGrid>
 
-                <p:outputLabel for="groups" value="#{msg['student.info.groups']}"/>
-                <p:pickList id="groups"
-                            value="#{studentBean.groups}"
-                            var="group"
-                            itemValue="#{group}"
-                            itemLabel="#{group.name}"
-                            responsive="true"
-                            showCheckbox="true"
-                            showSourceFilter="true"
-                            showTargetFilter="true"
-                            filterMatchMode="contains"
-                            converter="entityConverter"
-                            style="width: 100%"/>
+                <p:panelGrid columns="2" styleClass="noBorder v-align-top" columnClasses=",w250px">
+                    <p:outputLabel for="groups" value="#{msg['student.info.groups']}" styleClass="bold"/>
+                    <p:outputLabel for="praepostorGroups" value="#{msg['group.praepostor']}" styleClass="bold"/>
+
+                    <p:pickList id="groups"
+                                value="#{studentBean.groups}"
+                                var="group"
+                                itemValue="#{group}"
+                                itemLabel="#{group.name}"
+                                responsive="true"
+                                showCheckbox="true"
+                                showSourceFilter="true"
+                                showTargetFilter="true"
+                                filterMatchMode="contains"
+                                converter="entityConverter">
+                        <p:ajax event="transfer" update=":studentInfoForm:praepostorGroups"/>
+                    </p:pickList>
+
+                    <p:selectManyCheckbox id="praepostorGroups" value="#{studentBean.selectedPraepostorGroups}"
+                                          converter="entityConverter" layout="grid" columns="1">
+                        <f:selectItems value="#{studentBean.student.groups}" var="group" itemLabel="#{group.name}"
+                                       itemValue="#{group}"/>
+                    </p:selectManyCheckbox>
+                </p:panelGrid>
             </p:scrollPanel>
 
             <p:outputPanel>

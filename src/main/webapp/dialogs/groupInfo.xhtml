@@ -43,6 +43,15 @@
                     <p:calendar id="expirationDate" value="#{groupBean.group.expirationDate}"
                                 converter="localDateConverter" pattern="dd.MM.yyyy">
                     </p:calendar>
+
+                    <p:outputLabel for="praepostor" value="#{msg['group.praepostor']}"/>
+                    <p:selectOneMenu id="praepostor"
+                                     value="#{groupBean.group.praepostor}"
+                                     converter="entityConverter">
+                        <f:selectItem itemValue="#{null}" itemLabel="#{msg['group.praepostor.select']}"/>
+                        <f:selectItems value="#{groupBean.students.target}" var="student"
+                                       itemLabel="#{student.fullName}" itemValue="#{student}"/>
+                    </p:selectOneMenu>
                 </p:panelGrid>
 
                 <p:outputLabel for="students" value="#{msg['students']}"/>
@@ -58,6 +67,8 @@
                             filterMatchMode="contains"
                             converter="entityConverter"
                             style="width: 100%">
+
+                    <p:ajax event="transfer" update=":groupInfoForm:groupInfoDetail"/>
                     <p:column style="width:60%">
                         <h:outputText value="#{student.fullName}"/>
                     </p:column>

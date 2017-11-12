@@ -332,8 +332,10 @@
                     <h:outputLabel value="#{registrationModeBean.processedStudent.fullName}" styleClass="bold"/>
 
                     <h:panelGroup rendered="#{notificationSettingsBean.active}">
-                        <h:panelGroup rendered="#{notificationSettingsBean.settings['PRAEPOSTOR'].active}">
-                            <!-- TODO: show label that current student is a praepostor -->
+                        <h:panelGroup rendered="#{notificationSettingsBean.settings['PRAEPOSTOR'].active and (registrationModeBean.processedStudent.praepostorGroups.size() gt 0)}"
+                                      styleClass="bold dark-red block">
+                            <h:outputText value="#{msg['group.praepostor']}: "/>
+                            <h:outputText value="#{utility.getGroupNames(registrationModeBean.processedStudent.praepostorGroups)}" />
                         </h:panelGroup>
 
                         <h:panelGroup rendered="#{notificationSettingsBean.settings['ABSENCE'].active}">
