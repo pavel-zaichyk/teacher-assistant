@@ -22,7 +22,7 @@ public class SerialBean implements Serializable {
     private static final Logger LOGGER = LoggerFactory.getLogger(SerialBean.class);
 
 	private boolean recordStarted = false;
-	private boolean soundEnabled = false; //TODO: change to true
+	private boolean soundEnabled = true;
 	private SerialListenerBean currentListener;
 
 
@@ -50,7 +50,7 @@ public class SerialBean implements Serializable {
 	}
 
 	public void enableSound() {
-		soundEnabled = false; //TODO: change to true
+		soundEnabled = true;
 	}
 
 	public void disableSound() {
