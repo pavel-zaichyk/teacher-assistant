@@ -9,7 +9,8 @@
     <h:form id="lessonForm">
         <p:socket onMessage="spawnNotification" channel="/notify"/>
         <p:socket channel="/register">
-            <p:ajax event="message" update="lastVisitInfo attendanceInfo presentStudents absentStudents additionalInfo registrationProgress"/>
+            <p:ajax event="message"
+                    update="lastVisitInfo attendanceInfo presentStudents absentStudents additionalInfo registrationProgress"/>
         </p:socket>
 
         <p:panelGrid id="lessonInfo" columns="2" styleClass="noBorder lesson-info">
@@ -21,8 +22,10 @@
                         <p:outputLabel value="#{msg['lesson.visit.noData']}"/>
                     </p:panel>
                     <p:panel rendered="#{registrationModeBean.processedStudent ne null}" styleClass="visit-label">
-                        <p:outputLabel id="visitLastName" value="#{registrationModeBean.processedStudent.lastName}" styleClass="blue"/>
-                        <p:outputLabel id="visitFirstName" value="#{registrationModeBean.processedStudent.firstName}" styleClass="blue"/>
+                        <p:outputLabel id="visitLastName" value="#{registrationModeBean.processedStudent.lastName}"
+                                       styleClass="blue"/>
+                        <p:outputLabel id="visitFirstName" value="#{registrationModeBean.processedStudent.firstName}"
+                                       styleClass="blue"/>
                         <p:outputLabel id="visitGroup" escape="false"
                                        styleClass="font-size-20pt margin-top-20px margin-bottom-20px"
                                        value="#{registrationModeBean.processedStudent.groupNames}"/>
@@ -332,10 +335,12 @@
                     <h:outputLabel value="#{registrationModeBean.processedStudent.fullName}" styleClass="bold"/>
 
                     <h:panelGroup rendered="#{notificationSettingsBean.active}">
-                        <h:panelGroup rendered="#{notificationSettingsBean.settings['PRAEPOSTOR'].active and (registrationModeBean.processedStudent.praepostorGroups.size() gt 0)}"
-                                      styleClass="bold dark-red block">
+                        <h:panelGroup
+                            rendered="#{notificationSettingsBean.settings['PRAEPOSTOR'].active and (registrationModeBean.processedStudent.praepostorGroups.size() gt 0)}"
+                            styleClass="bold dark-red block">
                             <h:outputText value="#{msg['group.praepostor']}: "/>
-                            <h:outputText value="#{utility.getGroupNames(registrationModeBean.processedStudent.praepostorGroups)}" />
+                            <h:outputText
+                                value="#{utility.getGroupNames(registrationModeBean.processedStudent.praepostorGroups)}"/>
                         </h:panelGroup>
 
                         <h:panelGroup rendered="#{notificationSettingsBean.settings['ABSENCE'].active}">
@@ -376,7 +381,9 @@
                         icon="ui-icon-arrowrefresh-1-w"
                         actionListener="#{studentBean.initStudent(registrationModeBean.selectedPresentStudents.get(0).student)}">
                 <p:resetInput target=":studentInfoForm:studentDetail"/>
-                <f:setPropertyActionListener value=":lessonForm:presentStudents :lessonForm:lastVisitInfo :lessonForm:additionalInfo" target="#{studentBean.updateId}" />
+                <f:setPropertyActionListener
+                    value=":lessonForm:presentStudents :lessonForm:lastVisitInfo :lessonForm:additionalInfo"
+                    target="#{studentBean.updateId}"/>
             </p:menuitem>
             <p:menuitem value="#{msg['notification']}"
                         update=":lessonForm:notifications"
@@ -384,6 +391,13 @@
                         oncomplete="PF('notificationDialog').show()"
                         actionListener="#{registrationModeBean.setSelectedStudent(registrationModeBean.selectedPresentStudents.get(0))}">
                 <f:setPropertyActionListener value="#{null}" target="#{registrationModeBean.newNotification}"/>
+            </p:menuitem>
+            <p:menuitem value="#{msg['label.notes']}"
+                        update=":lessonForm:notes"
+                        icon="fa fa-fw fa-info-circle"
+                        oncomplete="PF('studentNotesDialog').show()"
+                        actionListener="#{registrationModeBean.setSelectedStudent(registrationModeBean.selectedPresentStudents.get(0))}">
+                <f:setPropertyActionListener value="#{null}" target="#{registrationModeBean.newNote}"/>
             </p:menuitem>
         </p:contextMenu>
 
@@ -393,7 +407,9 @@
                         icon="ui-icon-arrowrefresh-1-w"
                         actionListener="#{studentBean.initStudent(registrationModeBean.selectedAbsentStudents.get(0).student)}">
                 <p:resetInput target=":studentInfoForm:studentDetail"/>
-                <f:setPropertyActionListener value=":lessonForm:absentStudents :lessonForm:lastVisitInfo :lessonForm:additionalInfo" target="#{studentBean.updateId}" />
+                <f:setPropertyActionListener
+                    value=":lessonForm:absentStudents :lessonForm:lastVisitInfo :lessonForm:additionalInfo"
+                    target="#{studentBean.updateId}"/>
             </p:menuitem>
             <p:menuitem value="#{msg['notification']}"
                         update=":lessonForm:notifications"
@@ -401,6 +417,13 @@
                         oncomplete="PF('notificationDialog').show()"
                         actionListener="#{registrationModeBean.setSelectedStudent(registrationModeBean.selectedAbsentStudents.get(0))}">
                 <f:setPropertyActionListener value="#{null}" target="#{registrationModeBean.newNotification}"/>
+            </p:menuitem>
+            <p:menuitem value="#{msg['label.notes']}"
+                        update=":lessonForm:notes"
+                        icon="fa fa-fw fa-info-circle"
+                        oncomplete="PF('studentNotesDialog').show()"
+                        actionListener="#{registrationModeBean.setSelectedStudent(registrationModeBean.selectedAbsentStudents.get(0))}">
+                <f:setPropertyActionListener value="#{null}" target="#{registrationModeBean.newNote}"/>
             </p:menuitem>
         </p:contextMenu>
 
@@ -442,5 +465,33 @@
                 </p:commandButton>
             </p:outputPanel>
         </p:dialog>
+
+        <p:dialog header="#{msg['label.notes']}"
+                  widgetVar="studentNotesDialog"
+                  modal="true"
+                  showEffect="fade"
+                  hideEffect="fade"
+                  resizable="false">
+            <p:ajax event="close" update=":lessonForm:additionalInfo"/>
+            <p:outputPanel id="notes">
+                <ui:repeat var="note"
+                           value="#{registrationModeBean.selectedStudent.student.studentLessons[registrationModeBean.selectedLesson.id].notes}">
+                    <h:panelGrid columns="3" columnClasses="w300px, w20px">
+                        <h:outputText value="#{note.description}"/>
+                        <h:outputText value="#{note.createDate}" converter="localDateConverter"/>
+                        <p:commandButton actionListener="#{registrationModeBean.removeNote(note)}"
+                                         update=":lessonForm:notes"
+                                         icon="fa fa-fw fa-minus" title="#{msg['option.remove']}"
+                                         styleClass="red"/>
+                    </h:panelGrid>
+                </ui:repeat>
+                <p:inputTextarea value="#{registrationModeBean.newNote}"/>
+
+                <p:commandButton value="#{msg['btn.save.exit']}" icon="fa fa-fw fa-save"
+                                 actionListener="#{registrationModeBean.saveNote}"
+                                 styleClass="block"/>
+            </p:outputPanel>
+        </p:dialog>
+
     </h:form>
 </ui:composition>
