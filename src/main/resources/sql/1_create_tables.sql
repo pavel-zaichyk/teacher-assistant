@@ -89,7 +89,7 @@ CREATE TABLE [GROUP] (
   active          INTEGER,
   expiration_date TEXT,
   praepostor_id   INTEGER,
-  FOREIGN KEY (praepostor) REFERENCES STUDENT (id),
+  FOREIGN KEY (praepostor_id) REFERENCES STUDENT (id),
   FOREIGN KEY (department_id) REFERENCES DEPARTMENT (id),
   FOREIGN KEY (type_id) REFERENCES GROUP_TYPE (id)
 );

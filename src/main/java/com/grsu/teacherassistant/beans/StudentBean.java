@@ -16,6 +16,7 @@ import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static com.grsu.teacherassistant.utils.FacesUtils.closeDialog;
 import static com.grsu.teacherassistant.utils.FacesUtils.update;
@@ -36,12 +37,15 @@ public class StudentBean implements Serializable, SerialListenerBean {
     private SerialListenerBean oldSerialListener;
     private boolean oldRecordStarted;
 
+    private Group[] selectedPraepostorGroups;
+
     public void initStudent(Student student) {
         oldSerialListener = serialBean.getCurrentListener();
         oldRecordStarted = serialBean.isRecordStarted();
 
         if (student != null) {
             this.student = student;
+            selectedPraepostorGroups = student.getPraepostorGroups().toArray(new Group[]{});
         } else {
             this.student = new Student();
             this.student.setGroups(new ArrayList<>());
@@ -57,11 +61,19 @@ public class StudentBean implements Serializable, SerialListenerBean {
         stopRecord();
         student = null;
         oldSerialListener = null;
+        selectedPraepostorGroups = null;
         closeDialog("studentDialog");
     }
 
     public void save() {
         student.setGroups(groups.getTarget());
+        student.getPraepostorGroups().parallelStream().forEach(g -> g.setPraepostor(null));
+        student.setPraepostorGroups(new ArrayList<>());
+        Stream.of(selectedPraepostorGroups).forEach(g -> {
+            student.getPraepostorGroups().add(g);
+            g.setPraepostor(student);
+        });
+        EntityDAO.save(student.getPraepostorGroups());
         EntityDAO.save(student);
         update("views");
         exit();

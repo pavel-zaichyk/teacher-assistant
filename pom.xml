@@ -4,7 +4,7 @@
 
 	<groupId>com.grsu.reader</groupId>
 	<artifactId>teacher-assistant</artifactId>
-	<version>1.9-SNAPSHOT</version>
+	<version>1.10-SNAPSHOT</version>
 	<name>Teacher Assistant</name>
 	<packaging>war</packaging>
 
