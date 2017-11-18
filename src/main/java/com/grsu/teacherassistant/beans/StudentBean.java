@@ -39,6 +39,8 @@ public class StudentBean implements Serializable, SerialListenerBean {
 
     private Group[] selectedPraepostorGroups;
 
+    private String updateId = "views";
+
     public void initStudent(Student student) {
         oldSerialListener = serialBean.getCurrentListener();
         oldRecordStarted = serialBean.isRecordStarted();
@@ -62,6 +64,7 @@ public class StudentBean implements Serializable, SerialListenerBean {
         student = null;
         oldSerialListener = null;
         selectedPraepostorGroups = null;
+        updateId = "views";
         closeDialog("studentDialog");
     }
 
@@ -75,7 +78,6 @@ public class StudentBean implements Serializable, SerialListenerBean {
         });
         EntityDAO.save(student.getPraepostorGroups());
         EntityDAO.save(student);
-        update("views");
         exit();
     }
 

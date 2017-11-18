@@ -292,6 +292,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
                     studentLesson.setRegistered(true);
                     studentLesson.setRegistrationTime(LocalTime.now());
                     studentLesson.setRegistrationType(Constants.REGISTRATION_TYPE_AUTOMATIC);
+                    studentLesson.setNotes(new ArrayList<>());
                     EntityDAO.add(studentLesson);
                     student.getStudentLessons().put(selectedLesson.getId(), studentLesson);
                     selectedLesson.getStudentLessons().put(studentLesson.getStudent().getId(), studentLesson);
@@ -349,6 +350,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
                 studentLesson.setRegistered(true);
                 studentLesson.setRegistrationTime(LocalTime.now());
                 studentLesson.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
+                studentLesson.setNotes(new ArrayList<>());
                 EntityDAO.add(studentLesson);
                 student.getStudentLessons().put(selectedLesson.getId(), studentLesson);
                 selectedLesson.getStudentLessons().put(studentLesson.getStudent().getId(), studentLesson);
