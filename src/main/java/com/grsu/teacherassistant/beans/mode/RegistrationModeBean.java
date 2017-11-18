@@ -715,4 +715,26 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
 
         }
     }
+
+    private String newNote;
+
+    public void removeNote(Note note) {
+        EntityDAO.delete(note);
+        selectedStudent.getStudent().getStudentLessons().get(selectedLesson.getId()).getNotes().remove(note);
+    }
+
+
+    public void saveNote() {
+        if (newNote != null && !newNote.isEmpty()) {
+            Note note = new Note();
+            note.setCreateDate(LocalDateTime.now());
+            note.setDescription(newNote);
+            note.setType(Constants.STUDENT_LESSON);
+            note.setEntityId(selectedStudent.getStudent().getStudentLessons().get(selectedLesson.getId()).getId());
+            selectedStudent.getStudent().getStudentLessons().get(selectedLesson.getId()).getNotes().add(note);
+            EntityDAO.save(note);
+        }
+        newNote = null;
+        FacesUtils.closeDialog("studentNotesDialog");
+    }
 }
