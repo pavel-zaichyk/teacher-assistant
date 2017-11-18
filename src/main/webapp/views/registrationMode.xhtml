@@ -376,6 +376,7 @@
                         icon="ui-icon-arrowrefresh-1-w"
                         actionListener="#{studentBean.initStudent(registrationModeBean.selectedPresentStudents.get(0).student)}">
                 <p:resetInput target=":studentInfoForm:studentDetail"/>
+                <f:setPropertyActionListener value=":lessonForm:presentStudents :lessonForm:lastVisitInfo :lessonForm:additionalInfo" target="#{studentBean.updateId}" />
             </p:menuitem>
             <p:menuitem value="#{msg['notification']}"
                         update=":lessonForm:notifications"
@@ -392,6 +393,7 @@
                         icon="ui-icon-arrowrefresh-1-w"
                         actionListener="#{studentBean.initStudent(registrationModeBean.selectedAbsentStudents.get(0).student)}">
                 <p:resetInput target=":studentInfoForm:studentDetail"/>
+                <f:setPropertyActionListener value=":lessonForm:absentStudents :lessonForm:lastVisitInfo :lessonForm:additionalInfo" target="#{studentBean.updateId}" />
             </p:menuitem>
             <p:menuitem value="#{msg['notification']}"
                         update=":lessonForm:notifications"

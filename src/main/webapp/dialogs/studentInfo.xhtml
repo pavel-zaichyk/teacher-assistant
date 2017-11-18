@@ -108,7 +108,7 @@
             <p:outputPanel>
                 <p:commandButton value="#{msg['btn.save.exit']}" icon="fa fa-fw fa-save"
                                  actionListener="#{studentBean.save}"
-                                 update=":studentInfoForm:studentDetail">
+                                 update=":studentInfoForm:studentDetail #{studentBean.updateId}" >
                     <f:setPropertyActionListener value="#{null}" target="#{studentsBean.students}"/>
                     <f:setPropertyActionListener value="#{null}" target="#{sessionBean.students}"/>
                 </p:commandButton>
