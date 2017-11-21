@@ -10,6 +10,7 @@ import com.grsu.teacherassistant.entities.*;
 import com.grsu.teacherassistant.entities.StudentLesson;
 import com.grsu.teacherassistant.models.LessonStudentModel;
 import com.grsu.teacherassistant.models.LessonType;
+import com.grsu.teacherassistant.models.Mark;
 import com.grsu.teacherassistant.models.SkipInfo;
 import com.grsu.teacherassistant.utils.EntityUtils;
 import com.grsu.teacherassistant.utils.FacesUtils;
@@ -117,7 +118,7 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 				if (LessonType.EXAM.equals(sl.getLesson().getType())) {
 					exam = sl;
 					try {
-						lessonStudent.setExamMark(Integer.valueOf(sl.getMark()));
+						lessonStudent.setExamMark(Mark.getByFieldValue(sl.getMark()));
 					} catch (NumberFormatException ex) {
 						lessonStudent.setExamMark(null);
 					}
@@ -248,16 +249,16 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 	}
 
 	public void changeExamMark(ValueChangeEvent event) {
-		if ("examMark".equals(((InputNumber) event.getSource()).getId())) {
-			lessonStudent.setExamMark((Integer) event.getNewValue());
+		if (event.getSource() instanceof InputText && "examMark".equals(((InputText) event.getSource()).getId())) {
+			lessonStudent.setExamMark((Mark) event.getNewValue());
 			lessonStudent.updateTotal();
 		}
-		if ("totalMark".equals(((InputNumber) event.getSource()).getId())) {
+		if (event.getSource() instanceof InputNumber && "totalMark".equals(((InputNumber) event.getSource()).getId())) {
 			lessonStudent.setTotalMark((Integer) event.getNewValue());
 			lessonStudent.updateExam();
 		}
 		if (exam != null) {
-			exam.setMark(String.valueOf(lessonStudent.getExamMark()));
+			exam.setMark(lessonStudent.getExamMark() != null ? lessonStudent.getExamMark().getKey() : null);
 			EntityDAO.save(exam);
 		}
 	}

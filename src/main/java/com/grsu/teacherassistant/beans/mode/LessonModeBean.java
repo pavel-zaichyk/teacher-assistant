@@ -5,10 +5,7 @@ import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.StudentDAO;
 import com.grsu.teacherassistant.entities.*;
 import com.grsu.teacherassistant.entities.StudentLesson;
-import com.grsu.teacherassistant.models.LazyStudentDataModel;
-import com.grsu.teacherassistant.models.LessonModel;
-import com.grsu.teacherassistant.models.LessonStudentModel;
-import com.grsu.teacherassistant.models.LessonType;
+import com.grsu.teacherassistant.models.*;
 import com.grsu.teacherassistant.utils.FacesUtils;
 import lombok.Data;
 import org.primefaces.component.api.DynamicColumn;
@@ -148,7 +145,7 @@ public class LessonModeBean implements Serializable {
 				StudentLesson exam = s.getStudent().getStudentLessons().get(e.getLesson().getId());
 				if (exam != null) {
 					try {
-						s.setExamMark(Integer.valueOf(exam.getMark()));
+						s.setExamMark(Mark.getByFieldValue(exam.getMark()));
 					} catch (NumberFormatException ex) {
 						s.setExamMark(null);
 					}

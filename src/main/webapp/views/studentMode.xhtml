@@ -358,14 +358,14 @@
 							              value="#{studentModeBean.lessonStudent.averageAttestation}"/>
 						</p:column>
 						<p:column styleClass="padding-0px">
-							<p:inputNumber id="examMark"
+							<p:inputText id="examMark"
 							               value="#{studentModeBean.lessonStudent.examMark}"
 							               valueChangeListener="#{studentModeBean.changeExamMark}"
+                                           converter="markConverter"
 							               rendered="#{studentModeBean.exam ne null}"
-							               minValue="0"
-							               maxValue="10">
+							               >
 								<p:ajax update="totalMark @this"/>
-							</p:inputNumber>
+							</p:inputText>
 						</p:column>
 						<p:column styleClass="padding-0px">
 							<p:inputNumber id="totalMark"

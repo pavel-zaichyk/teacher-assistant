@@ -3,8 +3,6 @@ package com.grsu.teacherassistant.entities;
 import com.grsu.teacherassistant.converters.db.LocalTimeAttributeConverter;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;

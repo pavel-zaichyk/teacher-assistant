@@ -13,15 +13,19 @@ import java.time.LocalTime;
 public class LessonStudentModel {
 	private Integer id;
 	private String name;
+
 	private Integer totalSkip;
 	private Integer lectureSkip;
 	private Integer practicalSkip;
 	private Integer labSkip;
+
 	private LocalTime registrationTime;
+
 	private Student student;
+    private boolean additional;
+
 	private Double averageAttestation;
-	private boolean additional;
-	private Integer examMark;
+	private Mark examMark;
 	private Integer totalMark;
 
 	public LessonStudentModel(Student student) {
@@ -45,10 +49,10 @@ public class LessonStudentModel {
 			if (examMark == null) {
 				totalMark = null;
 			} else {
-				totalMark = examMark;
+				totalMark = examMark.getValue();
 			}
 		} else {
-			totalMark = (int) Math.round(averageAttestation * Constants.MARK_ATTESTATION_WEIGHT + examMark * Constants.MARK_EXAM_WEIGHT);
+			totalMark = (int) Math.round(averageAttestation * Constants.MARK_ATTESTATION_WEIGHT + examMark.getValue() * Constants.MARK_EXAM_WEIGHT);
 		}
 	}
 
@@ -57,17 +61,17 @@ public class LessonStudentModel {
 			examMark = null;
 		} else {
 			if (averageAttestation == null) {
-				examMark = totalMark;
+				examMark = Mark.getByFieldValue(String.valueOf(totalMark));
 			} else {
-				examMark = (int) Math.round((totalMark - averageAttestation * Constants.MARK_ATTESTATION_WEIGHT) / Constants.MARK_EXAM_WEIGHT);
-				if (examMark < 0) {
-					examMark = 0;
-					updateTotal();
-				}
-				if (examMark > 10) {
-					examMark = 10;
-					updateTotal();
-				}
+				int mark = (int) Math.round((totalMark - averageAttestation * Constants.MARK_ATTESTATION_WEIGHT) / Constants.MARK_EXAM_WEIGHT);
+				if (mark < 0) {
+					examMark = Mark.POINT_0;
+				} else if (mark > 10) {
+					examMark = Mark.POINT_10;
+				} else {
+				    examMark = Mark.getByFieldValue(String.valueOf(mark));
+                }
+                updateTotal();
 			}
 		}
 	}
