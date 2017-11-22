@@ -12,4 +12,12 @@ public class Sound {
     private String data;
 
     private double volume;
+
+    @Override
+    public String toString() {
+        return "Sound{" +
+            "data='[]'" +
+            ", volume=" + volume +
+            '}';
+    }
 }

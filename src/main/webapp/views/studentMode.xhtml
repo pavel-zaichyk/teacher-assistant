@@ -189,7 +189,7 @@
 						<h:outputText value="#{mark.value}"/>
 					</h:panelGrid>
 				</ui:repeat>
-				<h:outputText value="#{msg['label.average.mark']} #{studentModeBean.averageMark}"
+				<h:outputText value="#{msg['label.average.mark']} #{studentModeBean.lessonStudent.averageMark}"
 				              styleClass="bold block"/>
 				<h:outputText value="#{msg['label.symbols']}:" styleClass="bold block"/>
 				<ui:repeat id="symbolMarks" var="mark" value="#{studentModeBean.symbolMarks}">

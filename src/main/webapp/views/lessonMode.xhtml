@@ -148,7 +148,7 @@
                 headerText="#{msg['label.exam.short']}"
                 rendered="#{lessonModeBean.showAttestations and lessonModeBean.exams.size() > 0}"
                 styleClass="exams">
-                <h:outputText value="#{student.examMark}"/>
+                <h:outputText value="#{student.examMark.key}"/>
             </p:column>
 
             <!-- attestations -->

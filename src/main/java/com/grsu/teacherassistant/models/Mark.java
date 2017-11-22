@@ -2,7 +2,9 @@ package com.grsu.teacherassistant.models;
 
 import lombok.Getter;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.OptionalDouble;
 
 /**
@@ -48,8 +50,8 @@ public enum Mark {
         return null;
     }
 
-    public static Double average(List<Mark> marks) {
-        OptionalDouble result = marks.stream().mapToInt(m -> m.value).average();
+    public static Double average(Collection<Mark> marks) {
+        OptionalDouble result = marks.stream().filter(Objects::nonNull).mapToInt(m -> m.value).average();
         if (result.isPresent()) {
             return result.getAsDouble();
         }

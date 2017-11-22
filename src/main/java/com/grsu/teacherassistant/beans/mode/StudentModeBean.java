@@ -55,9 +55,9 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 	private LessonStudentModel lessonStudent;
 	private Student student;
 
-	private Map<Integer, Integer> numberMarks;
-	private Map<String, Integer> symbolMarks;
-	private Double averageMark;
+//	private Map<Integer, Integer> numberMarks;
+//	private Map<String, Integer> symbolMarks;
+//	private Double averageMark;
 	private List<StudentLesson> studentLessons;
 	private List<StudentLesson> attestations;
 	private StudentLesson exam;
@@ -76,7 +76,7 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 		this.stream = stream;
 
 		if (this.student != null) {
-			lessonStudent = new LessonStudentModel(student);
+			lessonStudent = new LessonStudentModel(student, stream);
 			studentStreams = student.getStudentLessons().values().stream()
 					.filter(sl -> sl.getLesson() != null)
 					.map(sl -> sl.getLesson().getStream())
@@ -88,10 +88,10 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 			}
 
 			if (this.stream != null) {
-				updateStudentSkips();
+//				updateStudentSkips();
 
 				//init student marks
-				initMarks();
+//				initMarks();
 
 				//init student lessons
 				studentLessons = this.stream.getLessons().stream()
@@ -104,12 +104,12 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 						.filter(l -> LessonType.ATTESTATION.equals(l.getType()) && student.getStudentLessons().containsKey(l.getId()))
 						.map(l -> student.getStudentLessons().get(l.getId()))
 						.collect(Collectors.toList());
-				updateAverageAttestation();
-				lessonStudent.updateTotal();
+//				lessonStudent.updateAverageAttestation();
+//				lessonStudent.updateTotal();
 			}
 		}
 	}
-
+/*
 	private void initMarks() {
 		symbolMarks = new HashMap<>();
 		numberMarks = new HashMap<>();
@@ -157,7 +157,7 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 		} else {
 			averageMark = new BigDecimal(averageMark).setScale(2, RoundingMode.UP).doubleValue();
 		}
-	}
+	}*/
 
 	public boolean isAdditionalLesson(Lesson lesson) {
 		if (lesson.getGroup() == null) {
@@ -176,9 +176,9 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 	public void clear() {
 		stream = null;
 		lessonStudent = null;
-		numberMarks = null;
-		symbolMarks = null;
-		averageMark = null;
+//		numberMarks = null;
+//		symbolMarks = null;
+//		averageMark = null;
 		studentLessons = null;
 		attestations = null;
 		exam = null;
@@ -191,24 +191,24 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 	}
 
 	public List<Map.Entry<Integer, Integer>> getNumberMarks() {
-		if (numberMarks != null) {
-			return new ArrayList<>(numberMarks.entrySet());
+		if (lessonStudent.getNumberMarks() != null) {
+			return new ArrayList<>(lessonStudent.getNumberMarks().entrySet());
 		}
 		return null;
 	}
 
 	public List<Map.Entry<String, Integer>> getSymbolMarks() {
-		if (symbolMarks != null) {
-			return new ArrayList<>(symbolMarks.entrySet());
+		if (lessonStudent.getSymbolMarks() != null) {
+			return new ArrayList<>(lessonStudent.getSymbolMarks().entrySet());
 		}
 		return null;
 	}
-
+/*
 	private void updateAverageAttestation() {
 		lessonStudent.setAverageAttestation(null);
 		List<String> marks = new ArrayList<>();
 		attestations.stream().forEach(a -> {
-			if (a.getMark() != null) {
+			if (a.getMark() != null && !a.getMark().isEmpty()) {
 				marks.addAll(Arrays.asList(a.getMark().split("[^0-9]")));
 			}
 		});
@@ -216,7 +216,7 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 			lessonStudent.setAverageAttestation(marks.stream().mapToInt(Integer::parseInt).average().getAsDouble());
 		}
 	}
-
+/*
 	private void updateStudentSkips() {
 		if (stream != null) {
 			List<SkipInfo> studentSkipInfo = StudentDAO.getStudentSkipInfo(Arrays.asList(lessonStudent.getId()), stream.getId(), -1);
@@ -246,7 +246,7 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 				lessonStudent.setTotalSkip(lessonStudent.getLectureSkip() + lessonStudent.getPracticalSkip() + lessonStudent.getLabSkip());
 			}
 		}
-	}
+	}*/
 
 	public void changeExamMark(ValueChangeEvent event) {
 		if (event.getSource() instanceof InputText && "examMark".equals(((InputText) event.getSource()).getId())) {
@@ -270,7 +270,7 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 		attestationId = attestationId.substring(attestationId.lastIndexOf(":") + 1);
 		StudentLesson attestation = attestations.get(Integer.parseInt(attestationId));
 		attestation.setMark(String.valueOf(event.getNewValue()));
-		updateAverageAttestation();
+		lessonStudent.updateAverageAttestation();
 		lessonStudent.updateTotal();
 		EntityDAO.save(attestation);
 	}
@@ -285,7 +285,7 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 			value = value != null ? (value.trim().isEmpty() ? null : value.trim()) : null;
 			editedStudentLesson.setMark(value);
 			EntityDAO.save(editedStudentLesson);
-			initMarks();
+			lessonStudent.initMarks(stream);
 		}
 		editedStudentLesson = null;
 	}
@@ -323,7 +323,7 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 				selectedStudentLesson.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
 			}
 			EntityDAO.save(selectedStudentLesson);
-			updateStudentSkips();
+			lessonStudent.updateSkips(stream);
 		}
 		FacesUtils.closeDialog("registeredDialog");
 	}

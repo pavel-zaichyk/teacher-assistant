@@ -5,6 +5,7 @@ import com.grsu.teacherassistant.utils.FacesUtils;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.Base64;
 
 /**
@@ -39,6 +40,8 @@ public class Alarm implements AssistantEntity {
             "id=" + id +
             ", active=" + active +
             ", time=" + time +
+            ", sound='[]'" +
+            ", volume=" + volume +
             '}';
     }
 }
