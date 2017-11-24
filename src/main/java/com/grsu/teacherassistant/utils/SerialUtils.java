@@ -77,7 +77,7 @@ public class SerialUtils {
 			serialPort.openPort();
 			//Выставляем параметры
 			serialPort.setParams(
-					SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8,
+					SerialPort.BAUDRATE_57600, SerialPort.DATABITS_8,
 					SerialPort.STOPBITS_1, SerialPort.PARITY_NONE,
 					false, false);
 			//Включаем аппаратное управление потоком
@@ -132,7 +132,7 @@ public class SerialUtils {
 			try {
 				serialPort.openPort();
 				serialPort.setParams(
-						SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8,
+						SerialPort.BAUDRATE_57600, SerialPort.DATABITS_8,
 						SerialPort.STOPBITS_1, SerialPort.PARITY_NONE,
 						false, false);
 				serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
