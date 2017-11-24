@@ -26,9 +26,9 @@ public class SerialBean implements Serializable {
 	private SerialListenerBean currentListener;
 
 
-	public boolean process(String uid) {
+	public boolean process(String uid, String name) {
         LOGGER.info("==> process(); uid = " + uid);
-		return currentListener.process(uid);
+        return currentListener.process(uid, name);
 	}
 
 	public void startRecord() {

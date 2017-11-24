@@ -246,7 +246,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
     }
 
     @Override
-    public boolean process(String uid) {
+    public boolean process(String uid, String name) {
         final long t = System.currentTimeMillis();
         LOGGER.info("==> process(); uid = " + uid);
         reRegistration = false;
@@ -267,6 +267,18 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             studentNotExist = true;
             student = new Student();
             student.setCardUid(uid);
+            if (name != null) {
+                String[] names = name.split(" ");
+                if (names.length >= 0) {
+                    student.setLastName(names[0]);
+                }
+                if (names.length >= 1) {
+                    student.setFirstName(names[1]);
+                }
+                if (names.length >= 2) {
+                    student.setPatronymic(names[2]);
+                }
+            }
         }
         LOGGER.info("<== process(); reRegistration = " + reRegistration + "; studentNotExist " + studentNotExist + "; student = " + student + "; " + (System.currentTimeMillis() - t));
         return processStudent(student);

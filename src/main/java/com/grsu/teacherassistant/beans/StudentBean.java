@@ -82,7 +82,7 @@ public class StudentBean implements Serializable, SerialListenerBean {
     }
 
     @Override
-    public boolean process(String uid) {
+    public boolean process(String uid, String name) {
         student.setCardUid(uid);
         FacesUtils.push("/register", uid);
         return true;
