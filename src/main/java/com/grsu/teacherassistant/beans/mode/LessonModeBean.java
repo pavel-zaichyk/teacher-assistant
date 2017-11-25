@@ -35,304 +35,278 @@ import java.util.stream.Collectors;
 @ViewScoped
 @Data
 public class LessonModeBean implements Serializable {
-	private static final Logger LOGGER = LoggerFactory.getLogger(LessonModeBean.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LessonModeBean.class);
 
-	private Stream stream;
-	private Lesson lesson;
-	private List<LessonModel> lessons;
-	private List<LessonModel> attestations;
-	private List<LessonModel> exams;
+    private Stream stream;
+    private Lesson lesson;
+    private List<LessonModel> lessons;
+    private List<LessonModel> attestations;
+    private List<LessonModel> exams;
 
-	private List<Note> notes;
-	private String newNote;
-	private Integer entityId;
+    private List<Note> notes;
+    private String newNote;
+    private Integer entityId;
 
-	private List<LessonStudentModel> students;
-	private LessonStudentModel selectedStudent;
-	private LazyStudentDataModel studentsLazyModel;
+    private List<LessonStudentModel> students;
+    private LessonStudentModel selectedStudent;
+    private LazyStudentDataModel studentsLazyModel;
 
-	private LessonModel selectedLesson;
+    private LessonModel selectedLesson;
 
-	private Integer selectedCell;
-	private String selectedClientId;
-	private String selectedType;
-	private String selectedLessonType;
+    private Integer selectedCell;
+    private String selectedClientId;
+    private String selectedType;
+    private String selectedLessonType;
 
-	private boolean registered;
-	private boolean showAttestations = false;
-	private boolean showSkips = true;
+    private boolean registered;
+    private boolean showAttestations = false;
+    private boolean showSkips = true;
 
-	public void initLessonMode() {
-		initLessonStudents();
-	}
+    public void initLessonMode() {
+        initLessonStudents();
+    }
 
-	public void clear() {
-		stream = null;
-//		lesson = null;
-		lessons = null;
-		attestations = null;
-		exams = null;
+    public void clear() {
+        stream = null;
+        lessons = null;
+        attestations = null;
+        exams = null;
 
-		notes = null;
-		newNote = null;
-		entityId = null;
+        notes = null;
+        newNote = null;
+        entityId = null;
 
-		students = null;
-		selectedStudent = null;
-		studentsLazyModel = null;
+        students = null;
+        selectedStudent = null;
+        studentsLazyModel = null;
 
-		selectedType = null;
-		selectedCell = null;
-		selectedClientId = null;
-		selectedLessonType = null;
+        selectedType = null;
+        selectedCell = null;
+        selectedClientId = null;
+        selectedLessonType = null;
 
-		selectedLesson = null;
+        selectedLesson = null;
 
-		showAttestations = false;
-		showSkips = true;
-	}
+        showAttestations = false;
+        showSkips = true;
+    }
 
-	private void initLessonStudents() {
-		List<Lesson> lessons = new ArrayList<>();
-		Set<Student> studentSet = new HashSet<>();
-		if (stream != null && lesson != null) {
-			if (lesson.getGroup() != null) {
-				studentSet.addAll(lesson.getGroup().getStudents());
-				lessons = stream.getLessons().stream().filter(l -> l.getGroup() == null || (lesson.getGroup().equals(l.getGroup()))).collect(Collectors.toList());
-			} else {
-				stream.getGroups().stream().forEach(g -> studentSet.addAll(g.getStudents()));
-				lessons = stream.getLessons();
-			}
-		}
+    private void initLessonStudents() {
+        List<Lesson> lessons = new ArrayList<>();
+        Set<Student> studentSet = new HashSet<>();
+        if (stream != null && lesson != null) {
+            if (lesson.getGroup() != null) {
+                studentSet.addAll(lesson.getGroup().getStudents());
+                lessons = stream.getLessons().stream().filter(l -> l.getGroup() == null || (lesson.getGroup().equals(l.getGroup()))).collect(Collectors.toList());
+            } else {
+                stream.getGroups().stream().forEach(g -> studentSet.addAll(g.getStudents()));
+                lessons = stream.getLessons();
+            }
+        }
 
-		//int lessons
-		this.lessons = lessons.stream()
-				.filter(l -> Arrays.asList(LessonType.LECTURE, LessonType.PRACTICAL, LessonType.LAB).contains(l.getType()))
-				.sorted((l1, l2) -> {
-					if (l1.getDate().isAfter(l2.getDate())) return -1;
-					if (l1.getDate().isBefore(l2.getDate())) return 1;
-					return 0;
-				})
-				.map(LessonModel::new).collect(Collectors.toList());
+        //int lessons
+        this.lessons = lessons.stream()
+            .filter(l -> Arrays.asList(LessonType.LECTURE, LessonType.PRACTICAL, LessonType.LAB).contains(l.getType()))
+            .sorted((l1, l2) -> {
+                if (l1.getDate().isAfter(l2.getDate())) return -1;
+                if (l1.getDate().isBefore(l2.getDate())) return 1;
+                return 0;
+            })
+            .map(LessonModel::new).collect(Collectors.toList());
 
-		//init attestations
-		this.attestations = lessons.stream()
-				.filter(l -> LessonType.ATTESTATION.equals(l.getType()))
-				.map(LessonModel::new).collect(Collectors.toList());
-		attestations.forEach(a -> a.setNumber(attestations.indexOf(a) + 1));
+        //init attestations
+        this.attestations = lessons.stream()
+            .filter(l -> LessonType.ATTESTATION.equals(l.getType()))
+            .map(LessonModel::new).collect(Collectors.toList());
+        attestations.forEach(a -> a.setNumber(attestations.indexOf(a) + 1));
 
-		//init exams
-		this.exams = lessons.stream()
-				.filter(l -> LessonType.EXAM.equals(l.getType()))
-				.map(LessonModel::new).collect(Collectors.toList());
+        //init exams
+        this.exams = lessons.stream()
+            .filter(l -> LessonType.EXAM.equals(l.getType()))
+            .map(LessonModel::new).collect(Collectors.toList());
 
-		//init additional students
-		List<LessonStudentModel> additionalStudents = StudentDAO.getAdditionalStudents(lesson.getId()).stream()
-				.map(LessonStudentModel::new).collect(Collectors.toList());
-		additionalStudents.stream().forEach(s -> s.setAdditional(true));
+        //init additional students
+        List<LessonStudentModel> additionalStudents = StudentDAO.getAdditionalStudents(lesson.getId()).stream()
+            .map(s -> new LessonStudentModel(s, stream, true)).collect(Collectors.toList());
 
-		students = studentSet.stream().map(LessonStudentModel::new).collect(Collectors.toList());
-		students.addAll(additionalStudents);
-		students = students.stream().sorted(Comparator.comparing(s -> s.getName())).collect(Collectors.toList());
-		students.stream().forEach(this::updateAverageAttestation);
+        students = studentSet.stream().map(s -> new LessonStudentModel(s, stream)).collect(Collectors.toList());
+        students.addAll(additionalStudents);
+        students = students.stream().sorted(Comparator.comparing(LessonStudentModel::getName)).collect(Collectors.toList());
 
-		Map<Integer, Map<String, Integer>> skipInfo = StudentDAO.getSkipInfo(stream.getId(), lesson.getId());
-		students.stream().forEach(s -> {
-			if (skipInfo.containsKey(s.getId())) {
-				s.setTotalSkip(skipInfo.get(s.getId()).get(Constants.TOTAL_SKIP));
-			}
-			exams.stream().forEach(e -> {
-				StudentLesson exam = s.getStudent().getStudentLessons().get(e.getLesson().getId());
-				if (exam != null) {
-					try {
-						s.setExamMark(Mark.getByFieldValue(exam.getMark()));
-					} catch (NumberFormatException ex) {
-						s.setExamMark(null);
-					}
-				}
-			});
-		});
+        Map<Integer, Map<String, Integer>> skipInfo = StudentDAO.getSkipInfo(stream.getId(), lesson.getId());
+        students.stream().forEach(s -> {
+            if (skipInfo.containsKey(s.getId())) {
+                s.setTotalSkip(skipInfo.get(s.getId()).get(Constants.TOTAL_SKIP));
+            }
+        });
 
-		studentsLazyModel = new LazyStudentDataModel(students);
-	}
+        studentsLazyModel = new LazyStudentDataModel(students);
+    }
 
-	private void updateAverageAttestation(LessonStudentModel student) {
-		student.setAverageAttestation(null);
-		List<String> marks = new ArrayList<>();
-		attestations.stream().forEach(lesson -> {
-			StudentLesson sc = student.getStudent().getStudentLessons().get(lesson.getId());
-			if (sc != null && sc.getMark() != null) {
-				marks.addAll(Arrays.asList(sc.getMark().split("[^0-9]")));
-			}
-		});
-		if (marks.size() > 0) {
-			student.setAverageAttestation(marks.stream().mapToInt(Integer::parseInt).average().getAsDouble());
-		}
-	}
+    public void initRegisteredDialog() {
+        if (Constants.STUDENT_LESSON.equals(selectedType)) {
+            selectedLesson = calculateSelectedLesson();
+            registered = selectedStudent.getStudent().getStudentLessons().get(selectedLesson.getId()).isRegistered();
+        } else {
+            selectedLesson = null;
+        }
+    }
 
-	public void initRegisteredDialog() {
-		if (Constants.STUDENT_LESSON.equals(selectedType)) {
-			selectedLesson = calculateSelectedLesson();
-			registered = selectedStudent.getStudent().getStudentLessons().get(selectedLesson.getId()).isRegistered();
-		} else {
-			selectedLesson = null;
-		}
-	}
+    public void initNotes() {
+        notes = null;
+        selectedLesson = calculateSelectedLesson();
 
-	public void initNotes() {
-		notes = null;
-		selectedLesson = calculateSelectedLesson();
+        switch (selectedType) {
+            case Constants.STUDENT_LESSON:
+                StudentLesson sc = selectedStudent.getStudent().getStudentLessons().get(selectedLesson.getId());
+                if (sc != null) {
+                    notes = sc.getNotes();
+                    entityId = sc.getId();
+                }
+                break;
+            case Constants.STUDENT:
+                notes = selectedStudent.getStudent().getNotes();
+                entityId = selectedStudent.getStudent().getId();
+                break;
+            case Constants.LESSON:
+                notes = selectedLesson.getLesson().getNotes();
+                entityId = selectedLesson.getId();
+                break;
+        }
+    }
 
-		switch (selectedType) {
-			case Constants.STUDENT_LESSON:
-				StudentLesson sc = selectedStudent.getStudent().getStudentLessons().get(selectedLesson.getId());
-				if (sc != null) {
-					notes = sc.getNotes();
-					entityId = sc.getId();
-				}
-				break;
-			case Constants.STUDENT:
-				notes = selectedStudent.getStudent().getNotes();
-				entityId = selectedStudent.getStudent().getId();
-				break;
-			case Constants.LESSON:
-				notes = selectedLesson.getLesson().getNotes();
-				entityId = selectedLesson.getId();
-				break;
-		}
-	}
+    private LessonModel calculateSelectedLesson() {
+        if (selectedCell != null) {
+            int column = selectedCell;
+            if (Constants.OTHER.equals(selectedLessonType)) {
+                return lessons.get(selectedCell);
+            }
+            if (Constants.ATTESTATION.equals(selectedLessonType)) {
+                column--;
+                if (showSkips) {
+                    column--;
+                }
+                if (exams.size() > 0) {
+                    column--;
+                }
+                return attestations.get(column);
+            }
+        }
+        return null;
+    }
 
-	private LessonModel calculateSelectedLesson() {
-		if (selectedCell != null) {
-			int column = selectedCell;
-			if (Constants.OTHER.equals(selectedLessonType)) {
-				return lessons.get(selectedCell);
-			}
-			if (Constants.ATTESTATION.equals(selectedLessonType)) {
-				column--;
-				if (showSkips) {
-					column--;
-				}
-				if (exams.size() > 0) {
-					column--;
-				}
-				return attestations.get(column);
-			}
-		}
-		return null;
-	}
+    public void onCellEdit(CellEditEvent event) {
+        Integer id;
+        if (event.getColumn().getColumnKey().contains("attestation")) {
+            id = attestations.get(((DynamicColumn) event.getColumn()).getIndex()).getId();
+            studentsLazyModel.getRowData().updateAverageAttestation();
+        } else {
+            id = lessons.get(((DynamicColumn) event.getColumn()).getIndex()).getId();
+        }
+        EntityDAO.update(studentsLazyModel.getRowData().getStudent().getStudentLessons().get(id));
+    }
 
-	public void onCellEdit(CellEditEvent event) {
-		Integer id;
-		if (event.getColumn().getColumnKey().contains("attestation")) {
-			id = attestations.get(((DynamicColumn) event.getColumn()).getIndex()).getId();
-			updateAverageAttestation(studentsLazyModel.getRowData());
-		} else {
-			id = lessons.get(((DynamicColumn) event.getColumn()).getIndex()).getId();
-		}
-		EntityDAO.update(studentsLazyModel.getRowData().getStudent().getStudentLessons().get(id));
-	}
+    public void saveNote() {
+        if (newNote != null && !newNote.isEmpty()) {
+            Note note = new Note();
+            note.setCreateDate(LocalDateTime.now());
+            note.setDescription(newNote);
+            note.setType(selectedType);
+            note.setEntityId(entityId);
+            notes.add(note);
+            EntityDAO.save(note);
+            newNote = null;
+        }
+        FacesUtils.closeDialog("notesDialog");
 
-	public void saveNote() {
-		if (newNote != null && !newNote.isEmpty()) {
-			Note note = new Note();
-			note.setCreateDate(LocalDateTime.now());
-			note.setDescription(newNote);
-			note.setType(selectedType);
-			note.setEntityId(entityId);
-			notes.add(note);
-			EntityDAO.save(note);
-			newNote = null;
-		}
-		FacesUtils.closeDialog("notesDialog");
+    }
 
-	}
+    public void saveRegisteredInfo() {
+        boolean oldValue = selectedStudent.getStudent().getStudentLessons().get(selectedLesson.getId()).isRegistered();
+        if (oldValue != registered) {
+            StudentLesson studentLesson = selectedStudent.getStudent().getStudentLessons().get(selectedLesson.getId());
+            studentLesson.setRegistered(registered);
+            if (!registered) {
+                studentLesson.setRegistrationTime(null);
+                studentLesson.setRegistrationType(null);
 
-	public void saveRegisteredInfo() {
-		boolean oldValue = selectedStudent.getStudent().getStudentLessons().get(selectedLesson.getId()).isRegistered();
-		if (oldValue != registered) {
-			StudentLesson studentLesson = selectedStudent.getStudent().getStudentLessons().get(selectedLesson.getId());
-			studentLesson.setRegistered(registered);
-			if (!registered) {
-				studentLesson.setRegistrationTime(null);
-				studentLesson.setRegistrationType(null);
+                FacesUtils.execute("$('#" + selectedClientId.replaceAll("\\:", "\\\\\\\\:") + "').closest('td').addClass('skip');");
+            } else {
+                studentLesson.setRegistrationTime(LocalTime.now());
+                studentLesson.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
+                FacesUtils.execute("$('#" + selectedClientId.replaceAll("\\:", "\\\\\\\\:") + "').closest('td').removeClass('skip')");
+            }
+            EntityDAO.save(studentLesson);
+        }
+        FacesUtils.closeDialog("registeredDialog");
+        selectedLesson = null;
+    }
 
-				FacesUtils.execute("$('#" + selectedClientId.replaceAll("\\:", "\\\\\\\\:") + "').closest('td').addClass('skip');");
-			} else {
-				studentLesson.setRegistrationTime(LocalTime.now());
-				studentLesson.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
-				FacesUtils.execute("$('#" + selectedClientId.replaceAll("\\:", "\\\\\\\\:") + "').closest('td').removeClass('skip')");
-			}
-			EntityDAO.save(studentLesson);
-		}
-		FacesUtils.closeDialog("registeredDialog");
-		selectedLesson = null;
-	}
+    public void closeDialog() {
+        newNote = null;
+        notes = null;
+        selectedType = null;
+        selectedCell = null;
+        selectedLesson = null;
+        LOGGER.info("selectedClientId " + selectedClientId);
+        if (selectedClientId != null) {
+            FacesUtils.update(selectedClientId);
+        }
+        selectedClientId = null;
+    }
 
-	public void closeDialog() {
-		newNote = null;
-		notes = null;
-		selectedType = null;
-		selectedCell = null;
-		selectedLesson = null;
-		LOGGER.info("selectedClientId " + selectedClientId);
-		if (selectedClientId != null) {
-			FacesUtils.update(selectedClientId);
-		}
-		selectedClientId = null;
-	}
+    public void removeNote(Note note) {
+        EntityDAO.delete(note);
+        notes.remove(note);
+    }
 
-	public void removeNote(Note note) {
-		EntityDAO.delete(note);
-		notes.remove(note);
-	}
+    public void createAttestation() {
+        Lesson lesson = new Lesson();
+        lesson.setDate(LocalDateTime.now());
+        lesson.setType(LessonType.ATTESTATION);
+        lesson.setStream(this.stream);
+        lesson.setGroup(this.lesson.getGroup());
+        lesson.setNotes(new ArrayList<>());
 
-	public void createAttestation() {
-		Lesson lesson = new Lesson();
-		lesson.setDate(LocalDateTime.now());
-		lesson.setType(LessonType.ATTESTATION);
-		lesson.setStream(this.stream);
-		lesson.setGroup(this.lesson.getGroup());
-		lesson.setNotes(new ArrayList<>());
+        EntityDAO.add(lesson);
+        stream.getLessons().add(lesson);
 
-		EntityDAO.add(lesson);
-		stream.getLessons().add(lesson);
+        List<StudentLesson> studentLessons = new ArrayList<>();
+        students.stream().forEach(s -> {
+            StudentLesson sc = new StudentLesson();
+            sc.setStudent(s.getStudent());
+            sc.setLesson(lesson);
+            sc.setNotes(new ArrayList<>());
+            studentLessons.add(sc);
+            s.getStudent().getStudentLessons().put(lesson.getId(), sc);
+        });
+        EntityDAO.add(new ArrayList<>(studentLessons));
+        lesson.setStudentLessons(new HashMap<>());
+        studentLessons.stream().forEach(sc -> lesson.getStudentLessons().put(sc.getStudentId(), sc));
+        attestations.add(new LessonModel(lesson));
+        attestations.forEach(a -> a.setNumber(attestations.indexOf(a) + 1));
+    }
 
-		List<StudentLesson> studentLessons = new ArrayList<>();
-		students.stream().forEach(s -> {
-			StudentLesson sc = new StudentLesson();
-			sc.setStudent(s.getStudent());
-			sc.setLesson(lesson);
-			sc.setNotes(new ArrayList<>());
-			studentLessons.add(sc);
-			s.getStudent().getStudentLessons().put(lesson.getId(), sc);
-		});
-		EntityDAO.add(new ArrayList<>(studentLessons));
-		lesson.setStudentLessons(new HashMap<>());
-		studentLessons.stream().forEach(sc -> lesson.getStudentLessons().put(sc.getStudentId(), sc));
-		attestations.add(new LessonModel(lesson));
-		attestations.forEach(a -> a.setNumber(attestations.indexOf(a) + 1));
-	}
+    public int frozenColumns() {
+        int frozenColumns = 2;
+        if (showAttestations) {
+            frozenColumns += attestations.size();
+            if (attestations.size() > 1) {
+                frozenColumns++;
+            }
+            if (exams.size() > 0) {
+                frozenColumns++;
+            }
+        }
+        return frozenColumns;
+    }
 
-	public int frozenColumns() {
-		int frozenColumns = 2;
-		if (showAttestations) {
-			frozenColumns += attestations.size();
-			if (attestations.size() > 1) {
-				frozenColumns++;
-			}
-			if (exams.size() > 0) {
-				frozenColumns++;
-			}
-		}
-		return frozenColumns;
-	}
-
-	public void removeAttestation(LessonModel lesson) {
-		EntityDAO.delete(lesson.getLesson());
-		attestations.remove(lesson);
-		attestations.forEach(a -> a.setNumber(attestations.indexOf(a) + 1));
-		students.stream().forEach(this::updateAverageAttestation);
-	}
+    public void removeAttestation(LessonModel lesson) {
+        EntityDAO.delete(lesson.getLesson());
+        attestations.remove(lesson);
+        attestations.forEach(a -> a.setNumber(attestations.indexOf(a) + 1));
+        students.forEach(LessonStudentModel::updateAverageAttestation);
+//		students.stream().forEach(this::updateAverageAttestation);
+    }
 
 }

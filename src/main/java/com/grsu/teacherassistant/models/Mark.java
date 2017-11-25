@@ -2,10 +2,7 @@ package com.grsu.teacherassistant.models;
 
 import lombok.Getter;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.OptionalDouble;
+import java.util.*;
 
 /**
  * @author Pavel Zaychick
@@ -50,11 +47,50 @@ public enum Mark {
         return null;
     }
 
-    public static Double average(Collection<Mark> marks) {
-        OptionalDouble result = marks.stream().filter(Objects::nonNull).mapToInt(m -> m.value).average();
-        if (result.isPresent()) {
-            return result.getAsDouble();
+    public static Mark getByValue(int value) {
+        for (Mark mark : values()) {
+            if (mark.getValue() == value) {
+                return mark;
+            }
         }
         return null;
+    }
+
+    public static String average(Collection<Mark> marks) {
+        List<Integer> numberMarks = new ArrayList<>();
+        int passMarks = 0;
+        int failMarks = 0;
+        for (Mark mark : marks) {
+            if (mark != null) {
+                switch (mark) {
+                    case PASS:
+                        passMarks++;
+                        break;
+                    case FAIL:
+                        failMarks++;
+                        break;
+                    default:
+                        numberMarks.add(mark.getValue());
+                }
+            }
+        }
+        if (numberMarks.size() > 0) {
+            OptionalDouble result = numberMarks.stream().mapToInt(Integer::intValue).average();
+            if (result.isPresent()) {
+                return String.valueOf(result.getAsDouble());
+            }
+        }
+
+        if (failMarks > passMarks) {
+            return FAIL.getFieldValue()[0];
+        }
+        if (passMarks > 0) {
+            return PASS.getFieldValue()[0];
+        }
+        return null;
+    }
+
+    public boolean isNumberMark() {
+        return value != null;
     }
 }
