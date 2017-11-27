@@ -3,9 +3,7 @@ package com.grsu.teacherassistant.models;
 import com.grsu.teacherassistant.constants.Constants;
 import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.StudentDAO;
-import com.grsu.teacherassistant.entities.Stream;
-import com.grsu.teacherassistant.entities.Student;
-import com.grsu.teacherassistant.entities.StudentLesson;
+import com.grsu.teacherassistant.entities.*;
 import com.grsu.teacherassistant.utils.EntityUtils;
 import com.grsu.teacherassistant.utils.Utils;
 import lombok.Data;
@@ -45,6 +43,7 @@ public class LessonStudentModel {
     private List<StudentLesson> attestations;
     private List<StudentLesson> studentLessons;
     private StudentLesson exam;
+    private List<StudentLesson> additionalLessons;
 
     public LessonStudentModel(Student student) {
         this(student, null, false);
@@ -68,6 +67,7 @@ public class LessonStudentModel {
             attestationsMark = new HashMap<>();
             attestations = new ArrayList<>();
             studentLessons = new ArrayList<>();
+            additionalLessons = new ArrayList<>();
 
             stream.getLessons().forEach(l -> {
                 StudentLesson sl = student.getStudentLessons().get(l.getId());
@@ -83,6 +83,9 @@ public class LessonStudentModel {
                             break;
                         default:
                             studentLessons.add(sl);
+                            if (isAdditionalLesson(sl.getLesson())) {
+                                additionalLessons.add(sl);
+                            }
                     }
                 }
             });
@@ -92,6 +95,20 @@ public class LessonStudentModel {
             updateSkips(stream);
             initMarks();
         }
+    }
+
+    private boolean isAdditionalLesson(Lesson lesson) {
+        if (lesson.getGroup() == null) {
+            for (Group group : lesson.getStream().getGroups()) {
+                if (student.getGroups().contains(group)) {
+                    return false;
+                }
+            }
+        }
+        if (student.getGroups().contains(lesson.getGroup())) {
+            return false;
+        }
+        return true;
     }
 
     public void updateAverageAttestation() {

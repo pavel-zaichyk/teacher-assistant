@@ -140,11 +140,14 @@
                     <p:outputLabel value="#{studentModeBean.stream.course}"/>
                 </h:panelGroup>
                 <h:panelGroup id="studentSkips" rendered="#{studentModeBean.stream ne null}">
-                    <p:outputLabel
+                    <h:outputText
                         value="#{msg['label.skips']}: #{studentModeBean.lessonStudent.totalSkip} (#{studentModeBean.lessonStudent.skips})"
                         rendered="#{(studentModeBean.lessonStudent.totalSkip gt 0)}"/>
-                    <p:outputLabel value="#{msg['lesson.visit.noSkip']}"
+                    <h:outputText value="#{msg['lesson.visit.noSkip']}"
                                    rendered="#{not (studentModeBean.lessonStudent.totalSkip gt 0)}"/>
+                    <h:outputFormat value="#{msg['label.additionalLessons']}" rendered="#{studentModeBean.lessonStudent.additionalLessons.size() gt 0}">
+                        <f:param value="#{studentModeBean.lessonStudent.additionalLessons.size()}" />
+                    </h:outputFormat>
                 </h:panelGroup>
             </h:panelGroup>
         </h:panelGrid>
@@ -214,7 +217,7 @@
                     <h:panelGroup id="lessonInfo"
                                   styleClass="student-lesson #{studentLesson.registered eq false ? 'skip' : ''}
                                   #{studentLesson.lesson.type.key}
-                                  #{studentModeBean.isAdditionalLesson(studentLesson.lesson) ? 'additional-lesson' : ''}">
+                                  #{studentModeBean.lessonStudent.additionalLessons.contains(studentLesson) ? 'additional-lesson' : ''}">
                         <p:ajax event="click" listener="#{studentModeBean.editMark(studentLesson)}"
                                 update="@this :studentModeForm:focus"
                                 disabled="#{studentLesson eq studentModeBean.editedStudentLesson}"/>
