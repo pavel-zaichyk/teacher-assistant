@@ -60,6 +60,10 @@ public class LessonStudentModel {
         this.name = student.getFullName();
         this.additional = additional;
 
+        init(stream);
+    }
+
+    public void init(Stream stream) {
         if (stream != null) {
             attestationsMark = new HashMap<>();
             attestations = new ArrayList<>();

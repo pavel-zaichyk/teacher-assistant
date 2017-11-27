@@ -17,11 +17,11 @@
                                 styleClass="student-photo"/>
                 <h:panelGroup>
                     <p:outputLabel value="#{studentModeBean.lessonStudent.student.lastName}"
-                                   styleClass="uppercase bold"/>
+                                   styleClass="uppercase bold blue font-size-30pt"/>
                     <p:outputLabel value="#{studentModeBean.lessonStudent.student.firstName}"
-                                   styleClass="uppercase bold"/>
+                                   styleClass="uppercase bold blue font-size-30pt"/>
                     <p:outputLabel value="#{studentModeBean.lessonStudent.student.patronymic}"
-                                   styleClass="uppercase bold"/>
+                                   styleClass="uppercase bold blue font-size-30pt"/>
                     <p:outputLabel styleClass="margin-top-20px"
                                    value="#{studentModeBean.stream.department.abbreviation}"/>
                     <p:outputLabel escape="false"
@@ -37,6 +37,7 @@
                 <h:panelGrid columns="3" styleClass="inline font-size-12pt" columnClasses="top,top,">
                     <p:selectOneMenu filter="true" filterMatchMode="startsWith" converter="entityConverter"
                                      value="#{studentModeBean.student}"
+                                     style="min-width: 0; width: 50px;"
                     >
                         <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.student']}"/>
                         <f:selectItems value="#{sessionBean.students}" var="student"
@@ -50,6 +51,7 @@
                                      value="#{studentModeBean.stream}"
                                      styleClass="block"
                                      rendered="#{studentModeBean.studentStreams.size() gt 1}"
+                                     style="min-width: 0; width: 50px;"
                     >
                         <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.stream']}"/>
                         <f:selectItems value="#{studentModeBean.studentStreams}" var="stream"
@@ -79,17 +81,10 @@
                                          actionListener="#{serialBean.disableSound}"
                                          rendered="#{serialBean.recordStarted and serialBean.soundEnabled}"/>
 
-                        <p:commandButton title="#{msg['btn.backToLessons']}"
-                                         icon="fa fa-fw fa-arrow-left"
-                                         actionListener="#{lessonModeBean.initLessonMode}" update="@([id$=views])">
-                            <f:setPropertyActionListener value="lessonMode" target="#{sessionBean.activeView}"/>
-                            <f:ajax event="click" listener="#{studentModeBean.clear}"/>
-                        </p:commandButton>
-
-                        <p:commandButton update=":studentInfoForm" oncomplete="PF('studentDialog').show()"
-                                         icon="fa fa-fw fa-search" title="#{msg['option.view']}">
-                            <f:setPropertyActionListener value="#{studentModeBean.student}"
-                                                         target="#{studentBean.selectedStudent}"/>
+                        <p:commandButton update=":studentInfoForm"
+                                         actionListener="#{studentBean.initStudent(studentModeBean.student)}"
+                                         icon="fa fa-fw fa-search"
+                                         title="#{msg['option.edit']}">
                             <p:resetInput target=":studentInfoForm:studentDetail"/>
                         </p:commandButton>
 
@@ -128,6 +123,15 @@
                             </p:commandButton>
                         </p:overlayPanel>
 
+                        <p:commandButton title="#{msg['btn.hide.menu']}" icon="fa fa-fw fa-align-center"
+                                         update=":menuForm :studentModeForm:buttons"
+                                         actionListener="#{menuBean.hideMenu}"
+                                         rendered="#{menuBean.showMenu}"/>
+                        <p:commandButton title="#{msg['btn.show.menu']}" icon="fa fa-fw fa-align-justify"
+                                         update=":menuForm :studentModeForm:buttons"
+                                         actionListener="#{menuBean.showMenu}"
+                                         rendered="#{not menuBean.showMenu}"/>
+
                     </h:panelGroup>
                 </h:panelGrid>
                 <h:panelGroup styleClass="block margin-bottom-70px">
@@ -147,9 +151,9 @@
 
         <h:panelGrid id="studentAdditionalInfo" columns="3" styleClass="w100pc student-additional-info"
                      rendered="#{studentModeBean.stream ne null}"
-                     columnClasses="w30pc,w20pc,center">
-            <p:panel styleClass="min-height-450px border-2px">
-                <h:outputText value="#{msg['label.notes']}:" styleClass="bold block"/>
+                     columnClasses="w30pc padding-right-10px, w20pc, center">
+            <p:panel styleClass="min-height-450px notes">
+                <h:outputText value="#{msg['label.notes']}" styleClass="bold block uppercase center"/>
                 <ui:repeat var="note" value="#{studentModeBean.lessonStudent.student.notes}">
                     <h:panelGrid columns="2">
                         <h:outputText value="#{note.createDate}" converter="localShortDateConverter"/>
@@ -169,7 +173,7 @@
                     </h:panelGrid>
                 </ui:repeat>
 
-                <h:outputText value="#{msg['label.lesson.notes']}:" styleClass="bold block"/>
+                <h:outputText value="#{msg['label.lesson.notes']}" styleClass="bold block"/>
                 <ui:repeat var="studentLesson" value="#{studentModeBean.lessonStudent.studentLessons}">
                     <h:panelGrid columns="2" rendered="#{studentLesson.notes.size() gt 0}">
                         <h:outputText value="#{studentLesson.lesson.date}" converter="localShortDateConverter"/>
@@ -183,8 +187,8 @@
                 </ui:repeat>
             </p:panel>
 
-            <p:panel styleClass="min-height-450px border-2px">
-                <h:outputText value="#{msg['label.marks']}:" styleClass="bold"/>
+            <p:panel styleClass="min-height-450px marks">
+                <h:outputText value="#{msg['label.marks']}" styleClass="bold block uppercase center"/>
                 <ui:repeat id="numberMarks" var="mark" value="#{studentModeBean.numberMarks}">
                     <h:panelGrid columns="3">
                         <h:outputText value="#{mark.key}"/>
@@ -289,12 +293,20 @@
 
                 <p:focus id="focus" context="studentLessonsInfo"/>
 
-                <p:panelGrid styleClass="exam-block">
+                <p:panelGrid id="examBlock" styleClass="exam-block">
                     <f:facet name="header">
                         <p:row>
-                            <p:column styleClass="w50pc"
-                                      colspan="#{studentModeBean.lessonStudent.attestations.size() + 1}">#{msg['label.attestation']}</p:column>
-                            <p:column styleClass="w50pc" colspan="2">#{msg['exam']}</p:column>
+                            <p:column styleClass="w50pc uppercase blue"
+                                      colspan="#{studentModeBean.lessonStudent.attestations.size() + 1}">
+                                <h:outputText value="#{msg['label.attestation']}" />
+                                <p:commandButton title="#{msg['label.create.attestation']}"
+                                                 actionListener="#{studentModeBean.createAttestation}"
+                                                 update=":studentModeForm:examBlock"
+                                                 icon="fa fa-fw fa-plus"
+                                                 styleClass="font-size-10pt margin-left-10px">
+                                </p:commandButton>
+                            </p:column>
+                            <p:column styleClass="w50pc uppercase dark-red" colspan="2">#{msg['exam']}</p:column>
                         </p:row>
                         <p:row>
                             <ui:repeat var="attestation" value="#{studentModeBean.lessonStudent.attestations}">

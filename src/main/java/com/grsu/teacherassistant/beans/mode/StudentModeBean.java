@@ -8,6 +8,7 @@ import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.entities.*;
 import com.grsu.teacherassistant.entities.StudentLesson;
 import com.grsu.teacherassistant.models.LessonStudentModel;
+import com.grsu.teacherassistant.models.LessonType;
 import com.grsu.teacherassistant.models.Mark;
 import com.grsu.teacherassistant.utils.EntityUtils;
 import com.grsu.teacherassistant.utils.FacesUtils;
@@ -23,9 +24,7 @@ import javax.faces.event.ValueChangeEvent;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -196,5 +195,36 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
             LOGGER.info("Student not registered. Reason: Uid[ " + uid + " ] not exist in database.");
             return false;
         }
+    }
+
+    public void createAttestation() {
+        Lesson lesson = new Lesson();
+        lesson.setDate(LocalDateTime.now());
+        lesson.setType(LessonType.ATTESTATION);
+        lesson.setStream(this.stream);
+        lesson.setNotes(new ArrayList<>());
+
+        EntityDAO.add(lesson);
+        stream.getLessons().add(lesson);
+
+        Set<Student> students = new HashSet<>();
+        stream.getGroups().forEach(g -> students.addAll(g.getStudents()));
+        List<StudentLesson> studentLessons = new ArrayList<>();
+        students.forEach(s -> {
+            StudentLesson sc = new StudentLesson();
+            sc.setStudent(s);
+            sc.setLesson(lesson);
+            sc.setNotes(new ArrayList<>());
+            studentLessons.add(sc);
+            s.getStudentLessons().put(lesson.getId(), sc);
+            if (s.equals(student)) {
+                lessonStudent.getStudent().getStudentLessons().put(lesson.getId(), sc);
+            }
+        });
+        EntityDAO.add(new ArrayList<>(studentLessons));
+        lesson.setStudentLessons(new HashMap<>());
+        studentLessons.forEach(sl -> lesson.getStudentLessons().put(sl.getStudentId(), sl));
+
+        lessonStudent.init(stream);
     }
 }

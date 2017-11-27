@@ -302,10 +302,12 @@ public class LessonModeBean implements Serializable {
     }
 
     public void removeAttestation(LessonModel lesson) {
+        EntityDAO.delete(new ArrayList<>(lesson.getLesson().getStudentLessons().values()));
         EntityDAO.delete(lesson.getLesson());
         attestations.remove(lesson);
         attestations.forEach(a -> a.setNumber(attestations.indexOf(a) + 1));
         students.forEach(LessonStudentModel::updateAverageAttestation);
+        stream.getLessons().remove(lesson.getLesson());
 //		students.stream().forEach(this::updateAverageAttestation);
     }
 
