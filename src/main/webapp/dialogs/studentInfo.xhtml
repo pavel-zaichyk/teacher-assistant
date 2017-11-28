@@ -39,11 +39,11 @@
                             <p:commandButton title="#{msg['btn.startRecord']}" icon="fa fa-fw fa-play"
                                              update=":studentInfoForm:cardUidGroup"
                                              actionListener="#{studentBean.startRecord}"
-                                             rendered="#{not studentBean.recordStarted}"/>
+                                             rendered="#{not studentBean.recordStarted}" immediate="true"/>
                             <p:commandButton title="#{msg['btn.stopRecord']}" icon="fa fa-fw fa-stop"
                                              update=":studentInfoForm:cardUidGroup"
                                              actionListener="#{studentBean.stopRecord}"
-                                             rendered="#{studentBean.recordStarted}"/>
+                                             rendered="#{studentBean.recordStarted}" immediate="true"/>
                         </h:panelGroup>
 
                         <p:outputLabel for="cardId" value="#{msg['student.info.cardId']}"/>

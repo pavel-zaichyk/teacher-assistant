@@ -51,6 +51,7 @@ public class StudentBean implements Serializable, SerialListenerBean {
         } else {
             this.student = new Student();
             this.student.setGroups(new ArrayList<>());
+            this.student.setPraepostorGroups(new ArrayList<>());
         }
         List<Group> source = GroupDAO.getAll();
         source.removeAll(this.student.getGroups());

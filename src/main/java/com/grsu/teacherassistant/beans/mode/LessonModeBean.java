@@ -2,6 +2,7 @@ package com.grsu.teacherassistant.beans.mode;
 
 import com.grsu.teacherassistant.constants.Constants;
 import com.grsu.teacherassistant.dao.EntityDAO;
+import com.grsu.teacherassistant.dao.LessonDAO;
 import com.grsu.teacherassistant.dao.StudentDAO;
 import com.grsu.teacherassistant.entities.*;
 import com.grsu.teacherassistant.entities.StudentLesson;
@@ -265,8 +266,8 @@ public class LessonModeBean implements Serializable {
         lesson.setDate(LocalDateTime.now());
         lesson.setType(LessonType.ATTESTATION);
         lesson.setStream(this.stream);
-        lesson.setGroup(this.lesson.getGroup());
         lesson.setNotes(new ArrayList<>());
+        lesson.setIndex(LessonDAO.getNextIndex(stream.getId(), LessonType.ATTESTATION, null));
 
         EntityDAO.add(lesson);
         stream.getLessons().add(lesson);

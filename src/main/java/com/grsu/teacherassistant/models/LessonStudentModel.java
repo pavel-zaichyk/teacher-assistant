@@ -45,6 +45,8 @@ public class LessonStudentModel {
     private StudentLesson exam;
     private List<StudentLesson> additionalLessons;
 
+    private Group group;
+
     public LessonStudentModel(Student student) {
         this(student, null, false);
     }
@@ -64,6 +66,14 @@ public class LessonStudentModel {
 
     public void init(Stream stream) {
         if (stream != null) {
+
+            for (Group g : stream.getGroups()) {
+                if (student.getGroups().contains(g)) {
+                    group = g;
+                    break;
+                }
+            }
+
             attestationsMark = new HashMap<>();
             attestations = new ArrayList<>();
             studentLessons = new ArrayList<>();
