@@ -11,8 +11,8 @@ public class RegisterStudentResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(RegisterStudentResource.class);
 
     @OnMessage(encoders = {JSONEncoder.class})
-    public String onMessage(String cardUid) {
-        LOGGER.info("==> onMessage(); cardUid = " + cardUid);
-        return cardUid;
+    public PushMessage onMessage(PushMessage message) {
+        LOGGER.info("==> onMessage(); message = " + message);
+        return message;
     }
 }

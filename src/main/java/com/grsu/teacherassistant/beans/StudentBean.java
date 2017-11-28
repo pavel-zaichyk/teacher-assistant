@@ -6,6 +6,7 @@ import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.GroupDAO;
 import com.grsu.teacherassistant.entities.Group;
 import com.grsu.teacherassistant.entities.Student;
+import com.grsu.teacherassistant.push.resources.PushMessage;
 import com.grsu.teacherassistant.utils.FacesUtils;
 import lombok.Data;
 import org.primefaces.model.DualListModel;
@@ -19,7 +20,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static com.grsu.teacherassistant.utils.FacesUtils.closeDialog;
-import static com.grsu.teacherassistant.utils.FacesUtils.update;
 
 @ManagedBean(name = "studentBean")
 @ViewScoped
@@ -85,7 +85,7 @@ public class StudentBean implements Serializable, SerialListenerBean {
     @Override
     public boolean process(String uid, String name) {
         student.setCardUid(uid);
-        FacesUtils.push("/register", uid);
+        FacesUtils.push("/register", new PushMessage(uid));
         return true;
     }
 
