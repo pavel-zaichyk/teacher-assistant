@@ -8,6 +8,7 @@ import com.grsu.teacherassistant.dao.LessonDAO;
 import com.grsu.teacherassistant.dao.StudentDAO;
 import com.grsu.teacherassistant.entities.*;
 import com.grsu.teacherassistant.models.*;
+import com.grsu.teacherassistant.push.resources.PushMessage;
 import com.grsu.teacherassistant.utils.EntityUtils;
 import com.grsu.teacherassistant.utils.FacesUtils;
 import com.grsu.teacherassistant.utils.LocaleUtils;
@@ -320,7 +321,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
 
             selectStudent(student);
             updateLessonStudents();
-            FacesUtils.push("/register", processedStudent.getCardUid());
+            FacesUtils.push("/register", new PushMessage(processedStudent.getCardUid()));
             checkStudentNotifications(student);
             pushStudentDesktopNotification();
             LOGGER.info("Student registered");
@@ -328,7 +329,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             return true;
         } else {
             selectStudent(student);
-            FacesUtils.push("/register", processedStudent.getCardUid());
+            FacesUtils.push("/register", new PushMessage(processedStudent.getCardUid()));
             pushStudentDesktopNotification();
             LOGGER.info("Student not registered");
             LOGGER.info("<== processStudent(); registered = false; " + (System.currentTimeMillis() - t));

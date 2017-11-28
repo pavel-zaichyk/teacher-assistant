@@ -9,6 +9,7 @@ import com.grsu.teacherassistant.entities.*;
 import com.grsu.teacherassistant.entities.StudentLesson;
 import com.grsu.teacherassistant.models.LessonStudentModel;
 import com.grsu.teacherassistant.models.Mark;
+import com.grsu.teacherassistant.push.resources.PushMessage;
 import com.grsu.teacherassistant.utils.EntityUtils;
 import com.grsu.teacherassistant.utils.FacesUtils;
 import lombok.Data;
@@ -190,7 +191,7 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
         if (student != null) {
             initStudentMode(student, null);
 
-            FacesUtils.push("/register", uid);
+            FacesUtils.push("/register", new PushMessage(uid));
             return true;
         } else {
             LOGGER.info("Student not registered. Reason: Uid[ " + uid + " ] not exist in database.");
