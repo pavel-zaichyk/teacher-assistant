@@ -59,8 +59,8 @@ public class FacesUtils {
     }
 
 	/**
-	 * Warning: THEY DON'T LIKE NULLS!
-	 * Resource (push endpoint) may not work with nulls
+	 * Warning: THEY DON'T LIKE NULLS AND STRING!
+	 * Resource (push endpoint) may not work with nulls or strings
 	 */
 	public static void push(String channel, Object data) {
         LOGGER.info("==> push(); channel = " + channel + "; data = " + data);
