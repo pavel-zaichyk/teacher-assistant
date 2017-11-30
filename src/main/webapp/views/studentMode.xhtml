@@ -37,7 +37,7 @@
                 <h:panelGrid columns="3" styleClass="inline font-size-12pt" columnClasses="top,top,">
                     <p:selectOneMenu filter="true" filterMatchMode="startsWith" converter="entityConverter"
                                      value="#{studentModeBean.student}"
-                                     style="min-width: 0; width: 50px;"
+                                     style="min-width: 0; width: 100px;"
                     >
                         <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.student']}"/>
                         <f:selectItems value="#{sessionBean.students}" var="student"
@@ -51,7 +51,7 @@
                                      value="#{studentModeBean.stream}"
                                      styleClass="block"
                                      rendered="#{studentModeBean.studentStreams.size() gt 1}"
-                                     style="min-width: 0; width: 50px;"
+                                     style="min-width: 0; width: 100px;"
                     >
                         <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.stream']}"/>
                         <f:selectItems value="#{studentModeBean.studentStreams}" var="stream"
@@ -328,7 +328,7 @@
                                                  update=":studentModeForm:examBlock"
                                                  icon="fa fa-fw fa-plus"
                                                  styleClass="font-size-10pt margin-left-10px"
-                                                 disabled="#{studentModeBean.lessonStudent.group eq null}">
+                                                 disabled="#{studentModeBean.lessonStudent.group eq null or studentModeBean.lessonStudent.exam ne null}">
                                     <f:setPropertyActionListener value="#{null}" target="#{lessonsBean.lessons}"/>
                                 </p:commandButton>
                             </p:column>
@@ -380,7 +380,7 @@
 
                     </f:facet>
 
-                    <p:row styleClass="font-size-20pt">
+                    <p:row styleClass="font-size-20pt h73px">
 
                         <ui:repeat var="attestation" value="#{studentModeBean.lessonStudent.attestations}">
                             <p:column styleClass="padding-0px w30pc">
