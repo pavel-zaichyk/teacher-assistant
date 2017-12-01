@@ -14,6 +14,9 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.grsu.teacherassistant.utils.ApplicationUtils.attestationMarkWeight;
+import static com.grsu.teacherassistant.utils.ApplicationUtils.examMarkWeight;
+
 /**
  * @author Pavel Zaychick
  */
@@ -206,7 +209,7 @@ public class LessonStudentModel {
             }
         } else {
             if (examMark.isNumberMark()) {
-                totalMark = Mark.getByValue((int) Math.round(Utils.parseDouble(averageAttestation, 0) * Constants.MARK_ATTESTATION_WEIGHT + examMark.getValue() * Constants.MARK_EXAM_WEIGHT));
+                totalMark = Mark.getByValue((int) Math.round(Utils.parseDouble(averageAttestation, 0) * attestationMarkWeight() + examMark.getValue() * examMarkWeight()));
             } else {
                 totalMark = examMark;
             }
@@ -221,7 +224,7 @@ public class LessonStudentModel {
                 examMark = totalMark;
             } else {
                 if (totalMark.isNumberMark()) {
-                    int mark = (int) Math.round((totalMark.getValue() - Utils.parseDouble(averageAttestation, 0) * Constants.MARK_ATTESTATION_WEIGHT) / Constants.MARK_EXAM_WEIGHT);
+                    int mark = (int) Math.round((totalMark.getValue() - Utils.parseDouble(averageAttestation, 0) * attestationMarkWeight()) / examMarkWeight());
                     if (mark < 0) {
                         examMark = Mark.POINT_0;
                     } else if (mark > 10) {

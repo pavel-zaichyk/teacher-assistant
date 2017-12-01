@@ -24,10 +24,14 @@
                                    styleClass="uppercase bold blue font-size-30pt"/>
                     <p:outputLabel styleClass="margin-top-20px"
                                    value="#{studentModeBean.stream.department.abbreviation}"/>
-                    <p:outputLabel escape="false"
-                                   value="#{studentModeBean.lessonStudent.student.groupNames}"
-                                   styleClass="margin-bottom-20px"/>
-                    <p:outputLabel value="#{studentModeBean.lessonStudent.student.phone}"/>
+
+                    <h:outputText value="#{studentModeBean.lessonStudent.group.name}" styleClass="dark-red block" />
+                    <ui:repeat value="#{studentModeBean.lessonStudent.student.groups}" var="g">
+                        <h:outputText value="#{g.name}" styleClass="block" rendered="#{g.id ne studentModeBean.lessonStudent.group.id}" />
+                    </ui:repeat>
+
+
+                    <p:outputLabel value="#{studentModeBean.lessonStudent.student.phone}" styleClass="margin-top-10px"/>
                     <p:outputLabel value="#{studentModeBean.lessonStudent.student.email}"/>
                     <p:outputLabel value="#{studentModeBean.lessonStudent.student.cardUid}"/>
                 </h:panelGroup>

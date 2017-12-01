@@ -5,6 +5,9 @@ package com.grsu.teacherassistant.utils;
  */
 public class Utils {
     public static double parseDouble(String string, double def) {
+        if (string == null) {
+            return def;
+        }
         try {
             return Double.parseDouble(string);
         } catch (NumberFormatException ex) {

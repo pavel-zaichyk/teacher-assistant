@@ -63,6 +63,11 @@
                             actionListener="#{notificationSettingsBean.init}"
                             update=":notificationSettingForm"
                             disabled="#{not sessionBean.connected}"/>
+                <p:menuitem value="#{msg['settings.properties']}"
+                            icon="fa fa-fw fa-file"
+                            actionListener="#{propertiesBean.init}"
+                            update=":propertiesForm"
+                            disabled="#{not sessionBean.connected}"/>
                 <p:separator/>
                 <p:menuitem value="#{msg['menu.connection.connect']}" icon="fa fa-fw fa-toggle-on"
                             actionListener="#{menuBean.connect}" update="@([id$=wrapper])"
