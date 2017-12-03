@@ -99,6 +99,8 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
     private boolean studentNotExist;
 
     public void initLesson(Lesson lesson) {
+        processedStudent = null;
+        notes = null;
         alarmBean.setAlarms();
         serialBean.setCurrentListener(this);
         serialBean.startRecord();

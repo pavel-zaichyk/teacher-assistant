@@ -1,6 +1,10 @@
 /*
 	General styles
  */
+body {
+	font-family: Arial, sans-serif;
+	font-size: 1.1em;
+}
 
 /* Color */
 .green {
@@ -43,6 +47,7 @@
 
 /* Height */
 .h30px {height: 30px;}
+.h73px {height: 73px;}
 .h200px {height: 200px;}
 .h280px {height: 280px;}
 
@@ -79,6 +84,7 @@
 #wrapper .font-size-12pt {font-size: 12pt;}
 #wrapper .font-size-14pt {font-size: 14pt;}
 #wrapper .font-size-20pt {font-size: 20pt;}
+#wrapper .font-size-30pt {font-size: 30pt;}
 
 /* Font Weight */
 .bold {font-weight: bold;}
@@ -93,11 +99,13 @@
 .margin-bottom-20px {margin-bottom: 20px;}
 .margin-bottom-70px {margin-bottom: 70px;}
 .margin-right-10px {margin-right: 10px;}
+.margin-left-10px {margin-left: 10px;}
 
 /* Padding */
 #wrapper .padding-0px {padding: 0;}
 .padding-top-15px {padding-top: 15px;}
 .padding-left-10px {padding-left: 10px;}
+.padding-right-10px {padding-right: 10px;}
 
 /* Text Transform */
 .lowercase {text-transform: lowercase;}
@@ -655,6 +663,14 @@ body {
 	vertical-align: top;
 }
 
+.student-additional-info .notes {
+	border: 2px solid #0000ff;
+}
+
+.student-additional-info .marks {
+	border: 2px solid #5b040d;
+}
+
 .buttons {
 	font-size: 10pt;
 	margin-bottom: 20px;
@@ -719,8 +735,8 @@ body {
 }
 
 .exam-block {
-	width: 100%;
-	display: inline;
+	width: 640px;
+	display: inline-block;
 }
 
 .exam-block input {

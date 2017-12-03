@@ -61,6 +61,10 @@
         <exception-type>javax.faces.application.ViewExpiredException</exception-type>
         <location>/pages/sessionExpired.xhtml</location>
     </error-page>
+    <error-page>
+        <exception-type>java.lang.Exception</exception-type>
+        <location>/pages/error.xhtml</location>
+    </error-page>
 
     <mime-mapping>
         <extension>woff2</extension>

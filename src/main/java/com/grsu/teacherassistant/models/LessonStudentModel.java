@@ -3,9 +3,7 @@ package com.grsu.teacherassistant.models;
 import com.grsu.teacherassistant.constants.Constants;
 import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.StudentDAO;
-import com.grsu.teacherassistant.entities.Stream;
-import com.grsu.teacherassistant.entities.Student;
-import com.grsu.teacherassistant.entities.StudentLesson;
+import com.grsu.teacherassistant.entities.*;
 import com.grsu.teacherassistant.utils.EntityUtils;
 import com.grsu.teacherassistant.utils.Utils;
 import lombok.Data;
@@ -15,6 +13,9 @@ import java.math.RoundingMode;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.grsu.teacherassistant.utils.ApplicationUtils.attestationMarkWeight;
+import static com.grsu.teacherassistant.utils.ApplicationUtils.examMarkWeight;
 
 /**
  * @author Pavel Zaychick
@@ -45,6 +46,9 @@ public class LessonStudentModel {
     private List<StudentLesson> attestations;
     private List<StudentLesson> studentLessons;
     private StudentLesson exam;
+    private List<StudentLesson> additionalLessons;
+
+    private Group group;
 
     public LessonStudentModel(Student student) {
         this(student, null, false);
@@ -60,10 +64,23 @@ public class LessonStudentModel {
         this.name = student.getFullName();
         this.additional = additional;
 
+        init(stream);
+    }
+
+    public void init(Stream stream) {
         if (stream != null) {
+
+            for (Group g : stream.getGroups()) {
+                if (student.getGroups().contains(g)) {
+                    group = g;
+                    break;
+                }
+            }
+
             attestationsMark = new HashMap<>();
             attestations = new ArrayList<>();
             studentLessons = new ArrayList<>();
+            additionalLessons = new ArrayList<>();
 
             stream.getLessons().forEach(l -> {
                 StudentLesson sl = student.getStudentLessons().get(l.getId());
@@ -79,6 +96,9 @@ public class LessonStudentModel {
                             break;
                         default:
                             studentLessons.add(sl);
+                            if (isAdditionalLesson(sl.getLesson())) {
+                                additionalLessons.add(sl);
+                            }
                     }
                 }
             });
@@ -88,6 +108,20 @@ public class LessonStudentModel {
             updateSkips(stream);
             initMarks();
         }
+    }
+
+    private boolean isAdditionalLesson(Lesson lesson) {
+        if (lesson.getGroup() == null) {
+            for (Group group : lesson.getStream().getGroups()) {
+                if (student.getGroups().contains(group)) {
+                    return false;
+                }
+            }
+        }
+        if (student.getGroups().contains(lesson.getGroup())) {
+            return false;
+        }
+        return true;
     }
 
     public void updateAverageAttestation() {
@@ -175,7 +209,7 @@ public class LessonStudentModel {
             }
         } else {
             if (examMark.isNumberMark()) {
-                totalMark = Mark.getByValue((int) Math.round(Utils.parseDouble(averageAttestation, 0) * Constants.MARK_ATTESTATION_WEIGHT + examMark.getValue() * Constants.MARK_EXAM_WEIGHT));
+                totalMark = Mark.getByValue((int) Math.round(Utils.parseDouble(averageAttestation, 0) * attestationMarkWeight() + examMark.getValue() * examMarkWeight()));
             } else {
                 totalMark = examMark;
             }
@@ -190,7 +224,7 @@ public class LessonStudentModel {
                 examMark = totalMark;
             } else {
                 if (totalMark.isNumberMark()) {
-                    int mark = (int) Math.round((totalMark.getValue() - Utils.parseDouble(averageAttestation, 0) * Constants.MARK_ATTESTATION_WEIGHT) / Constants.MARK_EXAM_WEIGHT);
+                    int mark = (int) Math.round((totalMark.getValue() - Utils.parseDouble(averageAttestation, 0) * attestationMarkWeight()) / examMarkWeight());
                     if (mark < 0) {
                         examMark = Mark.POINT_0;
                     } else if (mark > 10) {

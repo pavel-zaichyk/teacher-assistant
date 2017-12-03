@@ -31,10 +31,6 @@ public final class Constants {
     public static final String OTHER = "OTHER";
     public static final String ATTESTATION = "ATTESTATION";
 
-    //MARKS
-    public static final Double MARK_EXAM_WEIGHT = 0.6;
-    public static final Double MARK_ATTESTATION_WEIGHT = 0.4;
-
     //ALARM
     public static final String DEFAULT_ALARM_SOUND = "/resources/audio/default_alarm.mp3";
 

@@ -31,8 +31,6 @@ public class SerialListener implements SerialPortEventListener {
 
     public void serialEvent(SerialPortEvent event) {
         final long t = System.currentTimeMillis();
-        LOGGER.info("==>");
-        LOGGER.info("==>");
         LOGGER.info("==> serialEvent()");
         if (event.isRXCHAR() && event.getEventValue() > 0) {
             LOGGER.info("---");
@@ -73,8 +71,6 @@ public class SerialListener implements SerialPortEventListener {
         }
 
         LOGGER.info("<== serialEvent()" + (System.currentTimeMillis() - t));
-        LOGGER.info("<==");
-        LOGGER.info("<==");
     }
 
     private String decodeHexToText(String hexString) {
@@ -87,17 +83,3 @@ public class SerialListener implements SerialPortEventListener {
         return null;
     }
 }
-
-/*
-32 30 31 34 2D 32 C1 C0 D5 C0 D0 20 DE CB B2 DF 20 C0 CB DF CA D1 C0 CD C4 D0 C0 A1 CD C0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-2014-2БАХАР ЮЛЂЯ АЛЯКСАНДРАϱНА
-
-
-
-32 30 31 34 2D 39 CC C0 B2 D1 C5 C5 C2 C0 20 C0 CB C5 D1 DF 20 C0 CB C5 C3 C0 A1 CD C0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-2014-9МАЂСЕЕВА АЛЕСЯ АЛЕГАϱНА
-
-32 30 31 34 2D 31 CA C0 C2 C0 CB DC D7 D3 CA 20 CD C0 D2 C0 CB CB DF 20 C2 B2 CA D2 C0 D0 C0 A1 CD C0 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-2014-1КАВАЛЬЧУК НАТАЛЛЯ ВЂКТАРАϱНА
-
- */

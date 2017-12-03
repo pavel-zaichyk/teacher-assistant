@@ -77,15 +77,15 @@ public enum Mark {
         if (numberMarks.size() > 0) {
             OptionalDouble result = numberMarks.stream().mapToInt(Integer::intValue).average();
             if (result.isPresent()) {
-                return String.valueOf(result.getAsDouble());
+                return String.format("%.2f", result.getAsDouble());
             }
         }
 
-        if (failMarks > passMarks) {
-            return FAIL.getFieldValue()[0];
-        }
-        if (passMarks > 0) {
+        if (passMarks > failMarks) {
             return PASS.getFieldValue()[0];
+        }
+        if (failMarks > 0) {
+            return FAIL.getFieldValue()[0];
         }
         return null;
     }

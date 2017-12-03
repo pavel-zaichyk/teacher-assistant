@@ -5,9 +5,11 @@ import com.grsu.teacherassistant.beans.utility.SerialListenerBean;
 import com.grsu.teacherassistant.beans.utility.SessionBean;
 import com.grsu.teacherassistant.constants.Constants;
 import com.grsu.teacherassistant.dao.EntityDAO;
+import com.grsu.teacherassistant.dao.LessonDAO;
 import com.grsu.teacherassistant.entities.*;
 import com.grsu.teacherassistant.entities.StudentLesson;
 import com.grsu.teacherassistant.models.LessonStudentModel;
+import com.grsu.teacherassistant.models.LessonType;
 import com.grsu.teacherassistant.models.Mark;
 import com.grsu.teacherassistant.push.resources.PushMessage;
 import com.grsu.teacherassistant.utils.EntityUtils;
@@ -24,9 +26,7 @@ import javax.faces.event.ValueChangeEvent;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -62,7 +62,6 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
         this.stream = stream;
 
         if (this.student != null) {
-            lessonStudent = new LessonStudentModel(student, stream);
             studentStreams = student.getStudentLessons().values().stream()
                 .filter(sl -> sl.getLesson() != null)
                 .map(sl -> sl.getLesson().getStream())
@@ -72,6 +71,7 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
             if (stream == null && studentStreams.size() > 0) {
                 this.stream = studentStreams.get(0);
             }
+            lessonStudent = new LessonStudentModel(student, this.stream);
 
         }
     }
@@ -197,5 +197,83 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
             LOGGER.info("Student not registered. Reason: Uid[ " + uid + " ] not exist in database.");
             return false;
         }
+    }
+
+    public void createAttestation() {
+        Lesson lesson = new Lesson();
+        lesson.setDate(LocalDateTime.now());
+        lesson.setType(LessonType.ATTESTATION);
+        lesson.setStream(this.stream);
+        lesson.setNotes(new ArrayList<>());
+        lesson.setIndex(LessonDAO.getNextIndex(stream.getId(), LessonType.ATTESTATION, null));
+
+        EntityDAO.add(lesson);
+        stream.getLessons().add(lesson);
+
+        Set<Student> students = new HashSet<>();
+        stream.getGroups().forEach(g -> students.addAll(g.getStudents()));
+        List<StudentLesson> studentLessons = new ArrayList<>();
+        students.forEach(s -> {
+            StudentLesson sc = new StudentLesson();
+            sc.setStudent(s);
+            sc.setLesson(lesson);
+            sc.setNotes(new ArrayList<>());
+            studentLessons.add(sc);
+            s.getStudentLessons().put(lesson.getId(), sc);
+            if (s.equals(student)) {
+                lessonStudent.getStudent().getStudentLessons().put(lesson.getId(), sc);
+            }
+        });
+        EntityDAO.add(new ArrayList<>(studentLessons));
+        lesson.setStudentLessons(new HashMap<>());
+        studentLessons.forEach(sl -> lesson.getStudentLessons().put(sl.getStudentId(), sl));
+
+        lessonStudent.init(stream);
+    }
+
+    public void createExam() {
+        if (lessonStudent.getGroup() == null) {
+            return;
+        }
+
+        List<Schedule> schedules = EntityDAO.getAll(Schedule.class);
+        Schedule lessonSchedule = null;
+        LocalTime currentTime = LocalTime.now();
+        for (Schedule schedule : schedules) {
+            lessonSchedule = schedule;
+            if (schedule.getBegin().isAfter(currentTime) || (schedule.getBegin().isBefore(currentTime) && schedule.getEnd().isAfter(currentTime))) {
+                break;
+            }
+        }
+
+        Lesson lesson = new Lesson();
+        lesson.setDate(LocalDateTime.now());
+        lesson.setType(LessonType.EXAM);
+        lesson.setStream(this.stream);
+        lesson.setNotes(new ArrayList<>());
+        lesson.setGroup(lessonStudent.getGroup());
+        lesson.setIndex(LessonDAO.getNextIndex(stream.getId(), LessonType.EXAM, lessonStudent.getGroup()));
+        lesson.setSchedule(lessonSchedule);
+
+        EntityDAO.add(lesson);
+        stream.getLessons().add(lesson);
+
+        List<StudentLesson> studentLessons = new ArrayList<>();
+        lessonStudent.getGroup().getStudents().forEach(s -> {
+            StudentLesson sc = new StudentLesson();
+            sc.setStudent(s);
+            sc.setLesson(lesson);
+            sc.setNotes(new ArrayList<>());
+            studentLessons.add(sc);
+            s.getStudentLessons().put(lesson.getId(), sc);
+            if (s.equals(student)) {
+                lessonStudent.getStudent().getStudentLessons().put(lesson.getId(), sc);
+            }
+        });
+        EntityDAO.add(new ArrayList<>(studentLessons));
+        lesson.setStudentLessons(new HashMap<>());
+        studentLessons.forEach(sl -> lesson.getStudentLessons().put(sl.getStudentId(), sl));
+
+        lessonStudent.init(stream);
     }
 }
