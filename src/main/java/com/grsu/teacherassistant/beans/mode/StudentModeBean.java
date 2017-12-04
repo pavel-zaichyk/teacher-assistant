@@ -157,6 +157,7 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
             note.setEntityId(selectedStudentLesson.getId());
             EntityDAO.save(note);
             selectedStudentLesson.getNotes().add(note);
+            lessonStudent.getLessonsNotes().add(note);
         }
         newNote = null;
         FacesUtils.closeDialog("notesDialog");

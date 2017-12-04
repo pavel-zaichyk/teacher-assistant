@@ -48,6 +48,8 @@ public class LessonStudentModel {
     private StudentLesson exam;
     private List<StudentLesson> additionalLessons;
 
+    private List<Note> lessonsNotes;
+
     private Group group;
 
     public LessonStudentModel(Student student) {
@@ -81,6 +83,7 @@ public class LessonStudentModel {
             attestations = new ArrayList<>();
             studentLessons = new ArrayList<>();
             additionalLessons = new ArrayList<>();
+            lessonsNotes = new ArrayList<>();
 
             stream.getLessons().forEach(l -> {
                 StudentLesson sl = student.getStudentLessons().get(l.getId());
@@ -100,8 +103,10 @@ public class LessonStudentModel {
                                 additionalLessons.add(sl);
                             }
                     }
+                    lessonsNotes.addAll(sl.getNotes());
                 }
             });
+            lessonsNotes.sort(Comparator.comparing(Note::getCreateDate));
 
             updateAverageAttestation();
             updateTotal();
