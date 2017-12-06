@@ -25,9 +25,10 @@
                     <p:outputLabel styleClass="margin-top-20px"
                                    value="#{studentModeBean.stream.department.abbreviation}"/>
 
-                    <h:outputText value="#{studentModeBean.lessonStudent.group.name}" styleClass="dark-red block" />
+                    <h:outputText value="#{studentModeBean.lessonStudent.group.name}" styleClass="dark-red block"/>
                     <ui:repeat value="#{studentModeBean.lessonStudent.student.groups}" var="g">
-                        <h:outputText value="#{g.name}" styleClass="block" rendered="#{g.id ne studentModeBean.lessonStudent.group.id}" />
+                        <h:outputText value="#{g.name}" styleClass="block"
+                                      rendered="#{g.id ne studentModeBean.lessonStudent.group.id}"/>
                     </ui:repeat>
 
 
@@ -91,6 +92,12 @@
                                          title="#{msg['option.edit']}">
                             <p:resetInput target=":studentInfoForm:studentDetail"/>
                         </p:commandButton>
+                        <p:commandButton update=":studentModeForm:notifications"
+                                         icon="fa fa-fw fa-exclamation-triangle"
+                                         oncomplete="PF('notificationDialog').show()"
+                                         title="#{msg['notification']}">
+                            <f:setPropertyActionListener value="#{null}" target="#{studentModeBean.newNotification}"/>
+                        </p:commandButton>
 
                         <p:commandButton id="modeBtn" icon="fa fa-fw fa-forward"/>
                         <p:overlayPanel for="modeBtn" hideEffect="fade" style="position: fixed;">
@@ -143,7 +150,7 @@
                     <p:outputLabel value="#{studentModeBean.stream.discipline.name}"/>
                     <p:outputLabel value="#{studentModeBean.stream.course}"/>
                 </h:panelGroup>
-                <h:panelGroup id="studentSkips" rendered="#{studentModeBean.stream ne null}" styleClass="dark-red">
+                <h:panelGroup id="studentSkips" rendered="#{studentModeBean.stream ne null}" styleClass="dark-red bold">
                     <h:outputText
                         value="#{msg['label.skips']}: #{studentModeBean.lessonStudent.totalSkip} (#{studentModeBean.lessonStudent.skips})"
                         rendered="#{(studentModeBean.lessonStudent.totalSkip gt 0)}"/>
@@ -162,6 +169,9 @@
                      columnClasses="w30pc padding-right-10px, w20pc, center">
             <p:panel styleClass="min-height-450px notes">
                 <h:outputText value="#{msg['label.notes']}" styleClass="bold block uppercase center"/>
+
+                <h:outputText value="#{msg['studentMode.notes.additionalLessons']}"
+                              styleClass="bold block margin-top-10px"/>
                 <ui:repeat var="l" value="#{studentModeBean.lessonStudent.additionalLessons}">
                     <h:panelGroup styleClass="block">
                         <h:outputText value="#{l.lesson.group.name}"/>
@@ -171,37 +181,29 @@
                         <h:outputText value="#{l.lesson.schedule.begin}-#{l.lesson.schedule.end}"/>
                     </h:panelGroup>
                 </ui:repeat>
+                <h:outputText value="#{msg['studentMode.notes.none']}" styleClass="block"
+                              rendered="#{studentModeBean.lessonStudent.additionalLessons.isEmpty()}"/>
+
+                <h:outputText value="#{msg['studentMode.notes.students']}" styleClass="bold block margin-top-10px"/>
                 <ui:repeat var="note" value="#{studentModeBean.lessonStudent.student.notes}">
                     <h:panelGrid columns="2">
                         <h:outputText value="#{note.createDate}" converter="localShortDateConverter"/>
                         <h:outputText value="#{note.description}"/>
                     </h:panelGrid>
                 </ui:repeat>
+                <h:outputText value="#{msg['studentMode.notes.none']}" styleClass="block"
+                              rendered="#{studentModeBean.lessonStudent.student.notes.isEmpty()}"/>
 
-                <h:outputText value="#{msg['label.attestation.notes']}:" styleClass="bold block"/>
-                <ui:repeat var="attestation" value="#{studentModeBean.lessonStudent.attestations}">
-                    <h:panelGrid columns="2" rendered="#{attestation.notes.size() gt 0}">
-                        <h:outputText value="#{attestation.lesson.date}" converter="localShortDateConverter"/>
-                        <h:panelGroup>
-                            <ui:repeat var="note" value="#{attestation.notes}">
-                                <h:outputText value="#{note.description}" styleClass="block"/>
-                            </ui:repeat>
-                        </h:panelGroup>
+
+                <h:outputText value="#{msg['studentMode.notes.lessons']}" styleClass="bold block margin-top-10px"/>
+                <ui:repeat var="note" value="#{studentModeBean.lessonStudent.lessonsNotes}">
+                    <h:panelGrid columns="2">
+                        <h:outputText value="#{note.createDate}" converter="localShortDateConverter"/>
+                        <h:outputText value="#{note.description}"/>
                     </h:panelGrid>
                 </ui:repeat>
-
-                <h:outputText value="#{msg['label.lesson.notes']}" styleClass="bold block"/>
-                <ui:repeat var="studentLesson" value="#{studentModeBean.lessonStudent.studentLessons}">
-                    <h:panelGrid columns="2" rendered="#{studentLesson.notes.size() gt 0}">
-                        <h:outputText value="#{studentLesson.lesson.date}" converter="localShortDateConverter"/>
-                        <h:panelGroup>
-                            <ui:repeat var="note" value="#{studentLesson.notes}">
-                                <h:outputText value="#{note.description}" styleClass="block"/>
-                            </ui:repeat>
-                        </h:panelGroup>
-
-                    </h:panelGrid>
-                </ui:repeat>
+                <h:outputText value="#{msg['studentMode.notes.none']}" styleClass="block"
+                              rendered="#{studentModeBean.lessonStudent.lessonsNotes.isEmpty()}"/>
             </p:panel>
 
             <p:panel styleClass="min-height-450px marks">
@@ -214,8 +216,8 @@
                     </h:panelGrid>
                 </ui:repeat>
                 <h:outputText value="#{msg['label.average.mark']} #{studentModeBean.lessonStudent.averageMark}"
-                              styleClass="bold block"/>
-                <h:outputText value="#{msg['label.symbols']}:" styleClass="bold block"/>
+                              styleClass="bold block margin-top-10px"/>
+                <h:outputText value="#{msg['label.symbols']}:" styleClass="bold block margin-top-10px"/>
                 <ui:repeat id="symbolMarks" var="mark" value="#{studentModeBean.symbolMarks}">
                     <h:panelGrid columns="3">
                         <h:outputText value="#{mark.key}"/>
@@ -237,7 +239,7 @@
                                 update="@this :studentModeForm:focus"
                                 disabled="#{studentLesson eq studentModeBean.editedStudentLesson}"/>
 
-                        <h:outputLabel styleClass="font-size-11pt"
+                        <h:outputLabel styleClass="font-size-11pt lowercase bold"
                                        value="#{msg['label.'.concat(studentLesson.lesson.type.key)]}"/>
                         <h:outputLabel styleClass="font-size-11pt" value="#{studentLesson.lesson.date}"
                                        converter="localShortDateConverter"/>
@@ -378,8 +380,8 @@
                                 </p:column>
                             </ui:repeat>
                             <p:column>AC</p:column>
-                            <p:column>#{msg['label.examMark']}</p:column>
-                            <p:column>#{msg['label.totalMark']}</p:column>
+                            <p:column styleClass="dark-red">#{msg['studentMode.mark.exam']}</p:column>
+                            <p:column styleClass="dark-red">#{msg['studentMode.mark.total']}</p:column>
                         </p:row>
 
                     </f:facet>
@@ -404,24 +406,24 @@
                             <h:outputText id="averageAttestation" styleClass="bold blue"
                                           value="#{studentModeBean.lessonStudent.averageAttestation}"/>
                         </p:column>
-                        <p:column styleClass="padding-0px">
+                        <p:column styleClass="padding-0px dark-red">
                             <p:inputText id="examMark"
                                          value="#{studentModeBean.lessonStudent.examMark}"
                                          valueChangeListener="#{studentModeBean.changeExamMark}"
                                          converter="markConverter"
                                          rendered="#{studentModeBean.lessonStudent.exam ne null}"
-                                         styleClass="blue"
+                                         styleClass="dark-red"
                             >
                                 <p:ajax update="examBlock"/>
                             </p:inputText>
                         </p:column>
-                        <p:column styleClass="padding-0px">
+                        <p:column styleClass="padding-0px dark-red">
                             <p:inputText id="totalMark"
                                          value="#{studentModeBean.lessonStudent.totalMark}"
                                          valueChangeListener="#{studentModeBean.changeExamMark}"
                                          converter="markConverter"
                                          rendered="#{studentModeBean.lessonStudent.exam ne null}"
-                                         styleClass="blue"
+                                         styleClass="dark-red"
                             >
                                 <p:ajax update="examBlock"/>
                             </p:inputText>
@@ -488,6 +490,37 @@
                                      actionListener="#{studentModeBean.saveRegisteredInfo}"
                     />
                 </h:panelGroup>
+            </p:outputPanel>
+        </p:dialog>
+
+        <p:dialog header="#{msg['notification']}"
+                  widgetVar="notificationDialog"
+                  modal="true"
+                  showEffect="fade"
+                  hideEffect="fade"
+                  resizable="false">
+            <p:outputPanel id="notifications">
+                <h:outputLabel value="#{studentModeBean.lessonStudent.name}" styleClass="bold block"/>
+
+                <ui:repeat id="notificationInfo" var="n"
+                           value="#{studentModeBean.lessonStudent.student.notifications}">
+                    <h:panelGrid columns="4" columnClasses="w20px, w300px, w100px, w20px">
+                        <h:selectBooleanCheckbox id="active" value="#{n.active}"/>
+                        <h:outputText value="#{n.description}"/>
+                        <h:outputText value="#{n.createDate}" converter="localDateConverter"/>
+                        <p:commandButton actionListener="#{studentModeBean.removeNotification(n)}"
+                                         update=":studentModeForm:notifications"
+                                         icon="fa fa-fw fa-minus" title="#{msg['option.remove']}"
+                                         styleClass="red"/>
+                    </h:panelGrid>
+                </ui:repeat>
+                <p:inputTextarea value="#{studentModeBean.newNotification}"/>
+
+                <p:commandButton value="#{msg['btn.save.exit']}" icon="fa fa-fw fa-save"
+                                 actionListener="#{studentModeBean.saveNotification}"
+                                 styleClass="block" update=":studentModeForm:notifications">
+
+                </p:commandButton>
             </p:outputPanel>
         </p:dialog>
 

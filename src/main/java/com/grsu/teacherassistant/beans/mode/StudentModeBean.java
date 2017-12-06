@@ -55,6 +55,9 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 
     private List<Stream> studentStreams;
 
+    private String newNotification;
+    private LessonStudentModel selectedStudent;
+
     public void initStudentMode(Student student, Stream stream) {
         serialBean.setCurrentListener(this);
         clear();
@@ -157,6 +160,7 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
             note.setEntityId(selectedStudentLesson.getId());
             EntityDAO.save(note);
             selectedStudentLesson.getNotes().add(note);
+            lessonStudent.getLessonsNotes().add(note);
         }
         newNote = null;
         FacesUtils.closeDialog("notesDialog");
@@ -208,7 +212,7 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
         lesson.setIndex(LessonDAO.getNextIndex(stream.getId(), LessonType.ATTESTATION, null));
 
         EntityDAO.add(lesson);
-        stream.getLessons().add(lesson);
+        stream = EntityDAO.get(Stream.class, stream.getId());
 
         Set<Student> students = new HashSet<>();
         stream.getGroups().forEach(g -> students.addAll(g.getStudents()));
@@ -275,5 +279,24 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
         studentLessons.forEach(sl -> lesson.getStudentLessons().put(sl.getStudentId(), sl));
 
         lessonStudent.init(stream);
+    }
+
+    public void removeNotification(StudentNotification notification) {
+        EntityDAO.delete(notification);
+        lessonStudent.getStudent().getNotifications().remove(notification);
+    }
+
+    public void saveNotification() {
+        if (newNotification != null && !newNotification.isEmpty()) {
+            StudentNotification studentNotification = new StudentNotification();
+            studentNotification.setActive(Boolean.TRUE);
+            studentNotification.setDescription(newNotification);
+            studentNotification.setStudent(lessonStudent.getStudent());
+            studentNotification.setCreateDate(LocalDateTime.now());
+            lessonStudent.getStudent().getNotifications().add(studentNotification);
+        }
+        newNotification = null;
+        EntityDAO.save(lessonStudent.getStudent().getNotifications());
+        FacesUtils.closeDialog("notificationDialog");
     }
 }

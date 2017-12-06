@@ -91,6 +91,7 @@ body {
 
 /* Text Transform */
 .uppercase {text-transform: uppercase;}
+.lowercase {text-transform: lowercase;}
 
 /* Margin */
 .margin-top-10px {margin-top: 10px;}
@@ -686,7 +687,6 @@ body {
 	padding-bottom: 6px;
 	padding-top: 6px;
 	display: block;
-	height: 38px;
 }
 
 .student-mode .student-class-info input {
@@ -697,7 +697,7 @@ body {
 .student-mode .student-class-info {
 	display: inline-block;
 	margin-bottom: 15px;
-	height: 292px;
+	height: 300px;
 }
 
 .student-mode  .student-class-info .ui-grid {
