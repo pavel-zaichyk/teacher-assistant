@@ -92,6 +92,12 @@
                                          title="#{msg['option.edit']}">
                             <p:resetInput target=":studentInfoForm:studentDetail"/>
                         </p:commandButton>
+                        <p:commandButton update=":studentModeForm:notifications"
+                                         icon="fa fa-fw fa-exclamation-triangle"
+                                         oncomplete="PF('notificationDialog').show()"
+                                         title="#{msg['notification']}">
+                            <f:setPropertyActionListener value="#{null}" target="#{studentModeBean.newNotification}"/>
+                        </p:commandButton>
 
                         <p:commandButton id="modeBtn" icon="fa fa-fw fa-forward"/>
                         <p:overlayPanel for="modeBtn" hideEffect="fade" style="position: fixed;">
@@ -144,7 +150,7 @@
                     <p:outputLabel value="#{studentModeBean.stream.discipline.name}"/>
                     <p:outputLabel value="#{studentModeBean.stream.course}"/>
                 </h:panelGroup>
-                <h:panelGroup id="studentSkips" rendered="#{studentModeBean.stream ne null}" styleClass="dark-red">
+                <h:panelGroup id="studentSkips" rendered="#{studentModeBean.stream ne null}" styleClass="dark-red bold">
                     <h:outputText
                         value="#{msg['label.skips']}: #{studentModeBean.lessonStudent.totalSkip} (#{studentModeBean.lessonStudent.skips})"
                         rendered="#{(studentModeBean.lessonStudent.totalSkip gt 0)}"/>
@@ -484,6 +490,37 @@
                                      actionListener="#{studentModeBean.saveRegisteredInfo}"
                     />
                 </h:panelGroup>
+            </p:outputPanel>
+        </p:dialog>
+
+        <p:dialog header="#{msg['notification']}"
+                  widgetVar="notificationDialog"
+                  modal="true"
+                  showEffect="fade"
+                  hideEffect="fade"
+                  resizable="false">
+            <p:outputPanel id="notifications">
+                <h:outputLabel value="#{studentModeBean.lessonStudent.name}" styleClass="bold block"/>
+
+                <ui:repeat id="notificationInfo" var="n"
+                           value="#{studentModeBean.lessonStudent.student.notifications}">
+                    <h:panelGrid columns="4" columnClasses="w20px, w300px, w100px, w20px">
+                        <h:selectBooleanCheckbox id="active" value="#{n.active}"/>
+                        <h:outputText value="#{n.description}"/>
+                        <h:outputText value="#{n.createDate}" converter="localDateConverter"/>
+                        <p:commandButton actionListener="#{studentModeBean.removeNotification(n)}"
+                                         update=":studentModeForm:notifications"
+                                         icon="fa fa-fw fa-minus" title="#{msg['option.remove']}"
+                                         styleClass="red"/>
+                    </h:panelGrid>
+                </ui:repeat>
+                <p:inputTextarea value="#{studentModeBean.newNotification}"/>
+
+                <p:commandButton value="#{msg['btn.save.exit']}" icon="fa fa-fw fa-save"
+                                 actionListener="#{studentModeBean.saveNotification}"
+                                 styleClass="block" update=":studentModeForm:notifications">
+
+                </p:commandButton>
             </p:outputPanel>
         </p:dialog>
 
