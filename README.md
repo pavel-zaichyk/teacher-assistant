@@ -13,3 +13,7 @@ This application is an electronic journal that helps university teachers with th
 ## Build
 
 > `mvn clean install`
+
+## Create release
+
+> `mvn release:clean release:prepare -Darguments='-Dmaven.test.skip=true'`
