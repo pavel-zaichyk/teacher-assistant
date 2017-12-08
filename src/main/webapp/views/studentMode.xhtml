@@ -341,7 +341,7 @@
                         </p:row>
                         <p:row>
                             <ui:repeat var="attestation" value="#{studentModeBean.lessonStudent.attestations}">
-                                <p:column styleClass="padding-0px">
+                                <p:column styleClass="padding-0px w100px">
                                     <h:panelGroup id="attestationInfo"
                                                   styleClass="student-attestation">
                                         <h:outputText
@@ -389,7 +389,7 @@
                     <p:row styleClass="font-size-20pt h73px">
 
                         <ui:repeat var="attestation" value="#{studentModeBean.lessonStudent.attestations}">
-                            <p:column styleClass="padding-0px w30pc">
+                            <p:column styleClass="padding-0px w100px">
                                 <p:inputText id="attestationMark"
                                              value="#{studentModeBean.lessonStudent.attestationsMark[attestation.id]}"
                                              valueChangeListener="#{studentModeBean.changeAttestationMark}"
