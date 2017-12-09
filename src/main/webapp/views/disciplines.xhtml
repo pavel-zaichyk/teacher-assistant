@@ -14,7 +14,7 @@
             </p:column>
             <p:column styleClass="options">
                 <p:commandButton update=":disciplineInfoForm" oncomplete="PF('disciplineDialog').show()"
-                                 icon="fa fa-fw fa-search" title="View">
+                                 icon="fa fa-fw fa-pencil" title="View">
                     <f:setPropertyActionListener value="#{discipline}" target="#{disciplineBean.selectedDiscipline}"/>
                     <p:resetInput target=":disciplineInfoForm:disciplineDetail"/>
                 </p:commandButton>

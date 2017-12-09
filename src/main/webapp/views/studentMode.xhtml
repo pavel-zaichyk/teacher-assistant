@@ -25,7 +25,7 @@
                     <p:outputLabel styleClass="margin-top-20px"
                                    value="#{studentModeBean.stream.department.abbreviation}"/>
 
-                    <h:outputText value="#{studentModeBean.lessonStudent.group.name}" styleClass="dark-red block"/>
+                    <h:outputText value="#{studentModeBean.lessonStudent.group.name}" styleClass="dark-red block bold"/>
                     <ui:repeat value="#{studentModeBean.lessonStudent.student.groups}" var="g">
                         <h:outputText value="#{g.name}" styleClass="block"
                                       rendered="#{g.id ne studentModeBean.lessonStudent.group.id}"/>
@@ -88,7 +88,7 @@
 
                         <p:commandButton update=":studentInfoForm"
                                          actionListener="#{studentBean.initStudent(studentModeBean.student)}"
-                                         icon="fa fa-fw fa-search"
+                                         icon="fa fa-fw fa-pencil"
                                          title="#{msg['option.edit']}">
                             <p:resetInput target=":studentInfoForm:studentDetail"/>
                         </p:commandButton>
@@ -149,6 +149,11 @@
                     <p:outputLabel value="#{studentModeBean.stream.name}"/>
                     <p:outputLabel value="#{studentModeBean.stream.discipline.name}"/>
                     <p:outputLabel value="#{studentModeBean.stream.course}"/>
+                    <h:outputFormat value="#{msg['studentMode.stream.lessonsPlan']}">
+                        <f:param value="#{studentModeBean.stream.lectureCount ne null ? studentModeBean.stream.lectureCount : 'XX'}"/>
+                        <f:param value="#{studentModeBean.stream.practicalCount ne null ? studentModeBean.stream.practicalCount : 'XX'}"/>
+                        <f:param value="#{studentModeBean.stream.labCount ne null ? studentModeBean.stream.labCount : 'XX'}"/>
+                    </h:outputFormat>
                 </h:panelGroup>
                 <h:panelGroup id="studentSkips" rendered="#{studentModeBean.stream ne null}" styleClass="dark-red bold">
                     <h:outputText
@@ -166,7 +171,7 @@
 
         <h:panelGrid id="studentAdditionalInfo" columns="3" styleClass="w100pc student-additional-info"
                      rendered="#{studentModeBean.stream ne null}"
-                     columnClasses="w30pc padding-right-10px, w20pc, center">
+                     columnClasses="w500px padding-right-10px, w20pc, center">
             <p:panel styleClass="min-height-450px notes">
                 <h:outputText value="#{msg['label.notes']}" styleClass="bold block uppercase center"/>
 
