@@ -67,6 +67,12 @@ public class LessonModeBean implements Serializable {
         initLessonStudents();
     }
 
+    public void initLessonMode(Lesson lesson) {
+        this.lesson = lesson;
+        this.stream = lesson.getStream();
+        initLessonStudents();
+    }
+
     public void clear() {
         stream = null;
         lessons = null;

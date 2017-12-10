@@ -50,13 +50,14 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
 
     private StudentLesson selectedStudentLesson;
     private String newNote;
-    private boolean registered;
     private StudentLesson editedStudentLesson;
 
     private List<Stream> studentStreams;
 
     private String newNotification;
     private LessonStudentModel selectedStudent;
+    private List<Student> students;
+    private String studentsType = "ALL";
 
     public void initStudentMode(Student student, Stream stream) {
         serialBean.setCurrentListener(this);
@@ -101,7 +102,6 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
         newNote = null;
 
         studentStreams = null;
-
     }
 
     public List<Map.Entry<Integer, Integer>> getNumberMarks() {
@@ -172,21 +172,18 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
     }
 
     //REGISTERED INFO
-    public void saveRegisteredInfo() {
-        boolean oldValue = selectedStudentLesson.isRegistered();
-        if (oldValue != registered) {
-            selectedStudentLesson.setRegistered(registered);
-            if (!registered) {
-                selectedStudentLesson.setRegistrationTime(null);
-                selectedStudentLesson.setRegistrationType(null);
-            } else {
-                selectedStudentLesson.setRegistrationTime(LocalTime.now());
-                selectedStudentLesson.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
-            }
-            EntityDAO.save(selectedStudentLesson);
-            lessonStudent.updateSkips(stream);
+    public void updateLessonSkipInfo(StudentLesson studentLesson) {
+        studentLesson.setRegistered(!studentLesson.isRegistered());
+
+        if (!studentLesson.isRegistered()) {
+            studentLesson.setRegistrationTime(null);
+            studentLesson.setRegistrationType(null);
+        } else {
+            studentLesson.setRegistrationTime(LocalTime.now());
+            studentLesson.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
         }
-        FacesUtils.closeDialog("registeredDialog");
+        EntityDAO.save(studentLesson);
+        lessonStudent.updateSkips(stream);
     }
 
     @Override
@@ -298,5 +295,56 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
         newNotification = null;
         EntityDAO.save(lessonStudent.getStudent().getNotifications());
         FacesUtils.closeDialog("notificationDialog");
+    }
+
+    public Lesson groupLesson() {
+        Lesson ls = stream.getLessons().get(0);
+        for (Lesson lesson : stream.getLessons()) {
+            if (lesson.getGroup() != null && lesson.getGroup().equals(lessonStudent.getGroup())) {
+                ls = lesson;
+            }
+        }
+
+        return ls;
+    }
+
+    public List<Student> getStudents() {
+        if (students == null) {
+            switch (studentsType) {
+                case "ALL":
+                    students = sessionBean.getStudents();
+                    break;
+                case "STREAM":
+                    students = stream.getGroups().parallelStream().flatMap(g -> g.getStudents().parallelStream()).distinct().collect(Collectors.toList());
+                    break;
+                case "GROUP":
+                    if (lessonStudent.getGroup() != null) {
+                        students = lessonStudent.getGroup().getStudents();
+                    } else if (student.getGroups() != null && student.getGroups().size() > 0) {
+                        students = student.getGroups().get(0).getStudents();
+                    } else {
+                        students = sessionBean.getStudents();
+                    }
+                    break;
+            }
+            if (students != null) {
+                students = students.parallelStream().sorted(Comparator.comparing(Student::getFullName)).collect(Collectors.toList());
+            }
+
+        }
+        return students;
+    }
+
+    public void nextStudent() {
+        List<Student> students = getStudents();
+        if (students.size() > 0) {
+            int index = students.indexOf(student);
+            if (index == -1 || index == students.size() - 1) {
+                student = students.get(0);
+            } else {
+                student = students.get(index + 1);
+            }
+            initStudentMode(student, stream);
+        }
     }
 }
