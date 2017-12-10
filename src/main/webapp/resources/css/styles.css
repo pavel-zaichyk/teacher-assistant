@@ -703,6 +703,10 @@ body {
 	border: none;
 }
 
+.student-mode  .student-class-info .ui-grid::before {
+    display: none;
+}
+
 .student-additional-info .ui-panel .ui-panel-content {
 	padding: 0;
 }

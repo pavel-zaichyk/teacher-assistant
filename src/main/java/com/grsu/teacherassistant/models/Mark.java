@@ -77,7 +77,7 @@ public enum Mark {
         if (numberMarks.size() > 0) {
             OptionalDouble result = numberMarks.stream().mapToInt(Integer::intValue).average();
             if (result.isPresent()) {
-                return String.format("%.2f", result.getAsDouble());
+                return String.format("%.1f", result.getAsDouble());
             }
         }
 
