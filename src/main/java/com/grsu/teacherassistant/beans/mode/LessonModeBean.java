@@ -43,6 +43,7 @@ public class LessonModeBean implements Serializable {
     private List<LessonModel> lessons;
     private List<LessonModel> attestations;
     private List<LessonModel> exams;
+    private LessonModel currentLesson;
 
     private List<Note> notes;
     private String newNote;
@@ -99,6 +100,8 @@ public class LessonModeBean implements Serializable {
     }
 
     private void initLessonStudents() {
+        currentLesson = new LessonModel(lesson, true);
+
         List<Lesson> lessons = new ArrayList<>();
         Set<Student> studentSet = new HashSet<>();
         if (stream != null && lesson != null) {
@@ -278,14 +281,16 @@ public class LessonModeBean implements Serializable {
         EntityDAO.add(lesson);
         stream.getLessons().add(lesson);
 
+        Set<Student> students = new HashSet<>();
+        stream.getGroups().forEach(g -> students.addAll(g.getStudents()));
         List<StudentLesson> studentLessons = new ArrayList<>();
-        students.stream().forEach(s -> {
+        students.forEach(s -> {
             StudentLesson sc = new StudentLesson();
-            sc.setStudent(s.getStudent());
+            sc.setStudent(s);
             sc.setLesson(lesson);
             sc.setNotes(new ArrayList<>());
             studentLessons.add(sc);
-            s.getStudent().getStudentLessons().put(lesson.getId(), sc);
+            s.getStudentLessons().put(lesson.getId(), sc);
         });
         EntityDAO.add(new ArrayList<>(studentLessons));
         lesson.setStudentLessons(new HashMap<>());

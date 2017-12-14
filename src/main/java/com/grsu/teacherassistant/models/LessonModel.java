@@ -1,78 +1,82 @@
 package com.grsu.teacherassistant.models;
 
+import com.grsu.teacherassistant.entities.Group;
 import com.grsu.teacherassistant.entities.Lesson;
+import com.grsu.teacherassistant.entities.Student;
+import com.grsu.teacherassistant.entities.StudentLesson;
 import com.grsu.teacherassistant.utils.DateUtils;
+import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Pavel Zaychick
  */
+@Data
 public class LessonModel {
-	private Integer id;
-	private Lesson lesson;
-	private LessonType type;
-	private String date;
-	private Integer number;
+    private Integer id;
+    private Lesson lesson;
+    private LessonType type;
+    private String date;
+    private Integer number;
 
-	public LessonModel(Lesson lesson, Integer number) {
-		id = lesson.getId();
-		this.lesson = lesson;
-		type = lesson.getType();
-		date = DateUtils.formatDate(lesson.getDate(), DateUtils.FORMAT_DATE_SHORT_YEAR);
-		this.number = number;
-	}
+    private List<Student> lessonStudents;
+    private List<Student> presentStudents;
+    private List<Student> absentStudents;
+    private List<Student> additionalStudents;
 
-	public LessonModel(Lesson lesson) {
-		this(lesson, null);
-	}
+    public LessonModel(Lesson lesson) {
+        this(lesson, null, false);
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public LessonModel(Lesson lesson, boolean initStudents) {
+        this(lesson, null, initStudents);
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public LessonModel(Lesson lesson, Integer number, boolean initStudents) {
+        id = lesson.getId();
+        this.lesson = lesson;
+        type = lesson.getType();
+        date = DateUtils.formatDate(lesson.getDate(), DateUtils.FORMAT_DATE_SHORT_YEAR);
+        this.number = number;
 
-	public Lesson getLesson() {
-		return lesson;
-	}
+        if (initStudents) {
+            lessonStudents = new ArrayList<>();
+            if (lesson.getStream() != null) {
+                if (lesson.getGroup() != null) {
+                    lessonStudents = lesson.getGroup().getStudents();
+                } else {
+                    lessonStudents = lesson.getStream().getGroups().parallelStream().flatMap(g -> g.getStudents().parallelStream()).distinct().collect(Collectors.toList());
+                }
+            }
 
-	public void setLesson(Lesson lesson) {
-		this.lesson = lesson;
-	}
+            presentStudents = new ArrayList<>();
+            absentStudents = new ArrayList<>();
+            for (StudentLesson studentLesson : lesson.getStudentLessons().values()) {
+                if (studentLesson.isRegistered()) {
+                    presentStudents.add(studentLesson.getStudent());
+                } else {
+                    absentStudents.add(studentLesson.getStudent());
+                }
+            }
 
-	public LessonType getType() {
-		return type;
-	}
+            additionalStudents = new ArrayList<>(presentStudents);
+            additionalStudents.removeAll(lessonStudents);
+        }
+    }
 
-	public void setType(LessonType type) {
-		this.type = type;
-	}
 
-	public String getDate() {
-		return date;
-	}
-
-	public void setDate(String date) {
-		this.date = date;
-	}
-
-	public Integer getNumber() {
-		return number;
-	}
-
-	public void setNumber(Integer number) {
-		this.number = number;
-	}
-
-	@Override
-	public String toString() {
-		return "LessonModel{" +
-				"id=" + id +
-				", lesson=" + lesson +
-				", type=" + type +
-				", date='" + date + '\'' +
-				", number=" + number +
-				'}';
-	}
+    @Override
+    public String toString() {
+        return "LessonModel{" +
+            "id=" + id +
+            ", lesson=" + lesson +
+            ", type=" + type +
+            ", date='" + date + '\'' +
+            ", number=" + number +
+            '}';
+    }
 }

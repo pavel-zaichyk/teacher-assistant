@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class UtilityBean implements Serializable {
     public String getLessonCount(Lesson lesson) {
         StringBuilder messageBuilder = new StringBuilder();
-        messageBuilder.append("(").append(lesson.getIndex()).append(" из ");
+        messageBuilder.append(lesson.getIndex()).append(" из ");
 
         Integer typeCount = null;
         switch (lesson.getType()) {
@@ -38,7 +38,6 @@ public class UtilityBean implements Serializable {
             messageBuilder.append("XX");
         }
 
-        messageBuilder.append(")");
         return messageBuilder.toString();
     }
 
