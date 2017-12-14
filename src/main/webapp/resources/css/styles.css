@@ -595,6 +595,14 @@ body {
 	left: 40%;
 }
 
+#lessonModeForm .lesson-info {
+    display: block;
+    bottom: 18px;
+    position: relative;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
 /* Photo Mode */
 .photo-mode .ui-datagrid-column {
 	width: 14%;
