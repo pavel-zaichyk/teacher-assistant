@@ -20,7 +20,7 @@
                      rowKey="#{student.id}"
                      paginator="#{lessonModeBean.lesson.group ne null ? 'false' : 'true'}"
                      rows="#{lessonModeBean.lesson.group ne null ? lessonModeBean.students.size() : '21'}"
-                     paginatorTemplate="#{lessonModeBean.stream.name} - #{lessonModeBean.currentLesson.lessonStudents.size()} - #{lessonModeBean.currentLesson.absentStudents.size()} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                     paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                      rowsPerPageTemplate="15,16,17,18,19,20,21,22,23,24,25"
                      paginatorPosition="bottom"
                      lazy="true"
@@ -107,6 +107,10 @@
                 </f:facet>
 
                 <h:panelGroup id="STUDENT_#{student.student.id}" styleClass="">
+                    <p:commandButton id="photoBtn" icon="fa fa-fw fa-file-image-o" styleClass="transparent-button"/>
+                    <p:overlayPanel for="photoBtn" hideEffect="fade" style="position: fixed;">
+                        <p:graphicImage value="#{imageBean.getImagePath(student.student.cardUid)}" styleClass="student-photo"/>
+                    </p:overlayPanel>
                     <p:commandLink
                         styleClass="bold #{student.additional ? 'blue' : ''} #{student.student.praepostorGroups.size() gt 0 ? 'dark-red' : ''}"
                         value="#{student.name}"
@@ -295,7 +299,7 @@
 
             <p:column style="padding: 0;"></p:column>
         </p:dataTable>
-        <h:outputText value="test" styleClass="lesson-info" />
+        <h:outputText value="#{lessonModeBean.stream.name} #{lessonModeBean.currentLesson.lesson.group} - #{lessonModeBean.currentLesson.lessonStudents.size()} / #{lessonModeBean.currentLesson.absentStudents.size()}" styleClass="lesson-student-info" />
 
         <p:contextMenu id="tableContextMenu"
                        for="lessonModeTable"

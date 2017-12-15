@@ -596,7 +596,7 @@ body {
 	left: 40%;
 }
 
-#lessonModeForm .lesson-info {
+#lessonModeForm .lesson-student-info {
     display: block;
     bottom: 18px;
     position: relative;
@@ -783,4 +783,19 @@ body {
 
 .ui-fileupload .ui-fileupload-content {
 	display: none;
+}
+
+.lesson-mode-table button.transparent-button {
+    background-color: rgba(0, 0, 0, 0);
+    border: 0;
+    width: 20px;
+    height: 20px;
+}
+
+.lesson-mode-table .transparent-button .ui-button-text {
+    padding: 0;
+}
+
+.lesson-mode-table .transparent-button .ui-icon {
+    width: 15px;
 }
