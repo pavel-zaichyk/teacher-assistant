@@ -299,7 +299,7 @@
 
             <p:column style="padding: 0;"></p:column>
         </p:dataTable>
-        <h:outputText value="#{lessonModeBean.stream.name} #{lessonModeBean.currentLesson.lesson.group} - #{lessonModeBean.currentLesson.lessonStudents.size()} / #{lessonModeBean.currentLesson.absentStudents.size()}" styleClass="lesson-student-info" />
+        <h:outputText value="#{lessonModeBean.stream.name} #{lessonModeBean.currentLesson.lesson.group.name} - #{lessonModeBean.currentLesson.lessonStudents.size()} / #{lessonModeBean.currentLesson.absentStudents.size()}" styleClass="lesson-student-info" />
 
         <p:contextMenu id="tableContextMenu"
                        for="lessonModeTable"
