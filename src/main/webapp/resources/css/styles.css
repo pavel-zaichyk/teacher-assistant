@@ -78,6 +78,7 @@ body {
 
 /* Font Size */
 #wrapper .font-size-8pt {font-size: 8pt;}
+#wrapper .font-size-9pt {font-size: 9pt;}
 #wrapper .font-size-10pt {font-size: 10pt;}
 #wrapper .font-size-11pt {font-size: 11pt;}
 #wrapper .font-size-12pt {font-size: 12pt;}
@@ -595,6 +596,14 @@ body {
 	left: 40%;
 }
 
+#lessonModeForm .lesson-student-info {
+    display: block;
+    bottom: 18px;
+    position: relative;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
 /* Photo Mode */
 .photo-mode .ui-datagrid-column {
 	width: 14%;
@@ -774,4 +783,19 @@ body {
 
 .ui-fileupload .ui-fileupload-content {
 	display: none;
+}
+
+.lesson-mode-table button.transparent-button {
+    background-color: rgba(0, 0, 0, 0);
+    border: 0;
+    width: 20px;
+    height: 20px;
+}
+
+.lesson-mode-table .transparent-button .ui-button-text {
+    padding: 0;
+}
+
+.lesson-mode-table .transparent-button .ui-icon {
+    width: 15px;
 }
