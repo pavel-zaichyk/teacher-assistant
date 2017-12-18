@@ -171,7 +171,7 @@
 
                     </h:panelGroup>
                 </h:panelGrid>
-                <h:panelGroup styleClass="block margin-bottom-70px">
+                <h:panelGroup styleClass="block margin-bottom-40px">
                     <p:outputLabel value="#{studentModeBean.stream.name}"/>
                     <p:outputLabel value="#{studentModeBean.stream.discipline.name}"/>
                     <p:outputLabel value="#{studentModeBean.stream.course}"/>
@@ -200,7 +200,7 @@
 
         <h:panelGrid id="studentAdditionalInfo" columns="3" styleClass="w100pc student-additional-info"
                      rendered="#{studentModeBean.stream ne null}"
-                     columnClasses="w500px padding-right-10px, w20pc, center">
+                     columnClasses="w500px padding-right-10px, w20pc padding-right-10px, center">
             <p:panel styleClass="min-height-450px notes">
                 <h:outputText value="#{msg['label.notes']}" styleClass="bold block uppercase center"/>
 
@@ -424,7 +424,7 @@
 
                     </f:facet>
 
-                    <p:row styleClass="font-size-20pt h73px">
+                    <p:row styleClass="font-size-20pt h50px">
 
                         <ui:repeat var="attestation" value="#{studentModeBean.lessonStudent.attestations}">
                             <p:column styleClass="padding-0px w100px">
@@ -461,7 +461,7 @@
                                          valueChangeListener="#{studentModeBean.changeExamMark}"
                                          converter="markConverter"
                                          rendered="#{studentModeBean.lessonStudent.exam ne null}"
-                                         styleClass="dark-red"
+                                         styleClass="dark-red bold"
                             >
                                 <p:ajax update="examBlock"/>
                             </p:inputText>
