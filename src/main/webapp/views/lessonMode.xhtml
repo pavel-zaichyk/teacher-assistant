@@ -215,7 +215,15 @@
                         </p:tooltip>
                     </f:facet>
                     <f:facet name="input">
-                        <p:inputText value="#{student.student.studentLessons[attestation.id].mark}"/>
+                        <p:inputText id="attestationMark"
+                                     value="#{student.attestationsMark[student.student.studentLessons[attestation.id].id]}"
+                                     converter="markConverter"
+                                     valueChangeListener="#{lessonModeBean.changeAttestationMark}">
+                            <f:attribute name="attestationId" value="#{student.student.studentLessons[attestation.id].id}"/>
+                            <f:attribute name="studentId" value="#{student.id}"/>
+                            <!--<p:ajax update="#{'lessonModeTable:'.concat(lessonModeBean.studentsLazyModel.rowIndex).concat(':averageAttestation')}" />-->
+                            <p:ajax listener="#{lessonModeBean.updateAverageAttestation}" />
+                        </p:inputText>
                     </f:facet>
                 </p:cellEditor>
 
@@ -226,7 +234,9 @@
                 headerText="AC"
                 rendered="#{lessonModeBean.showAttestations and lessonModeBean.attestations.size() > 1}"
                 styleClass="average-attestation">
-                <h:outputText value="#{student.averageAttestation}"/>
+                <p:outputLabel id="averageAttestation">
+                    <h:outputText id="averageAttestationMark" value="#{student.averageAttestation eq 'не зачтено' ? '-' : (student.averageAttestation eq 'зачтено' ? '+' : student.averageAttestation)}"/>
+                </p:outputLabel>
             </p:column>
 
             <!-- lessons -->
@@ -316,7 +326,7 @@
                         oncomplete="PF('registeredDialog').show()"
                         actionListener="#{lessonModeBean.initRegisteredDialog}"/>
             <p:menuitem value="#{msg['label.create.attestation']}"
-                        update=":lessonModeTable"
+                        update=":lessonModeForm"
                         actionListener="#{lessonModeBean.createAttestation}"
                         icon="fa fa-fw fa-plus">
             </p:menuitem>

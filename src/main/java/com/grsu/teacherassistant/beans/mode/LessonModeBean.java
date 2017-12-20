@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.ValueChangeEvent;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -69,8 +70,8 @@ public class LessonModeBean implements Serializable {
     }
 
     public void initLessonMode(Lesson lesson) {
-        this.lesson = lesson;
-        this.stream = lesson.getStream();
+        this.lesson = EntityDAO.get(Lesson.class, lesson.getId());
+        this.stream = this.lesson.getStream();
         initLessonStudents();
     }
 
@@ -206,14 +207,30 @@ public class LessonModeBean implements Serializable {
     }
 
     public void onCellEdit(CellEditEvent event) {
-        Integer id;
-        if (event.getColumn().getColumnKey().contains("attestation")) {
-            id = attestations.get(((DynamicColumn) event.getColumn()).getIndex()).getId();
-            studentsLazyModel.getRowData().updateAverageAttestation();
+        if (!event.getColumn().getColumnKey().contains("attestation")) {
+            Integer id = lessons.get(((DynamicColumn) event.getColumn()).getIndex()).getId();
+            EntityDAO.update(studentsLazyModel.getRowData().getStudent().getStudentLessons().get(id));
         } else {
-            id = lessons.get(((DynamicColumn) event.getColumn()).getIndex()).getId();
+
         }
-        EntityDAO.update(studentsLazyModel.getRowData().getStudent().getStudentLessons().get(id));
+    }
+
+    public void changeAttestationMark(ValueChangeEvent event) {
+        int attestationId = Integer.parseInt(String.valueOf(event.getComponent().getAttributes().get("attestationId")));
+        int studentId = Integer.parseInt(String.valueOf(event.getComponent().getAttributes().get("studentId")));
+        for (LessonStudentModel lessonStudentModel : students) {
+            if (studentId == lessonStudentModel.getId()) {
+                lessonStudentModel.updateAttestationMark(attestationId, (Mark) event.getNewValue());
+                System.out.println("lessonModeTable:" + studentsLazyModel.getRowIndex()+ ":averageAttestation");
+                System.out.println(lessonStudentModel.getAverageAttestation());
+                break;
+            }
+        }
+
+    }
+
+    public void updateAverageAttestation() {
+        FacesUtils.update("lessonModeTable:" + studentsLazyModel.getRowIndex()+ ":averageAttestation");
     }
 
     public void saveNote() {
@@ -297,6 +314,8 @@ public class LessonModeBean implements Serializable {
         studentLessons.stream().forEach(sc -> lesson.getStudentLessons().put(sc.getStudentId(), sc));
         attestations.add(new LessonModel(lesson));
         attestations.forEach(a -> a.setNumber(attestations.indexOf(a) + 1));
+
+        initLessonMode(this.lesson);
     }
 
     public int frozenColumns() {
