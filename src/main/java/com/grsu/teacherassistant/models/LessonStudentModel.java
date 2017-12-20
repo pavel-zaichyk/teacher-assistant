@@ -220,6 +220,10 @@ public class LessonStudentModel {
             }
         } else {
             if (examMark.isNumberMark()) {
+                LOGGER.info("totalMark = " + totalMark);
+                LOGGER.info("averageAttestation = " + Utils.parseDouble(averageAttestation, 0));
+                LOGGER.info("attestationMarkWeight = " + attestationMarkWeight());
+                LOGGER.info("examMarkWeight = " + examMarkWeight());
                 totalMark = Mark.getByValue((int) Math.round(Utils.parseDouble(averageAttestation, 0) * attestationMarkWeight() + examMark.getValue() * examMarkWeight()));
             } else {
                 totalMark = examMark;
