@@ -12,6 +12,8 @@ import static org.junit.Assert.*;
 public class UtilsTest {
     @Test
     public void parseDouble() throws Exception {
+        assertEquals(0, Utils.parseDouble(null, 0), 0);
+
         Locale.setDefault(Locale.US);
         assertEquals(1.0, Utils.parseDouble("1.0", 0), 0);
         assertEquals(0, Utils.parseDouble("test", 0), 0);
