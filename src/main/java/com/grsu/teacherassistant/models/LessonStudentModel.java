@@ -249,10 +249,8 @@ public class LessonStudentModel {
                     LOGGER.info("attestationMarkWeight = " + attestationMarkWeight());
                     LOGGER.info("examMarkWeight = " + examMarkWeight());
                     int mark = (int) Math.round((totalMark.getValue() - Utils.parseDouble(averageAttestation, 0) * attestationMarkWeight()) / examMarkWeight());
-                    if (mark < 0) {
-                        examMark = Mark.POINT_0;
-                    } else if (mark > 10) {
-                        examMark = Mark.POINT_10;
+                    if (mark < 0 || mark > 10) {
+                        examMark = null;
                     } else {
                         examMark = Mark.getByValue(mark);
                     }

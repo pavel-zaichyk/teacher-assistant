@@ -46,9 +46,10 @@ public class LocaleBean implements Serializable {
 	@PostConstruct
 	public void init() {
 //		locale = FacesContext.getCurrentInstance().getExternalContext().getRequestLocale();
-		locale = new Locale("ru");
-		LOGGER.info("Using default locale: " + locale);
-	}
+        locale = new Locale("ru");
+        Locale.setDefault(locale);
+        LOGGER.info("Using default locale: " + locale);
+    }
 
 	//value change event listener
 //	public void languageChanged(ValueChangeEvent e){
