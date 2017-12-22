@@ -88,7 +88,7 @@ body {
 #wrapper .font-size-30pt {font-size: 30pt;}
 
 /* Font Weight */
-.bold {font-weight: bold;}
+#wrapper .bold {font-weight: bold;}
 
 /* Text Transform */
 .uppercase {text-transform: uppercase;}
