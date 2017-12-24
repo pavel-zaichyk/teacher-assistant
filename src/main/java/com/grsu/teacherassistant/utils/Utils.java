@@ -1,5 +1,8 @@
 package com.grsu.teacherassistant.utils;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
+
 /**
  * @author Pavel Zaychick
  */
@@ -9,8 +12,10 @@ public class Utils {
             return def;
         }
         try {
-            return Double.parseDouble(string);
-        } catch (NumberFormatException ex) {
+            NumberFormat format = NumberFormat.getInstance();
+            Number number = format.parse(string);
+            return number.doubleValue();
+        } catch (ParseException e) {
             return def;
         }
     }

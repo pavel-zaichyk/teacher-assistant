@@ -7,6 +7,8 @@ import com.grsu.teacherassistant.entities.*;
 import com.grsu.teacherassistant.utils.EntityUtils;
 import com.grsu.teacherassistant.utils.Utils;
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -22,6 +24,7 @@ import static com.grsu.teacherassistant.utils.ApplicationUtils.examMarkWeight;
  */
 @Data
 public class LessonStudentModel {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LessonStudentModel.class);
     private Integer id;
     private String name;
 
@@ -206,6 +209,9 @@ public class LessonStudentModel {
     }
 
     public void updateTotal() {
+        LOGGER.info("==> updateTotal();");
+        LOGGER.info("name = " + name);
+        LOGGER.info("examMark = " + examMark + ";  averageAttestation = " + averageAttestation + "; totalMark = " + totalMark);
         if (examMark == null || averageAttestation == null) {
             if (examMark == null) {
                 totalMark = null;
@@ -214,14 +220,23 @@ public class LessonStudentModel {
             }
         } else {
             if (examMark.isNumberMark()) {
+                LOGGER.info("totalMark = " + totalMark);
+                LOGGER.info("averageAttestation = " + Utils.parseDouble(averageAttestation, 0));
+                LOGGER.info("attestationMarkWeight = " + attestationMarkWeight());
+                LOGGER.info("examMarkWeight = " + examMarkWeight());
                 totalMark = Mark.getByValue((int) Math.round(Utils.parseDouble(averageAttestation, 0) * attestationMarkWeight() + examMark.getValue() * examMarkWeight()));
             } else {
                 totalMark = examMark;
             }
         }
+        LOGGER.info("examMark = " + examMark + ";  averageAttestation = " + averageAttestation + "; totalMark = " + totalMark);
+        LOGGER.info("<== updateTotal();");
     }
 
     public void updateExam() {
+        LOGGER.info("==> updateExam();");
+        LOGGER.info("name = " + name);
+        LOGGER.info("examMark = " + examMark + ";  averageAttestation = " + averageAttestation + "; totalMark = " + totalMark);
         if (totalMark == null) {
             examMark = null;
         } else {
@@ -229,11 +244,13 @@ public class LessonStudentModel {
                 examMark = totalMark;
             } else {
                 if (totalMark.isNumberMark()) {
+                    LOGGER.info("totalMark = " + totalMark.getValue());
+                    LOGGER.info("averageAttestation = " + Utils.parseDouble(averageAttestation, 0));
+                    LOGGER.info("attestationMarkWeight = " + attestationMarkWeight());
+                    LOGGER.info("examMarkWeight = " + examMarkWeight());
                     int mark = (int) Math.round((totalMark.getValue() - Utils.parseDouble(averageAttestation, 0) * attestationMarkWeight()) / examMarkWeight());
-                    if (mark < 0) {
-                        examMark = Mark.POINT_0;
-                    } else if (mark > 10) {
-                        examMark = Mark.POINT_10;
+                    if (mark < 0 || mark > 10) {
+                        examMark = null;
                     } else {
                         examMark = Mark.getByValue(mark);
                     }
@@ -243,6 +260,8 @@ public class LessonStudentModel {
                 updateTotal();
             }
         }
+        LOGGER.info("examMark = " + examMark + ";  averageAttestation = " + averageAttestation + "; totalMark = " + totalMark);
+        LOGGER.info("<== updateExam();");
     }
 
     public void updateAttestationMark(Integer attestationId, Mark mark) {
