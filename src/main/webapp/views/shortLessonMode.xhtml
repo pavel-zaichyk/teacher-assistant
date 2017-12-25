@@ -210,6 +210,7 @@
                         <p:inputText id="examMark"
                                      value="#{student.examMark}"
                                      converter="markConverter"
+                                     rendered="#{shortLessonModeBean.selectedStudent.exam ne null}"
                                      valueChangeListener="#{shortLessonModeBean.changeExamMark}">
                             <p:ajax listener="#{shortLessonModeBean.updateTotalMark}"/>
                         </p:inputText>
@@ -226,6 +227,7 @@
                         <p:inputText id="totalMark"
                                      value="#{student.totalMark}"
                                      converter="markConverter"
+                                     rendered="#{shortLessonModeBean.selectedStudent.exam ne null}"
                                      valueChangeListener="#{shortLessonModeBean.changeTotalMark}">
                             <p:ajax listener="#{shortLessonModeBean.updateExamMark}"/>
                         </p:inputText>
@@ -307,6 +309,14 @@
                              styleClass="block w100pc margin-bottom-10px">
                 <f:setPropertyActionListener value="#{true}" target="#{menuBean.showMenu}"/>
                 <f:setPropertyActionListener value="lessons" target="#{sessionBean.activeView}"/>
+            </p:commandButton>
+            <p:commandButton title="#{msg['btn.lessonMode']}"
+                             value="#{msg['btn.lessonMode']}"
+                             update="@([id$=wrapper])"
+                             actionListener="#{lessonModeBean.initLessonMode(shortLessonModeBean.lesson.lesson)}"
+                             styleClass="block w100pc margin-bottom-10px">
+                <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+                <f:setPropertyActionListener value="lessonMode" target="#{sessionBean.activeView}"/>
             </p:commandButton>
         </p:overlayPanel>
 

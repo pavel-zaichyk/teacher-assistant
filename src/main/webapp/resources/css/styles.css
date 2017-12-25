@@ -429,11 +429,13 @@ body {
 	top: 21px;
 }
 
-#lessonModeForm .lesson-mode-table .ui-datatable-data .no-class {
+#lessonModeForm .lesson-mode-table .ui-datatable-data .no-class,
+.lesson-mode-table .ui-datatable-data .no-class {
 	background-color: rgba(211, 211, 211, 0.7);
 }
 
-#lessonModeForm .lesson-mode-table .attestation {
+#lessonModeForm .lesson-mode-table .attestation,
+.lesson-mode-table .attestation {
 	background-color: rgba(249, 233, 2, 0.3);
 	text-align: center;
 	font-weight: bold;
@@ -465,7 +467,8 @@ body {
 }
 
 .lesson-mode-table th.student-info {
-	/*padding: 0;*/
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .lesson-mode-table .skips {
