@@ -104,20 +104,6 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
         studentStreams = null;
     }
 
-    public List<Map.Entry<Integer, Integer>> getNumberMarks() {
-        if (lessonStudent.getNumberMarks() != null) {
-            return new ArrayList<>(lessonStudent.getNumberMarks().entrySet());
-        }
-        return null;
-    }
-
-    public List<Map.Entry<String, Integer>> getSymbolMarks() {
-        if (lessonStudent.getSymbolMarks() != null) {
-            return new ArrayList<>(lessonStudent.getSymbolMarks().entrySet());
-        }
-        return null;
-    }
-
     public void changeExamMark(ValueChangeEvent event) {
         if (event.getSource() instanceof InputText && "examMark".equals(((InputText) event.getSource()).getId())) {
             lessonStudent.setExamMark((Mark) event.getNewValue());

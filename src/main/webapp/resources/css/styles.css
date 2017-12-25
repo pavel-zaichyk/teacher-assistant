@@ -24,9 +24,11 @@ body {
 .w40px {width: 40px;}
 .w50px {width: 50px;}
 .w55px {width: 55px;}
+.w60px {width: 60px;}
 .w70px {width: 70px;}
 .w90px {width: 90px;}
 .w100px {width: 100px;}
+.w150px {width: 150px;}
 .w200px {width: 200px;}
 .w210px {width: 210px;}
 .w250px {width: 250px;}
@@ -463,7 +465,7 @@ body {
 }
 
 .lesson-mode-table th.student-info {
-	padding: 0;
+	/*padding: 0;*/
 }
 
 .lesson-mode-table .skips {
