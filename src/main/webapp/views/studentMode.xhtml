@@ -242,7 +242,7 @@
 
             <p:panel styleClass="min-height-450px marks">
                 <h:outputText value="#{msg['label.marks']}" styleClass="bold block uppercase center"/>
-                <ui:repeat id="numberMarks" var="mark" value="#{studentModeBean.numberMarks}">
+                <ui:repeat id="numberMarks" var="mark" value="#{studentModeBean.lessonStudent.numberMarks}">
                     <h:panelGrid columns="3">
                         <h:outputText value="#{mark.key}"/>
                         <h:outputText value=" - "/>
@@ -252,7 +252,7 @@
                 <h:outputText value="#{msg['label.average.mark']} #{studentModeBean.lessonStudent.averageMark}"
                               styleClass="bold block margin-top-10px"/>
                 <h:outputText value="#{msg['label.symbols']}:" styleClass="bold block margin-top-10px"/>
-                <ui:repeat id="symbolMarks" var="mark" value="#{studentModeBean.symbolMarks}">
+                <ui:repeat id="symbolMarks" var="mark" value="#{studentModeBean.lessonStudent.symbolMarks}">
                     <h:panelGrid columns="3">
                         <h:outputText value="#{mark.key}"/>
                         <h:outputText value=" - "/>

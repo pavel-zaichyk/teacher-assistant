@@ -27,6 +27,7 @@ public class LessonModel {
     private List<Student> presentStudents;
     private List<Student> absentStudents;
     private List<Student> additionalStudents;
+    private List<LessonStudentModel> students;
 
     public LessonModel(Lesson lesson) {
         this(lesson, null, false);
@@ -65,6 +66,9 @@ public class LessonModel {
 
             additionalStudents = new ArrayList<>(presentStudents);
             additionalStudents.removeAll(lessonStudents);
+
+            students = lessonStudents.stream().map(s -> new LessonStudentModel(s, lesson.getStream())).collect(Collectors.toList());
+            students.addAll(additionalStudents.stream().map(s -> new LessonStudentModel(s, lesson.getStream(), true)).collect(Collectors.toList()));
         }
     }
 

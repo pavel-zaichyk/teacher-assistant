@@ -71,6 +71,13 @@
                                 <f:setPropertyActionListener value="#{true}" target="#{menuBean.showMenu}"/>
                                 <f:setPropertyActionListener value="lessons" target="#{sessionBean.activeView}"/>
                             </p:commandButton>
+                            <p:commandButton title="#{msg['btn.lessonMode']}"
+                                             value="#{msg['btn.lessonMode']}"
+                                             update="@([id$=views])"
+                                             actionListener="#{shortLessonModeBean.init(registrationModeBean.selectedLesson)}"
+                                             styleClass="block w100pc margin-bottom-10px">
+                                <f:setPropertyActionListener value="shortLessonMode" target="#{sessionBean.activeView}"/>
+                            </p:commandButton>
                         </p:overlayPanel>
                         <p:commandButton
                             title="#{msg[lessonModeBean.showAttestations ? 'btn.hide.attestation' : 'btn.show.attestation']}"
