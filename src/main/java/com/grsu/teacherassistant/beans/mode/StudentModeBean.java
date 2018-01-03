@@ -72,7 +72,7 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
                 .distinct()
                 .sorted((s1, s2) -> s1.getName().compareToIgnoreCase(s2.getName()))
                 .collect(Collectors.toList());
-            if (stream == null && studentStreams.size() > 0) {
+            if ((stream == null || !studentStreams.contains(stream)) && studentStreams.size() > 0) {
                 this.stream = studentStreams.get(0);
             }
             lessonStudent = new LessonStudentModel(student, this.stream);

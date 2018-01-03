@@ -171,10 +171,10 @@
 
                     </h:panelGroup>
                 </h:panelGrid>
-                <h:panelGroup styleClass="block margin-bottom-40px">
+                <h:panelGroup styleClass="block margin-bottom-40px" rendered="#{studentModeBean.stream ne null}">
                     <p:outputLabel value="#{studentModeBean.stream.name}"/>
                     <p:outputLabel value="#{studentModeBean.stream.discipline.name}"/>
-                    <p:outputLabel value="#{studentModeBean.stream.course}"/>
+                    <p:outputLabel value="#{msg['studentMode.stream.course']} #{studentModeBean.stream.course}"/>
                     <h:outputFormat value="#{msg['studentMode.stream.lessonsPlan']}">
                         <f:param
                             value="#{studentModeBean.stream.lectureCount ne null ? studentModeBean.stream.lectureCount : 'XX'}"/>
@@ -200,7 +200,7 @@
 
         <h:panelGrid id="studentAdditionalInfo" columns="3" styleClass="w100pc student-additional-info"
                      rendered="#{studentModeBean.stream ne null}"
-                     columnClasses="w500px padding-right-10px, w20pc padding-right-10px, center">
+                     columnClasses="w500px padding-right-10px, w20pc padding-right-10px,">
             <p:panel styleClass="min-height-450px notes">
                 <h:outputText value="#{msg['label.notes']}" styleClass="bold block uppercase center"/>
 
@@ -280,6 +280,8 @@
                                        value="#{msg['label.'.concat(studentLesson.lesson.type.key)]}"/>
                         <h:outputLabel styleClass="font-size-11pt" value="#{studentLesson.lesson.date}"
                                        converter="localShortDateConverter"/>
+                        <h:outputLabel styleClass="font-size-9pt block"
+                                      value="#{utility.getLessonCount(studentLesson.lesson)}"/>
                         <h:panelGroup rendered="#{not (studentLesson eq studentModeBean.editedStudentLesson)}">
                             <h:outputLabel styleClass="bold" value="#{studentLesson.mark}"/>
                             <p:outputLabel id="notestudentLesson" styleClass="float-right"
@@ -432,7 +434,9 @@
                                              value="#{studentModeBean.lessonStudent.attestationsMark[attestation.id]}"
                                              valueChangeListener="#{studentModeBean.changeAttestationMark}"
                                              converter="markConverter"
-                                             styleClass="w90pc blue">
+                                             styleClass="w90pc blue"
+                                             onfocus="$(this).select()"
+                                >
                                     <p:ajax
                                         update=":studentModeForm:examMark :studentModeForm:totalMark :studentModeForm:averageAttestation @this"/>
                                     <f:attribute name="attestationId" value="#{attestation.id}"/>
@@ -451,6 +455,7 @@
                                          converter="markConverter"
                                          rendered="#{studentModeBean.lessonStudent.exam ne null}"
                                          styleClass="dark-red"
+                                         onfocus="$(this).select()"
                             >
                                 <p:ajax update="examBlock"/>
                             </p:inputText>
@@ -462,6 +467,7 @@
                                          converter="markConverter"
                                          rendered="#{studentModeBean.lessonStudent.exam ne null}"
                                          styleClass="dark-red bold"
+                                         onfocus="$(this).select()"
                             >
                                 <p:ajax update="examBlock"/>
                             </p:inputText>
