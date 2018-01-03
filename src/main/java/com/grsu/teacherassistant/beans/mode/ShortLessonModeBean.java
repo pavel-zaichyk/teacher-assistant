@@ -140,6 +140,13 @@ public class ShortLessonModeBean implements Serializable {
         init(this.lesson.getLesson());
     }
 
+    public void removeAttestation(LessonModel attestation) {
+        EntityDAO.delete(attestation.getLesson());
+        attestations.remove(attestation);
+        attestations.forEach(a -> a.setNumber(attestations.indexOf(a) + 1));
+        lesson.getStudents().forEach(LessonStudentModel::updateAverageAttestation);
+        lesson.getLesson().getStream().getLessons().remove(attestation.getLesson());
+    }
 
     public void addSkip() {
         StudentLesson studentLesson = selectedStudent.getStudent().getStudentLessons().get(lesson.getId());

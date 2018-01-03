@@ -26,6 +26,7 @@ body {
 .w55px {width: 55px;}
 .w60px {width: 60px;}
 .w70px {width: 70px;}
+.w80px {width: 80px !important;}
 .w90px {width: 90px;}
 .w100px {width: 100px;}
 .w150px {width: 150px;}
@@ -430,16 +431,16 @@ body {
 }
 
 #lessonModeForm .lesson-mode-table .ui-datatable-data .no-class,
-.lesson-mode-table .ui-datatable-data .no-class {
+#shortLessonModeForm .lesson-mode-table .ui-datatable-data .no-class {
 	background-color: rgba(211, 211, 211, 0.7);
 }
 
 #lessonModeForm .lesson-mode-table .attestation,
-.lesson-mode-table .attestation {
+#shortLessonModeForm .lesson-mode-table .attestation {
 	background-color: rgba(249, 233, 2, 0.3);
 	text-align: center;
 	font-weight: bold;
-	width: 50px;
+	width: 40px;
 }
 
 .lesson-mode-table .ui-column-filter.ui-inputfield {
@@ -607,6 +608,11 @@ body {
     display: block;
     bottom: 18px;
     position: relative;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+#shortLessonModeForm .lesson-student-info {
     margin-left: 10px;
     font-weight: bold;
 }

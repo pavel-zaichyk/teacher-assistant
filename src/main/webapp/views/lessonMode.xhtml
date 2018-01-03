@@ -110,6 +110,13 @@
                                          update=":menuForm :lessonModeTable:buttons"
                                          actionListener="#{menuBean.showMenu}"
                                          rendered="#{not menuBean.showMenu}"/>
+                        <p:commandButton title="#{msg['btn.lessonMode']}"
+                                         icon="fa fa-fw fa-exchange"
+                                         update="@([id$=wrapper])"
+                                         actionListener="#{shortLessonModeBean.init(registrationModeBean.selectedLesson)}">
+                            <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+                            <f:setPropertyActionListener value="shortLessonMode" target="#{sessionBean.activeView}"/>
+                        </p:commandButton>
                     </h:panelGroup>
                 </f:facet>
 
@@ -332,6 +339,15 @@
                         icon="ui-icon-arrowrefresh-1-w"
                         oncomplete="PF('registeredDialog').show()"
                         actionListener="#{lessonModeBean.initRegisteredDialog}"/>
+            <p:separator/>
+            <p:menuitem value="#{msg['btn.lessonMode']}"
+                        icon="fa fa-fw fa-exchange"
+                        update="@([id$=wrapper])"
+                        actionListener="#{shortLessonModeBean.init(registrationModeBean.selectedLesson)}">
+                <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+                <f:setPropertyActionListener value="shortLessonMode" target="#{sessionBean.activeView}"/>
+            </p:menuitem>
+            <p:separator/>
             <p:menuitem value="#{msg['label.create.attestation']}"
                         update=":lessonModeForm"
                         actionListener="#{lessonModeBean.createAttestation}"
