@@ -48,6 +48,7 @@ public class LessonStudentModel implements Serializable {
     private List<StudentLesson> studentLessons;
     private StudentLesson exam;
     private List<StudentLesson> additionalLessons;
+    private List<Lesson> skipLessons;
 
     private List<Note> lessonsNotes;
 
@@ -137,6 +138,7 @@ public class LessonStudentModel implements Serializable {
     }
 
     public void updateSkips(Stream stream) {
+        totalSkip = 0;
         List<SkipInfo> studentSkipInfo = StudentDAO.getStudentSkipInfo(Collections.singletonList(id), stream.getId(), -1);
         if (studentSkipInfo != null && studentSkipInfo.size() > 0) {
             lectureSkip = 0;
@@ -156,6 +158,19 @@ public class LessonStudentModel implements Serializable {
                 }
             }
             totalSkip = lectureSkip + practicalSkip + labSkip;
+        }
+
+        if (totalSkip > 0) {
+            skipLessons = new ArrayList<>();
+            for (Lesson lesson : stream.getLessons()) {
+                if (!LessonType.ATTESTATION.equals(lesson.getType()) && !LessonType.EXAM.equals(lesson.getType())) {
+                    StudentLesson studentLesson = lesson.getStudentLessons().get(id);
+                    if (studentLesson != null && !studentLesson.isRegistered()) {
+                        skipLessons.add(lesson);
+                    }
+                }
+            }
+            skipLessons.sort(Comparator.comparing(Lesson::getDate));
         }
     }
 

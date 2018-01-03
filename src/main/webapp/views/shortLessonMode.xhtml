@@ -45,10 +45,22 @@
                                          update=":menuForm :shortLessonModeTable:buttons"
                                          actionListener="#{menuBean.showMenu}"
                                          rendered="#{not menuBean.showMenu}"/>
+                        <p:commandButton title="#{msg['btn.lessonMode']}"
+                                         icon="fa fa-fw fa-exchange"
+                                         update="@([id$=wrapper])"
+                                         actionListener="#{lessonModeBean.initLessonMode(shortLessonModeBean.lesson.lesson)}">
+                            <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+                            <f:setPropertyActionListener value="lessonMode" target="#{sessionBean.activeView}"/>
+                        </p:commandButton>
                     </h:panelGroup>
                 </f:facet>
 
                 <h:panelGroup id="STUDENT_#{student.student.id}" styleClass="">
+                    <p:commandButton id="photoBtn" icon="fa fa-fw fa-file-image-o" styleClass="transparent-button"/>
+                    <p:overlayPanel for="photoBtn" hideEffect="fade" style="position: fixed;">
+                        <p:graphicImage value="#{imageBean.getImagePath(student.student.cardUid)}"
+                                        styleClass="student-photo"/>
+                    </p:overlayPanel>
                     <p:commandLink
                         styleClass="bold #{student.additional ? 'blue' : ''} #{student.student.praepostorGroups.size() gt 0 ? 'dark-red' : ''}"
                         value="#{student.name}"
@@ -75,7 +87,7 @@
 
             <!-- lessons -->
             <p:column
-                styleClass="lesson class-info #{student.student.studentLessons[shortLessonModeBean.lesson.id] eq null ? 'no-class' : (student.student.studentLessons[shortLessonModeBean.lesson.id].registered eq false ? 'skip' : '')}"
+                styleClass="lesson w80px class-info #{student.student.studentLessons[shortLessonModeBean.lesson.id] eq null ? 'no-class' : (student.student.studentLessons[shortLessonModeBean.lesson.id].registered eq false ? 'skip' : '')}"
             >
                 <f:facet name="header">
                     <h:panelGroup id="lessonInfo" styleClass="lesson-info">
@@ -123,7 +135,16 @@
             <!-- skips -->
             <p:column headerText="#{msg['label.skips.short']}"
                       styleClass="skips">
-                <h:outputText value="#{student.totalSkip}"/>
+                <h:outputText id="totalSkip" value="#{student.totalSkip}"/>
+                <p:tooltip for="totalSkip" position="bottom"
+                           rendered="#{student.skipLessons.size() gt 0}">
+                    <ui:repeat var="skipLesson" value="#{student.skipLessons}">
+                        <h:panelGrid columns="2" columnClasses="w300px, w20px" styleClass="w100pc">
+                            <h:outputText value="#{msg[skipLesson.type.key]}"/>
+                            <h:outputText value="#{skipLesson.date}" converter="localDateConverter"/>
+                        </h:panelGrid>
+                    </ui:repeat>
+                </p:tooltip>
             </p:column>
 
             <p:column headerText="#{msg['skip.header']}"
@@ -158,6 +179,17 @@
                             </p:tooltip>
                         </h:panelGroup>
                     </h:panelGroup>
+                    <p:contextMenu id="attestationHeaderContextMenu"
+                                   for="attestationInfo">
+                        <p:menuitem value="#{msg['label.delete.attestation']}"
+                                    update=":shortLessonModeTable"
+                                    icon="ui-icon-close"
+                                    styleClass="red"
+                                    actionListener="#{shortLessonModeBean.removeAttestation(attestation)}">
+                            <p:confirm header="#{msg['warning']}" message="#{msg['warning.sure.delete']}"
+                                       icon="ui-icon-alert"/>
+                        </p:menuitem>
+                    </p:contextMenu>
 
                 </f:facet>
 
@@ -281,6 +313,10 @@
 
             <p:column headerText="#{msg['shortLessonMode.additional']}" style="padding: 0;"/>
         </p:dataTable>
+        <h:outputText
+            value="#{shortLessonModeBean.lesson.lesson.stream.name} #{shortLessonModeBean.lesson.lesson.group.name} - #{shortLessonModeBean.lesson.lessonStudents.size()} / #{shortLessonModeBean.lesson.absentStudents.size()}"
+            styleClass="lesson-student-info"/>
+
 
         <p:overlayPanel for="shortLessonModeTable:modeBtn" hideEffect="fade" style="position: fixed;">
             <p:commandButton title="#{msg['btn.studentMode']}" value="#{msg['btn.studentMode']}"
@@ -338,6 +374,20 @@
                         update=":shortLessonModeForm"
                         actionListener="#{shortLessonModeBean.removeSkip}"
             />
+            <p:separator/>
+            <p:menuitem value="#{msg['btn.lessonMode']}"
+                        icon="fa fa-fw fa-exchange"
+                        update="@([id$=wrapper])"
+                        actionListener="#{lessonModeBean.initLessonMode(shortLessonModeBean.lesson.lesson)}">
+                <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+                <f:setPropertyActionListener value="lessonMode" target="#{sessionBean.activeView}"/>
+            </p:menuitem>
+            <p:separator/>
+            <p:menuitem value="#{msg['label.create.attestation']}"
+                        update=":shortLessonModeForm"
+                        actionListener="#{shortLessonModeBean.createAttestation}"
+                        icon="fa fa-fw fa-plus">
+            </p:menuitem>
         </p:contextMenu>
 
         <p:dialog header="#{msg['label.notes']}"
@@ -368,6 +418,12 @@
             </p:outputPanel>
         </p:dialog>
 
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+            <p:commandButton value="#{msg['label.yes']}" type="button" styleClass="ui-confirmdialog-yes"
+                             icon="ui-icon-check"/>
+            <p:commandButton value="#{msg['label.no']}" type="button" styleClass="ui-confirmdialog-no"
+                             icon="ui-icon-close"/>
+        </p:confirmDialog>
     </h:form>
 
 
