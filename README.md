@@ -10,6 +10,9 @@ This application is an electronic journal that helps university teachers with th
  - Apache Maven V3
  - Apache Tomcat V8.x
 
+## Development
+Database contains 18 tables.
+
 ## Build
 
 > `mvn clean install`
