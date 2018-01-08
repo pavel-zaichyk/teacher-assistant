@@ -6,6 +6,8 @@ import com.grsu.teacherassistant.entities.Lesson;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,5 +45,19 @@ public class UtilityBean implements Serializable {
 
     public String getGroupNames(List<Group> groups) {
         return String.join(", ", groups.stream().map(Group::getName).collect(Collectors.toList()));
+    }
+
+    public LocalDateTime concatDateTime(LocalDateTime date, LocalTime time) {
+        if (date == null || time == null) {
+            return date;
+        }
+        return LocalDateTime.of(date.toLocalDate(), time);
+    }
+
+    public boolean afterNow(LocalDateTime date, LocalTime time) {
+        if (date == null || time == null) {
+            return false;
+        }
+        return LocalDateTime.now().isBefore(LocalDateTime.of(date.toLocalDate(), time));
     }
 }

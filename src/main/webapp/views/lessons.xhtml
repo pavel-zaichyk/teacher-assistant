@@ -5,30 +5,92 @@
                 xmlns:p="http://primefaces.org/ui"
 >
     <h:form id="lessonsForm">
-        <p:panelGrid columns="9" styleClass="noBorder">
-            <p:outputLabel for="dateFrom" value="#{msg['lesson.dateFrom']}"/>
-            <p:calendar id="dateFrom" value="#{lessonsBean.dateFrom}"
-                        converter="localDateConverter" pattern="dd.MM.yyyy">
-            </p:calendar>
-            <p:outputLabel for="dateTo" value="#{msg['lesson.dateTo']}"/>
-            <p:calendar id="dateTo" value="#{lessonsBean.dateTo}"
-                        converter="localDateConverter" pattern="dd.MM.yyyy">
-            </p:calendar>
 
-            <p:selectBooleanCheckbox id="showClosed" value="#{lessonsBean.showClosed}"/>
-            <p:outputLabel for="showClosed" value="#{msg['label.showClosed']}"/>
+        <h:panelGroup id="filter" styleClass="filter">
+            <h:panelGroup styleClass="date">
+                <h:outputLabel for="dateFrom" value="#{msg['lessons.at']}"/>
+                <p:calendar id="dateFrom" value="#{lessonsBean.dateFrom}"
+                            converter="localDateConverter" pattern="dd.MM.yyyy"
+                            valueChangeListener="#{lessonsBean.changeDate}">
+                    <p:ajax update=":lessonsForm:filter"/>
+                </p:calendar>
+                <h:outputLabel for="dateTo" value=" - "/>
+                <p:calendar id="dateTo" value="#{lessonsBean.dateTo}"
+                            converter="localDateConverter" pattern="dd.MM.yyyy"
+                            valueChangeListener="#{lessonsBean.changeDate}">
+                    <p:ajax update=":lessonsForm:filter"/>
+                </p:calendar>
+            </h:panelGroup>
 
-            <p:outputLabel for="stream" value="#{msg['lesson.stream']}"/>
-            <p:selectOneMenu id="stream" value="#{lessonsBean.streamId}">
-                <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.stream']}"/>
-                <f:selectItems value="#{lessonsBean.streams}" var="stream"
-                               itemLabel="#{stream.value}" itemValue="#{stream.key}"/>
-            </p:selectOneMenu>
+            <p:selectOneButton value="#{lessonsBean.month}" valueChangeListener="#{lessonsBean.changeMonth}">
+                <f:selectItem itemLabel="1" itemValue="1"/>
+                <f:selectItem itemLabel="2" itemValue="2"/>
+                <f:selectItem itemLabel="3" itemValue="3"/>
+                <f:selectItem itemLabel="4" itemValue="4"/>
+                <f:selectItem itemLabel="5" itemValue="5"/>
+                <p:ajax update=":lessonsForm:filter"/>
+            </p:selectOneButton>
+
+
+            <h:panelGroup styleClass="inline-block">
+                <h:outputLabel for="stream" value="#{msg['lessons.stream']}"/>
+                <p:selectOneMenu id="stream" value="#{lessonsBean.streamId}" styleClass="middle">
+                    <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.stream']}"/>
+                    <f:selectItems value="#{lessonsBean.streams}" var="stream"
+                                   itemLabel="#{stream.value}" itemValue="#{stream.key}"/>
+                </p:selectOneMenu>
+            </h:panelGroup>
+
+            <h:panelGroup styleClass="inline-block">
+                <p:selectBooleanCheckbox id="closed" value="#{lessonsBean.closed}"/>
+                <h:outputLabel for="closed" value="#{msg['lessons.closed']}"/>
+            </h:panelGroup>
+
+            <h:panelGroup styleClass="inline-block">
+                <p:selectBooleanCheckbox id="past" value="#{lessonsBean.past}"/>
+                <h:outputLabel for="past" value="#{msg['lessons.past']}"/>
+            </h:panelGroup>
+
+            <h:panelGroup styleClass="inline-block">
+                <h:outputLabel for="discipline" value="#{msg['lessons.discipline']}"/>
+                <p:selectOneMenu id="discipline" value="#{lessonsBean.disciplineId}" styleClass="middle">
+                    <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.discipline']}"/>
+                    <f:selectItems value="#{sessionBean.disciplines}" var="discipline"
+                                   itemLabel="#{discipline.name}" itemValue="#{discipline.id}"/>
+                </p:selectOneMenu>
+            </h:panelGroup>
+
+            <h:panelGroup styleClass="inline-block">
+                <h:outputLabel for="schedules" value="#{msg['lessons.time']}"/>
+                <p:selectOneMenu id="schedules" value="#{lessonsBean.scheduleId}" styleClass="middle">
+                    <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.schedule']}"/>
+                    <f:selectItems value="#{sessionBean.schedules}" var="schedules"
+                                   itemLabel="#{schedules.caption}" itemValue="#{schedules.id}"/>
+                </p:selectOneMenu>
+            </h:panelGroup>
+
+            <h:panelGroup styleClass="inline-block">
+                <h:outputLabel for="type" value="#{msg['lessons.type']}"/>
+                <p:selectOneMenu id="type" value="#{lessonsBean.type}" styleClass="middle">
+                    <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.lessonType']}"/>
+                    <f:selectItems value="#{lessonsBean.lessonTypes}" var="type" itemLabel="#{msg[type.key]}"
+                                   itemValue="#{type}"/>
+                </p:selectOneMenu>
+            </h:panelGroup>
+
+            <h:panelGroup styleClass="inline-block">
+                <h:outputLabel for="group" value="#{msg['lessons.group']}"/>
+                <p:selectOneMenu id="group" value="#{lessonsBean.groupId}" styleClass="middle">
+                    <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.group']}"/>
+                    <f:selectItems value="#{sessionBean.groups}" var="group"
+                                   itemLabel="#{group.name}" itemValue="#{group.id}"/>
+                </p:selectOneMenu>
+            </h:panelGroup>
 
             <p:commandButton value="#{msg['btn.search']}" icon="fa fa-fw fa-search"
                              actionListener="#{lessonsBean.search}"
                              update=":lessonsForm"/>
-        </p:panelGrid>
+        </h:panelGroup>
 
         <p:dataTable id="lessons"
                      var="lesson"
@@ -36,76 +98,93 @@
                      selection="#{lessonsBean.selectedLesson}"
                      rowKey="#{lesson.id}"
                      selectionMode="single"
-                     sortBy="#{lesson.date}"
+                     sortBy="#{utility.concatDateTime(lesson.date, lesson.schedule.begin)}"
                      sortOrder="descending"
-                     filteredValue="#{lessonsBean.filteredLessons}"
-                     emptyMessage="#{msg['label.emptyMessage']}">
-            <p:ajax event="filter" update="@this"/>
-            <!--<p:ajax event="rowSelect" listener="#{registrationModeBean.initLesson(lessonsBean.selectedLesson)}"-->
-            <!--update="@([id$=wrapper])">-->
-            <!--<f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>-->
-            <!--<f:setPropertyActionListener value="registrationMode" target="#{sessionBean.activeView}"/>-->
-            <!--</p:ajax>-->
+                     emptyMessage="#{msg['label.emptyMessage']}"
+                     styleClass="lessons"
+                     rowStyleClass="#{(lesson.type eq 'PRACTICAL') ? 'blue' : (lesson.type eq 'LAB' ? 'red' : '')} #{utility.afterNow(lesson.date, lesson.schedule.end) ? 'bold' : ''}">
 
-            <p:column headerText="#{msg['lesson.stream']}"
+            <p:ajax event="rowSelect"
+                    listener="#{lessonsBean.openRegistrartionMode}"
+                    update="@([id$=wrapper])"/>
+
+            <!--<p:ajax event="rowDblselect"-->
+            <!--listener="#{lessonBean.initLesson(lessonsBean.selectedLesson)}"-->
+            <!--update=":lessonInfoForm"/>-->
+
+            <p:column headerText="#{msg['lessons.stream']}"
                       sortBy="#{lesson.stream.name}"
-                      filterBy="#{lesson.stream.name}"
-                      filterMatchMode="startsWith"
             >
                 <h:outputText value="#{lesson.stream.name}"/>
             </p:column>
-            <p:column headerText="#{msg['lesson.discipline']}"
+            <p:column headerText="#{msg['lessons.discipline']}"
                       sortBy="#{lesson.stream.discipline.name}"
-                      filterBy="#{lesson.stream.discipline.name}"
-                      filterMatchMode="startsWith"
+                      styleClass="w300px"
             >
                 <h:outputText value="#{lesson.stream.discipline.name}"/>
             </p:column>
-            <p:column headerText="#{msg['lesson.date']}"
+            <p:column headerText="#{msg['lessons.date']}"
                       sortBy="#{lesson.date}"
-                      filterBy="#{lesson.date}"
-                      filterMatchMode="startsWith"
+                      styleClass="w90px"
             >
                 <h:outputText value="#{lesson.date}" converter="localDateConverter"/>
             </p:column>
-            <p:column headerText="#{msg['lesson.time']}"
+            <p:column headerText="#{msg['lessons.time']}"
                       sortBy="#{lesson.schedule.caption}"
-                      filterBy="#{lesson.schedule.caption}"
-                      filterMatchMode="contains"
+                      styleClass="w135px"
             >
                 <h:outputText
                     value="#{lesson.schedule ne null ? lesson.schedule.caption : ''}"/>
             </p:column>
-            <p:column headerText="#{msg['lesson.type']}"
+            <p:column headerText="#{msg['lessons.type']}"
                       sortBy="#{msg[lesson.type.key]}"
-                      filterBy="#{msg[lesson.type.key]}"
-                      filterMatchMode="startsWith"
-                      styleClass="#{(lesson.type eq 'PRACTICAL' or lesson.type eq 'LAB') ? 'blue' : ''}"
             >
-                <h:outputText value="#{msg[lesson.type.key].concat(' ').concat(utility.getLessonCount(lesson))}"/>
+                <h:outputText value="#{msg[lesson.type.key]}"/>
+                <h:outputText value=" #{utility.getLessonCount(lesson)}" rendered="#{lesson.type ne 'EXAM'}"/>
             </p:column>
-            <p:column headerText="#{msg['lesson.group']}"
+            <p:column headerText="#{msg['lessons.group']}"
                       sortBy="#{lesson.group.name}"
-                      filterBy="#{lesson.group.name}"
-                      filterMatchMode="contains"
             >
                 <h:outputText value="#{lesson.group ne null ? lesson.group.name : msg['label.all.groups']}"/>
             </p:column>
         </p:dataTable>
 
         <p:contextMenu for="lessons">
-            <p:menuitem value="#{msg['option.view']}"
+            <p:menuitem value="#{msg['option.registrationMode']}"
                         update="@([id$=wrapper])"
-                        icon="ui-icon-search"
-                        actionListener="#{registrationModeBean.initLesson(lessonsBean.selectedLesson)}">
+                        icon="ui-icon-signal-diag"
+                        actionListener="#{lessonsBean.openRegistrartionMode}"/>
+            <p:menuitem value="#{msg['option.shortLessonMode']}"
+                        update="@([id$=wrapper])"
+                        actionListener="#{shortLessonModeBean.init(lessonsBean.selectedLesson)}">
                 <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
-                <f:setPropertyActionListener value="registrationMode" target="#{sessionBean.activeView}"/>
+                <f:setPropertyActionListener value="shortLessonMode" target="#{sessionBean.activeView}"/>
             </p:menuitem>
+            <p:menuitem value="#{msg['option.lessonMode']}"
+                        update="@([id$=wrapper])"
+                        actionListener="#{lessonModeBean.initLessonMode(lessonsBean.selectedLesson)}">
+                <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+                <f:setPropertyActionListener value="lessonMode" target="#{sessionBean.activeView}"/>
+            </p:menuitem>
+            <p:menuitem value="#{msg['option.photoMode']}"
+                        update="@([id$=wrapper])"
+                        actionListener="#{lessonModeBean.initLessonMode(lessonsBean.selectedLesson)}">
+                <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+                <f:setPropertyActionListener value="photoMode" target="#{sessionBean.activeView}"/>
+            </p:menuitem>
+            <p:menuitem value="#{msg['option.lessons']}" disabled="true"/>
+            <p:menuitem value="#{msg['option.studentMode']}"
+                        update="@([id$=wrapper])"
+                        actionListener="#{studentModeBean.initStudentMode(null, null)}">
+                <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+                <f:setPropertyActionListener value="studentMode" target="#{sessionBean.activeView}"/>
+                <f:setPropertyActionListener value="#{lessonsBean.selectedLesson}" target="#{lessonModeBean.lesson}"/>
+            </p:menuitem>
+            <p:separator/>
             <p:menuitem value="#{msg['option.edit']}"
                         update=":lessonInfoForm"
-                        icon="ui-icon-arrowrefresh-1-w"
-                        actionListener="#{lessonBean.initLesson(lessonsBean.selectedLesson)}">
-            </p:menuitem>
+                        icon="ui-icon-pencil"
+                        actionListener="#{lessonBean.initLesson(lessonsBean.selectedLesson)}"/>
             <p:menuitem value="#{msg['option.remove']}"
                         update=":lessonsForm"
                         icon="ui-icon-close"
@@ -113,6 +192,7 @@
                         actionListener="#{lessonsBean.removeLesson(lessonsBean.selectedLesson)}">
                 <p:confirm header="#{msg['warning']}" message="#{msg['warning.sure.delete']}" icon="ui-icon-alert"/>
             </p:menuitem>
+            <p:menuitem value="#{msg['option.note']}" disabled="true"/>
         </p:contextMenu>
 
         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">

@@ -49,6 +49,10 @@ public class LessonDAO {
         return null;
     }
 
+    public static List<Lesson> getAll(LocalDateTime dateFrom, LocalDateTime dateTo, boolean closed, Integer streamId) {
+        return getAll(dateFrom, dateTo, closed, streamId, true, null, null, null, null);
+    }
+
     /**
      * Return list of lessons which {@link Lesson#date} from <b>dateFrom</b> to <b>dateTo</b>.
      *
@@ -58,7 +62,7 @@ public class LessonDAO {
      * @author Pavel Zaychick
      * @see Lesson
      */
-    public static List<Lesson> getAll(LocalDateTime dateFrom, LocalDateTime dateTo, boolean showClosed, Integer streamId) {
+    public static List<Lesson> getAll(LocalDateTime dateFrom, LocalDateTime dateTo, boolean closed, Integer streamId, boolean past, Integer disciplineId, Integer scheduleId, Integer groupId, LessonType type) {
         StringBuilder queryString = new StringBuilder("select distinct l from Lesson as l " +
             "left join fetch l.schedule " +
             "where l.type in (:types)");
@@ -67,13 +71,34 @@ public class LessonDAO {
             queryString.append(" and l.date between :dateFrom and :dateTo");
         }
 
-        if (!showClosed) {
+        if (!closed) {
             queryString.append(" and l.stream.active = true and (l.stream.expirationDate > current_date or l.stream.expirationDate is null)");
         }
 
         if (streamId != null) {
             queryString.append(" and l.stream.id = :streamId");
         }
+
+        if (!past) {
+            queryString.append(" and l.date > current_date");
+        }
+
+        if (disciplineId != null) {
+            queryString.append(" and l.stream.discipline.id = :disciplineId");
+        }
+
+        if (scheduleId != null) {
+            queryString.append(" and l.schedule.id = :scheduleId");
+        }
+
+        if (groupId != null) {
+            queryString.append(" and l.group.id = :groupId");
+        }
+
+        if (type != null) {
+            queryString.append(" and l.type = :type");
+        }
+
 
         queryString.append(" order by l.date desc, l.schedule.begin desc");
 
@@ -88,6 +113,18 @@ public class LessonDAO {
             }
             if (streamId != null) {
                 query.setParameter("streamId", streamId);
+            }
+            if (disciplineId != null) {
+                query.setParameter("disciplineId", disciplineId);
+            }
+            if (scheduleId != null) {
+                query.setParameter("scheduleId", scheduleId);
+            }
+            if (groupId != null) {
+                query.setParameter("groupId", groupId);
+            }
+            if (type != null) {
+                query.setParameter("type", type);
             }
             return query.getResultList();
         } catch (RuntimeException e) {

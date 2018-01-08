@@ -29,6 +29,7 @@ body {
 .w80px {width: 80px !important;}
 .w90px {width: 90px;}
 .w100px {width: 100px;}
+.w135px {width: 135px;}
 .w150px {width: 150px;}
 .w200px {width: 200px;}
 .w210px {width: 210px;}
@@ -811,4 +812,31 @@ body {
 
 .lesson-mode-table .transparent-button .ui-icon {
     width: 15px;
+}
+
+
+/* lessonsForm */
+.lessons th {
+    text-transform: uppercase;
+}
+
+.filter {
+    color: blue;
+    padding-top: 10px;
+    display: block;
+}
+.filter .date input {
+    width: 100px;
+}
+
+.filter > span > label {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.filter > span,
+.filter > div,
+.filter > label {
+    margin-right: 10px;
+    margin-bottom: 10px;
 }

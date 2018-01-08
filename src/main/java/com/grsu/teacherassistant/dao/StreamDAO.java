@@ -44,9 +44,9 @@ public class StreamDAO {
     public static Map<Integer, String> getNames() {
         try (Session session = DBSessionFactory.getSession()) {
             LOGGER.info("Start loading Stream names from database.");
-            Query query = session.createQuery("select s.id, s.name from Stream s order by s.name");
+            Query query = session.createQuery("select s.id, s.name from Stream s  where s.active = true and (s.expirationDate > current_date or s.expirationDate is null) order by s.name");
             List<Object[]> queryResult = query.getResultList();
-            Map<Integer, String> result = new HashMap<>();
+            Map<Integer, String> result = new LinkedHashMap<>();
             queryResult.forEach(e -> result.put((Integer) e[0], (String) e[1]));
             return result;
         } catch (RuntimeException e) {
