@@ -129,6 +129,13 @@
                                 <f:setPropertyActionListener value="lessons" target="#{sessionBean.activeView}"/>
                             </p:commandButton>
                         </p:overlayPanel>
+                        <p:commandButton title="#{msg['btn.fastRegistration']}"
+                                         value="#{msg['btn.fastRegistration.short']}"
+                                         actionListener="#{registrationModeBean.fastRegistration}"
+                                         update="@([id$=views])"
+                                         styleClass="margin-top-10px font-size-14pt"
+                                         rendered="${registrationModeBean.fastRegistration}">
+                        </p:commandButton>
                     </p:panel>
                     <p:panelGrid columns="2" styleClass="lesson-text left">
                         <p:panelGrid columns="2" id="attendanceInfo" styleClass="bold">
@@ -156,13 +163,6 @@
                             <p:outputLabel value="#{registrationModeBean.selectedLesson.date}"
                                            converter="localDateConverter"/>
                             <p:outputLabel value="#{registrationModeBean.selectedLesson.schedule.caption}"/>
-                            <p:commandButton title="#{msg['btn.fastRegistration']}"
-                                             value="#{msg['btn.fastRegistration']}"
-                                             actionListener="#{registrationModeBean.fastRegistration}"
-                                             update="@([id$=views])"
-                                             styleClass="margin-top-10px font-size-14pt"
-                                             rendered="${registrationModeBean.fastRegistration}">
-                            </p:commandButton>
                         </p:panel>
                     </p:panelGrid>
                 </p:panelGrid>

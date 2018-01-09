@@ -22,7 +22,8 @@
                 </p:calendar>
             </h:panelGroup>
 
-            <p:selectOneButton value="#{lessonsBean.month}" valueChangeListener="#{lessonsBean.changeMonth}">
+            <p:selectOneButton value="#{lessonsBean.month}" valueChangeListener="#{lessonsBean.changeMonth}"
+                               styleClass="month-buttons">
                 <f:selectItem itemLabel="1" itemValue="1"/>
                 <f:selectItem itemLabel="2" itemValue="2"/>
                 <f:selectItem itemLabel="3" itemValue="3"/>
@@ -34,7 +35,7 @@
 
             <h:panelGroup styleClass="inline-block">
                 <h:outputLabel for="stream" value="#{msg['lessons.stream']}"/>
-                <p:selectOneMenu id="stream" value="#{lessonsBean.streamId}" styleClass="middle">
+                <p:selectOneMenu id="stream" value="#{lessonsBean.streamId}" styleClass="middle" style="width: 200px;">
                     <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.stream']}"/>
                     <f:selectItems value="#{lessonsBean.streams}" var="stream"
                                    itemLabel="#{stream.value}" itemValue="#{stream.key}"/>
@@ -52,20 +53,22 @@
             </h:panelGroup>
 
             <h:panelGroup styleClass="inline-block">
-                <h:outputLabel for="discipline" value="#{msg['lessons.discipline']}"/>
-                <p:selectOneMenu id="discipline" value="#{lessonsBean.disciplineId}" styleClass="middle">
-                    <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.discipline']}"/>
-                    <f:selectItems value="#{sessionBean.disciplines}" var="discipline"
-                                   itemLabel="#{discipline.name}" itemValue="#{discipline.id}"/>
+                <h:outputLabel for="schedules" value="#{msg['lessons.time']}"/>
+                <p:selectOneMenu id="schedules" value="#{lessonsBean.scheduleId}" styleClass="middle"
+                                 style="width: 130px;">
+                    <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.empty']}"/>
+                    <f:selectItems value="#{sessionBean.schedules}" var="schedules"
+                                   itemLabel="#{schedules.caption}" itemValue="#{schedules.id}"/>
                 </p:selectOneMenu>
             </h:panelGroup>
 
             <h:panelGroup styleClass="inline-block">
-                <h:outputLabel for="schedules" value="#{msg['lessons.time']}"/>
-                <p:selectOneMenu id="schedules" value="#{lessonsBean.scheduleId}" styleClass="middle">
-                    <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.schedule']}"/>
-                    <f:selectItems value="#{sessionBean.schedules}" var="schedules"
-                                   itemLabel="#{schedules.caption}" itemValue="#{schedules.id}"/>
+                <h:outputLabel for="discipline" value="#{msg['lessons.discipline']}"/>
+                <p:selectOneMenu id="discipline" value="#{lessonsBean.disciplineId}" styleClass="middle"
+                                 style="width: 300px;">
+                    <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.discipline']}"/>
+                    <f:selectItems value="#{sessionBean.disciplines}" var="discipline"
+                                   itemLabel="#{discipline.name}" itemValue="#{discipline.id}"/>
                 </p:selectOneMenu>
             </h:panelGroup>
 
@@ -80,7 +83,7 @@
 
             <h:panelGroup styleClass="inline-block">
                 <h:outputLabel for="group" value="#{msg['lessons.group']}"/>
-                <p:selectOneMenu id="group" value="#{lessonsBean.groupId}" styleClass="middle">
+                <p:selectOneMenu id="group" value="#{lessonsBean.groupId}" styleClass="middle" style="width: 230px;">
                     <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.group']}"/>
                     <f:selectItems value="#{sessionBean.groups}" var="group"
                                    itemLabel="#{group.name}" itemValue="#{group.id}"/>
@@ -98,14 +101,12 @@
                      selection="#{lessonsBean.selectedLesson}"
                      rowKey="#{lesson.id}"
                      selectionMode="single"
-                     sortBy="#{utility.concatDateTime(lesson.date, lesson.schedule.begin)}"
-                     sortOrder="descending"
                      emptyMessage="#{msg['label.emptyMessage']}"
                      styleClass="lessons"
-                     rowStyleClass="#{(lesson.type eq 'PRACTICAL') ? 'blue' : (lesson.type eq 'LAB' ? 'red' : '')} #{utility.afterNow(lesson.date, lesson.schedule.end) ? 'bold' : ''}">
+                     rowStyleClass="h40px #{(lesson.type eq 'PRACTICAL') ? 'blue' : (lesson.type eq 'LAB' ? 'red' : '')} #{utility.afterNow(lesson.date, lesson.schedule.end) ? 'bold' : ''}">
 
             <p:ajax event="rowSelect"
-                    listener="#{lessonsBean.openRegistrartionMode}"
+                    listener="#{lessonsBean.openRegistrationMode}"
                     update="@([id$=wrapper])"/>
 
             <!--<p:ajax event="rowDblselect"-->
@@ -119,7 +120,7 @@
             </p:column>
             <p:column headerText="#{msg['lessons.discipline']}"
                       sortBy="#{lesson.stream.discipline.name}"
-                      styleClass="w300px"
+                      styleClass="w310px"
             >
                 <h:outputText value="#{lesson.stream.discipline.name}"/>
             </p:column>
@@ -141,6 +142,20 @@
             >
                 <h:outputText value="#{msg[lesson.type.key]}"/>
                 <h:outputText value=" #{utility.getLessonCount(lesson)}" rendered="#{lesson.type ne 'EXAM'}"/>
+
+                <h:outputText id="note" styleClass="float-right fa fa-info-circle"
+                              rendered="#{lesson.notes.size() gt 0}"/>
+                <p:tooltip for="note" position="bottom"
+                           rendered="#{lesson.notes.size() gt 0}">
+                    <ui:repeat var="note" value="#{lesson.notes}">
+                        <h:panelGrid columns="2" columnClasses="w300px, w20px" styleClass="w100pc">
+                            <h:outputText value="#{note.description}"/>
+                            <h:outputText value="#{note.createDate}" converter="localDateConverter"/>
+                        </h:panelGrid>
+                    </ui:repeat>
+                </p:tooltip>
+
+
             </p:column>
             <p:column headerText="#{msg['lessons.group']}"
                       sortBy="#{lesson.group.name}"
@@ -153,7 +168,7 @@
             <p:menuitem value="#{msg['option.registrationMode']}"
                         update="@([id$=wrapper])"
                         icon="ui-icon-signal-diag"
-                        actionListener="#{lessonsBean.openRegistrartionMode}"/>
+                        actionListener="#{lessonsBean.openRegistrationMode}"/>
             <p:menuitem value="#{msg['option.shortLessonMode']}"
                         update="@([id$=wrapper])"
                         actionListener="#{shortLessonModeBean.init(lessonsBean.selectedLesson)}">
@@ -192,7 +207,12 @@
                         actionListener="#{lessonsBean.removeLesson(lessonsBean.selectedLesson)}">
                 <p:confirm header="#{msg['warning']}" message="#{msg['warning.sure.delete']}" icon="ui-icon-alert"/>
             </p:menuitem>
-            <p:menuitem value="#{msg['option.note']}" disabled="true"/>
+            <p:menuitem value="#{msg['option.note']}"
+                        update=":lessonsForm:notes"
+                        icon="fa fa-fw fa-info-circle"
+                        oncomplete="PF('lessonNotesDialog').show()">
+                <f:setPropertyActionListener value="#{null}" target="#{lessonsBean.newNote}"/>
+            </p:menuitem>
         </p:contextMenu>
 
         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
@@ -201,6 +221,33 @@
             <p:commandButton value="#{msg['label.no']}" type="button" styleClass="ui-confirmdialog-no"
                              icon="ui-icon-close"/>
         </p:confirmDialog>
+
+        <p:dialog header="#{msg['label.notes']}"
+                  widgetVar="lessonNotesDialog"
+                  modal="true"
+                  showEffect="fade"
+                  hideEffect="fade"
+                  resizable="false">
+            <p:ajax event="close" update=":lessonsForm:lessons"/>
+            <p:outputPanel id="notes">
+                <ui:repeat var="note"
+                           value="#{lessonsBean.selectedLesson.notes}">
+                    <h:panelGrid columns="3" columnClasses="w300px, w20px">
+                        <h:outputText value="#{note.description}"/>
+                        <h:outputText value="#{note.createDate}" converter="localDateConverter"/>
+                        <p:commandButton actionListener="#{lessonsBean.removeNote(note)}"
+                                         update=":lessonsForm:notes"
+                                         icon="fa fa-fw fa-minus" title="#{msg['option.remove']}"
+                                         styleClass="red"/>
+                    </h:panelGrid>
+                </ui:repeat>
+                <p:inputTextarea value="#{lessonsBean.newNote}"/>
+
+                <p:commandButton value="#{msg['btn.save.exit']}" icon="fa fa-fw fa-save"
+                                 actionListener="#{lessonsBean.saveNote}"
+                                 styleClass="block"/>
+            </p:outputPanel>
+        </p:dialog>
 
     </h:form>
 </ui:composition>

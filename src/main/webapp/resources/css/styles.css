@@ -30,11 +30,13 @@ body {
 .w90px {width: 90px;}
 .w100px {width: 100px;}
 .w135px {width: 135px;}
+.w140px {width: 140px;}
 .w150px {width: 150px;}
 .w200px {width: 200px;}
 .w210px {width: 210px;}
 .w250px {width: 250px;}
 .w300px {width: 300px;}
+.w310px {width: 310px;}
 .w350px {width: 350px;}
 .w500px {width: 500px;}
 .w550px {width: 550px;}
@@ -50,6 +52,7 @@ body {
 
 /* Height */
 .h30px {height: 30px;}
+.h40px {height: 40px;}
 .h50px {height: 50px;}
 .h73px {height: 73px;}
 .h200px {height: 200px;}
@@ -820,10 +823,19 @@ body {
     text-transform: uppercase;
 }
 
+.filter label {
+    font-weight: bold;
+}
+
+.filter .month-buttons span {
+    padding: 4px 10px;
+}
+
 .filter {
     color: blue;
-    padding-top: 10px;
+    padding-top: 20px;
     display: block;
+    padding-bottom: 10px;
 }
 .filter .date input {
     width: 100px;
