@@ -8,13 +8,13 @@
 
         <h:panelGroup id="filter" styleClass="filter">
             <h:panelGroup styleClass="date">
-                <h:outputLabel for="dateFrom" value="#{msg['lessons.at']}"/>
+                <h:outputLabel for="dateFrom" value="#{msg['lessons.at']}" styleClass="margin-right-10px"/>
                 <p:calendar id="dateFrom" value="#{lessonsBean.dateFrom}"
                             converter="localDateConverter" pattern="dd.MM.yyyy"
                             valueChangeListener="#{lessonsBean.changeDate}">
                     <p:ajax update=":lessonsForm:filter"/>
                 </p:calendar>
-                <h:outputLabel for="dateTo" value=" - "/>
+                <h:outputLabel for="dateTo" value=" - " styleClass="margin-right-10px"/>
                 <p:calendar id="dateTo" value="#{lessonsBean.dateTo}"
                             converter="localDateConverter" pattern="dd.MM.yyyy"
                             valueChangeListener="#{lessonsBean.changeDate}">
@@ -34,7 +34,7 @@
 
 
             <h:panelGroup styleClass="inline-block">
-                <h:outputLabel for="stream" value="#{msg['lessons.stream']}"/>
+                <h:outputLabel for="stream" value="#{msg['lessons.stream']}" styleClass="margin-right-10px"/>
                 <p:selectOneMenu id="stream" value="#{lessonsBean.streamId}" styleClass="middle" style="width: 200px;">
                     <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.stream']}"/>
                     <f:selectItems value="#{lessonsBean.streams}" var="stream"
@@ -44,16 +44,16 @@
 
             <h:panelGroup styleClass="inline-block">
                 <p:selectBooleanCheckbox id="closed" value="#{lessonsBean.closed}"/>
-                <h:outputLabel for="closed" value="#{msg['lessons.closed']}"/>
+                <h:outputLabel for="closed" value="#{msg['lessons.closed']}" styleClass="margin-left-10px"/>
             </h:panelGroup>
 
             <h:panelGroup styleClass="inline-block">
                 <p:selectBooleanCheckbox id="past" value="#{lessonsBean.past}"/>
-                <h:outputLabel for="past" value="#{msg['lessons.past']}"/>
+                <h:outputLabel for="past" value="#{msg['lessons.past']}" styleClass="margin-left-10px"/>
             </h:panelGroup>
 
             <h:panelGroup styleClass="inline-block">
-                <h:outputLabel for="schedules" value="#{msg['lessons.time']}"/>
+                <h:outputLabel for="schedules" value="#{msg['lessons.time']}" styleClass="margin-right-10px"/>
                 <p:selectOneMenu id="schedules" value="#{lessonsBean.scheduleId}" styleClass="middle"
                                  style="width: 130px;">
                     <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.empty']}"/>
@@ -63,7 +63,7 @@
             </h:panelGroup>
 
             <h:panelGroup styleClass="inline-block">
-                <h:outputLabel for="discipline" value="#{msg['lessons.discipline']}"/>
+                <h:outputLabel for="discipline" value="#{msg['lessons.discipline']}" styleClass="margin-right-10px"/>
                 <p:selectOneMenu id="discipline" value="#{lessonsBean.disciplineId}" styleClass="middle"
                                  style="width: 300px;">
                     <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.discipline']}"/>
@@ -73,7 +73,7 @@
             </h:panelGroup>
 
             <h:panelGroup styleClass="inline-block">
-                <h:outputLabel for="type" value="#{msg['lessons.type']}"/>
+                <h:outputLabel for="type" value="#{msg['lessons.type']}" styleClass="margin-right-10px"/>
                 <p:selectOneMenu id="type" value="#{lessonsBean.type}" styleClass="middle">
                     <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.lessonType']}"/>
                     <f:selectItems value="#{lessonsBean.lessonTypes}" var="type" itemLabel="#{msg[type.key]}"
@@ -82,7 +82,7 @@
             </h:panelGroup>
 
             <h:panelGroup styleClass="inline-block">
-                <h:outputLabel for="group" value="#{msg['lessons.group']}"/>
+                <h:outputLabel for="group" value="#{msg['lessons.group']}" styleClass="margin-right-10px"/>
                 <p:selectOneMenu id="group" value="#{lessonsBean.groupId}" styleClass="middle" style="width: 230px;">
                     <f:selectItem itemValue="#{null}" itemLabel="#{msg['select.group']}"/>
                     <f:selectItems value="#{sessionBean.groups}" var="group"

@@ -841,14 +841,8 @@ body {
     width: 100px;
 }
 
-.filter > span > label {
-    margin-right: 10px;
-    margin-left: 10px;
-}
-
 .filter > span,
-.filter > div,
-.filter > label {
+.filter > div {
     margin-right: 10px;
     margin-bottom: 10px;
 }
