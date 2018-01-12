@@ -8,6 +8,36 @@
         <p:growl id="messages" showDetail="true" escape="false"/>
 
         <p:menubar id="menu" autoDisplay="#{false}" styleClass="alignMenuItems" rendered="#{menuBean.showMenu}">
+            <p:submenu label="#{msg['menu.settings']}" icon="fa fa-fw fa-wrench">
+                <p:menuitem value="#{msg['menu.alarm']}"
+                            icon="fa fa-fw fa-clock-o"
+                            actionListener="#{alarmBean.initAlarm}"
+                            update=":alarmsForm"
+                            disabled="#{not sessionBean.connected}"/>
+                <p:menuitem value="#{msg['notification']}"
+                            icon="fa fa-fw fa-exclamation-triangle"
+                            actionListener="#{notificationSettingsBean.init}"
+                            update=":notificationSettingForm"
+                            disabled="#{not sessionBean.connected}"/>
+                <p:menuitem value="#{msg['settings.properties']}"
+                            icon="fa fa-fw fa-file"
+                            actionListener="#{propertiesBean.init}"
+                            update=":propertiesForm"
+                            disabled="#{not sessionBean.connected}"/>
+                <p:separator/>
+                <p:menuitem value="#{msg['menu.connection.connect']}" icon="fa fa-fw fa-toggle-on"
+                            actionListener="#{menuBean.connect}" update="@([id$=wrapper])"
+                            disabled="#{sessionBean.connected}"/>
+                <p:menuitem value="#{msg['menu.connection.disconnect']}" icon="fa fa-fw fa-toggle-off"
+                            actionListener="#{menuBean.disconnect}" update="@([id$=wrapper])"
+                            disabled="#{!sessionBean.connected}"/>
+                <p:separator/>
+                <p:menuitem disabled="#{true}"
+                            value="#{sessionBean.connected ? msg['menu.connection.connected']
+                                                    : msg['menu.connection.disconnected']}"
+                            styleClass="#{sessionBean.connected ? 'connected' : 'disconnected'}"/>
+            </p:submenu>
+
             <p:submenu label="#{msg['menu.file.new']}" icon="fa fa-fw fa-plus"
                        rendered="#{sessionBean.connected}">
                 <p:menuitem value="#{msg['menu.file.new.discipline']}" icon="fa fa-fw fa-paperclip"
@@ -51,37 +81,6 @@
                 <p:menuitem value="#{msg['menu.load.csv']}" icon="fa fa-fw fa-arrow-circle-o-down"
                             actionListener="#{menuBean.loadCSV}"/>
             </p:submenu>
-
-            <p:submenu label="#{msg['menu.settings']}" icon="fa fa-fw fa-wrench">
-                <p:menuitem value="#{msg['menu.alarm']}"
-                            icon="fa fa-fw fa-clock-o"
-                            actionListener="#{alarmBean.initAlarm}"
-                            update=":alarmsForm"
-                            disabled="#{not sessionBean.connected}"/>
-                <p:menuitem value="#{msg['notification']}"
-                            icon="fa fa-fw fa-exclamation-triangle"
-                            actionListener="#{notificationSettingsBean.init}"
-                            update=":notificationSettingForm"
-                            disabled="#{not sessionBean.connected}"/>
-                <p:menuitem value="#{msg['settings.properties']}"
-                            icon="fa fa-fw fa-file"
-                            actionListener="#{propertiesBean.init}"
-                            update=":propertiesForm"
-                            disabled="#{not sessionBean.connected}"/>
-                <p:separator/>
-                <p:menuitem value="#{msg['menu.connection.connect']}" icon="fa fa-fw fa-toggle-on"
-                            actionListener="#{menuBean.connect}" update="@([id$=wrapper])"
-                            disabled="#{sessionBean.connected}"/>
-                <p:menuitem value="#{msg['menu.connection.disconnect']}" icon="fa fa-fw fa-toggle-off"
-                            actionListener="#{menuBean.disconnect}" update="@([id$=wrapper])"
-                            disabled="#{!sessionBean.connected}"/>
-                <p:separator/>
-                <p:menuitem disabled="#{true}"
-                            value="#{sessionBean.connected ? msg['menu.connection.connected']
-                                                    : msg['menu.connection.disconnected']}"
-                            styleClass="#{sessionBean.connected ? 'connected' : 'disconnected'}"/>
-            </p:submenu>
-
 
             <p:submenu label="#{msg['menu.show']}" icon="fa fa-fw fa-bars"
                        rendered="#{sessionBean.connected}">

@@ -58,12 +58,14 @@
                                          actionListener="#{studentModeBean.nextStudent}">
                         </p:commandButton>
                         <p:commandButton id="nextSettingsBtn" icon="fa fa-fw fa-wrench"/>
-                        <p:overlayPanel for="nextSettingsBtn" hideEffect="fade" style="position: fixed;" styleClass="left">
+                        <p:overlayPanel for="nextSettingsBtn" hideEffect="fade" style="position: fixed;"
+                                        styleClass="left">
                             <p:selectOneRadio value="#{studentModeBean.studentsType}" layout="grid" columns="1">
                                 <f:selectItem itemValue="ALL" itemLabel="#{msg['studentsMode.next.all']}"/>
                                 <f:selectItem itemValue="STREAM" itemLabel="#{msg['studentsMode.next.stream']}"/>
                                 <f:selectItem itemValue="GROUP" itemLabel="#{msg['studentsMode.next.group']}"/>
-                                <f:ajax event="click" render=":studentModeForm:students" listener="#{studentModeBean.setStudents(null)}" />
+                                <f:ajax event="click" render=":studentModeForm:students"
+                                        listener="#{studentModeBean.setStudents(null)}"/>
                             </p:selectOneRadio>
                         </p:overlayPanel>
 
@@ -126,12 +128,15 @@
 
                         <p:commandButton id="modeBtn" icon="fa fa-fw fa-forward"/>
                         <p:overlayPanel for="modeBtn" hideEffect="fade" style="position: fixed;">
-                            <p:commandButton title="#{msg['btn.lessonMode']}" value="#{msg['btn.lessonMode']}"
-                                             actionListener="#{lessonModeBean.initLessonMode}"
+                            <p:commandButton title="#{msg['btn.lessonMode']}"
+                                             value="#{msg['btn.lessonMode']}"
+                                             update="@([id$=wrapper])"
+                                             actionListener="#{shortLessonModeBean.init(lessonModeBean.lesson)}"
                                              disabled="#{lessonModeBean.lesson eq null}"
-                                             update="@([id$=views])"
                                              styleClass="block w100pc margin-bottom-10px">
-                                <f:setPropertyActionListener value="lessonMode" target="#{sessionBean.activeView}"/>
+                                <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+                                <f:setPropertyActionListener value="shortLessonMode"
+                                                             target="#{sessionBean.activeView}"/>
                                 <f:ajax event="click" listener="#{studentModeBean.clear}"/>
                             </p:commandButton>
                             <p:commandButton title="#{msg['btn.photoMode']}" value="#{msg['btn.photoMode']}"
@@ -281,7 +286,7 @@
                         <h:outputLabel styleClass="font-size-11pt" value="#{studentLesson.lesson.date}"
                                        converter="localShortDateConverter"/>
                         <h:outputLabel styleClass="font-size-9pt block"
-                                      value="#{utility.getLessonCount(studentLesson.lesson)}"/>
+                                       value="#{utility.getLessonCount(studentLesson.lesson)}"/>
                         <h:panelGroup rendered="#{not (studentLesson eq studentModeBean.editedStudentLesson)}">
                             <h:outputLabel styleClass="bold" value="#{studentLesson.mark}"/>
                             <p:outputLabel id="notestudentLesson" styleClass="float-right"
