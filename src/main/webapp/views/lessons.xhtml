@@ -144,9 +144,10 @@
                 <h:outputText value=" #{utility.getLessonCount(lesson)}" rendered="#{lesson.type ne 'EXAM'}"/>
 
                 <h:outputText id="note" styleClass="float-right fa fa-info-circle"
-                              rendered="#{lesson.notes.size() gt 0}"/>
+                              rendered="#{lesson.notes.size() gt 0 or not lesson.description.isEmpty()}"/>
                 <p:tooltip for="note" position="bottom"
-                           rendered="#{lesson.notes.size() gt 0}">
+                           rendered="#{lesson.notes.size() gt 0 or not lesson.description.isEmpty()}">
+                    <h:outputText value="#{lesson.description}"/>
                     <ui:repeat var="note" value="#{lesson.notes}">
                         <h:panelGrid columns="2" columnClasses="w300px, w20px" styleClass="w100pc">
                             <h:outputText value="#{note.description}"/>
