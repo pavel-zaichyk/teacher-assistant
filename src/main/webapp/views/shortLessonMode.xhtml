@@ -332,7 +332,7 @@
             </p:commandButton>
             <p:commandButton title="#{msg['btn.registerMode']}"
                              value="#{msg['btn.registerMode']}"
-                             actionListener="#{registrationModeBean.initLesson(registrationModeBean.selectedLesson)}"
+                             actionListener="#{registrationModeBean.initLesson(shortLessonModeBean.lesson.lesson)}"
                              styleClass="block w100pc margin-bottom-10px"
                              update="@([id$=views])">
                 <f:setPropertyActionListener value="registrationMode"

@@ -17,6 +17,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -48,6 +49,20 @@ public class ShortLessonModeBean implements Serializable {
             .filter(l -> LessonType.ATTESTATION.equals(l.getType()))
             .map(LessonModel::new).collect(Collectors.toList());
         attestations.forEach(a -> a.setNumber(attestations.indexOf(a) + 1));
+    }
+
+    public void initRegistration(Lesson lesson) {
+        if (lesson.getDate() != null && lesson.getDate().toLocalDate() != null && lesson.getDate().toLocalDate().isEqual(LocalDate.now())) {
+            lesson.getStudentLessons().values().parallelStream().forEach(sl -> {
+                if (!sl.isRegistered()) {
+                    sl.setRegistered(true);
+                    sl.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
+                    sl.setRegistrationTime(LocalTime.now());
+                }
+            });
+            EntityDAO.save(lesson.getStudentLessons().values());
+        }
+        init(lesson);
     }
 
     public void changeMark(ValueChangeEvent event) {
