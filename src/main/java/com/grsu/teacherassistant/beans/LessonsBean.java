@@ -156,4 +156,12 @@ public class LessonsBean implements Serializable {
         newNote = null;
         FacesUtils.closeDialog("lessonNotesDialog");
     }
+
+    public Lesson getFirstLesson() {
+        List<Lesson> lessons = getLessons();
+        if (lessons != null && lessons.size() > 0) {
+            return lessons.get(0);
+        }
+        return null;
+    }
 }

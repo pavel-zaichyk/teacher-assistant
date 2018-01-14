@@ -92,7 +92,7 @@
 
             <p:commandButton value="#{msg['btn.search']}" icon="fa fa-fw fa-search"
                              actionListener="#{lessonsBean.search}"
-                             update=":lessonsForm"/>
+                             update="@([id$=wrapper])"/>
         </h:panelGroup>
 
         <p:dataTable id="lessons"
@@ -164,32 +164,36 @@
             </p:column>
         </p:dataTable>
 
-        <p:contextMenu for="lessons">
+        <p:contextMenu for="lessons" rendered="#{lessonsBean.lessons.size() gt 0}">
             <p:menuitem value="#{msg['option.registrationMode']}"
                         update="@([id$=wrapper])"
-                        icon="ui-icon-signal-diag"
+                        icon="fa fa-fw fa-rss"
                         actionListener="#{lessonsBean.openRegistrationMode}"/>
             <p:menuitem value="#{msg['option.shortLessonMode']}"
                         update="@([id$=wrapper])"
+                        icon="fa fa-fw fa-dedent"
                         actionListener="#{shortLessonModeBean.init(lessonsBean.selectedLesson)}">
                 <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
                 <f:setPropertyActionListener value="shortLessonMode" target="#{sessionBean.activeView}"/>
             </p:menuitem>
             <p:menuitem value="#{msg['option.lessonMode']}"
                         update="@([id$=wrapper])"
+                        icon="fa fa-fw fa-dedent"
                         actionListener="#{lessonModeBean.initLessonMode(lessonsBean.selectedLesson)}">
                 <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
                 <f:setPropertyActionListener value="lessonMode" target="#{sessionBean.activeView}"/>
             </p:menuitem>
             <p:menuitem value="#{msg['option.photoMode']}"
                         update="@([id$=wrapper])"
+                        icon="fa fa-fw fa-file-image-o"
                         actionListener="#{lessonModeBean.initLessonMode(lessonsBean.selectedLesson)}">
                 <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
                 <f:setPropertyActionListener value="photoMode" target="#{sessionBean.activeView}"/>
             </p:menuitem>
-            <p:menuitem value="#{msg['option.lessons']}" disabled="true"/>
+            <p:menuitem value="#{msg['option.lessons']}" disabled="true" icon="fa fa-fw fa-calendar"/>
             <p:menuitem value="#{msg['option.studentMode']}"
                         update="@([id$=wrapper])"
+                        icon="fa fa-fw fa-male"
                         actionListener="#{studentModeBean.initStudentMode(null, null)}">
                 <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
                 <f:setPropertyActionListener value="studentMode" target="#{sessionBean.activeView}"/>

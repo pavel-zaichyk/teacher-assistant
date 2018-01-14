@@ -25,17 +25,37 @@
                             update=":propertiesForm"
                             disabled="#{not sessionBean.connected}"/>
                 <p:separator/>
-                <p:menuitem value="#{msg['menu.connection.connect']}" icon="fa fa-fw fa-toggle-on"
-                            actionListener="#{menuBean.connect}" update="@([id$=wrapper])"
-                            disabled="#{sessionBean.connected}"/>
-                <p:menuitem value="#{msg['menu.connection.disconnect']}" icon="fa fa-fw fa-toggle-off"
-                            actionListener="#{menuBean.disconnect}" update="@([id$=wrapper])"
-                            disabled="#{!sessionBean.connected}"/>
+                <p:menuitem value="#{msg['menu.refresh']}"
+                            icon="fa fa-fw fa-refresh"
+                            actionListener="#{sessionBean.initData}"
+                            update="@([id$=wrapper])"
+                            disabled="#{not sessionBean.connected}"/>
+
+                <p:menuitem value="#{msg['menu.connection.connectReader']}"
+                            icon="fa fa-fw fa-toggle-off"
+                            actionListener="#{serialBean.startRecord}"
+                            update="@([id$=wrapper])"
+                            rendered="#{not serialBean.recordStarted}"
+                            disabled="#{not sessionBean.connected}"/>
+                <p:menuitem value="#{msg['menu.connection.disconnectReader']}"
+                            icon="fa fa-fw fa-toggle-on"
+                            actionListener="#{serialBean.stopRecord}"
+                            update="@([id$=wrapper])"
+                            disabled="#{not sessionBean.connected}"
+                            rendered="#{serialBean.recordStarted}"/>
+
+
                 <p:separator/>
                 <p:menuitem disabled="#{true}"
+                            icon="fa fa-fw fa-database"
                             value="#{sessionBean.connected ? msg['menu.connection.connected']
                                                     : msg['menu.connection.disconnected']}"
                             styleClass="#{sessionBean.connected ? 'connected' : 'disconnected'}"/>
+                <p:menuitem disabled="#{true}"
+                            icon="ui-icon-signal-diag"
+                            value="#{serialBean.recordStarted ? msg['menu.connection.connected']
+                                                    : msg['menu.connection.disconnected']}"
+                            styleClass="#{serialBean.recordStarted ? 'connected' : 'disconnected'}"/>
             </p:submenu>
 
             <p:submenu label="#{msg['menu.file.new']}" icon="fa fa-fw fa-plus"
@@ -96,9 +116,60 @@
                             actionListener="#{menuBean.changeView('students')}" update="@([id$=views])"/>
             </p:submenu>
 
-            <p:menuitem value="#{msg['menu.show.lessons']}" icon="fa fa-fw fa-book"
+            <p:submenu label="#{msg['menu.modes']}" icon="fa fa-fw fa-list-alt" rendered="#{sessionBean.connected}">
+                <p:menuitem value="#{msg['option.registrationMode']}"
+                            update="@([id$=wrapper])"
+                            icon="fa fa-fw fa-rss"
+                            actionListener="#{registrationModeBean.initLesson(lessonsBean.getFirstLesson())}"
+                            disabled="#{(lessonsBean.getFirstLesson() eq null or sessionBean.activeView eq 'registrationMode')}">
+                    <f:setPropertyActionListener value="registrationMode" target="#{sessionBean.activeView}"/>
+                    <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+                </p:menuitem>
+                <p:menuitem value="#{msg['option.shortLessonMode']}"
+                            update="@([id$=wrapper])"
+                            icon="fa fa-fw fa-dedent"
+                            actionListener="#{shortLessonModeBean.init(lessonsBean.getFirstLesson())}"
+                            disabled="#{(lessonsBean.getFirstLesson() eq null or sessionBean.activeView eq 'shortLessonMode')}">
+                    <f:setPropertyActionListener value="shortLessonMode" target="#{sessionBean.activeView}"/>
+                    <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+                </p:menuitem>
+                <p:menuitem value="#{msg['option.lessonMode']}"
+                            update="@([id$=wrapper])"
+                            icon="fa fa-fw fa-dedent"
+                            actionListener="#{lessonModeBean.initLessonMode(lessonsBean.getFirstLesson())}"
+                            disabled="#{(lessonsBean.getFirstLesson() eq null or sessionBean.activeView eq 'lessonMode')}">
+                    <f:setPropertyActionListener value="lessonMode" target="#{sessionBean.activeView}"/>
+                    <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+                </p:menuitem>
+                <p:menuitem value="#{msg['option.photoMode']}"
+                            update="@([id$=wrapper])"
+                            icon="fa fa-fw fa-file-image-o"
+                            actionListener="#{lessonModeBean.initLessonMode(lessonsBean.getFirstLesson())}"
+                            disabled="#{(lessonsBean.getFirstLesson() eq null or sessionBean.activeView eq 'photoMode')}">
+                    <f:setPropertyActionListener value="photoMode" target="#{sessionBean.activeView}"/>
+                    <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+                </p:menuitem>
+                <p:menuitem value="#{msg['option.lessons']}"
+                            icon="fa fa-fw fa-calendar"
+                            update="@([id$=wrapper])"
+                            disabled="#{sessionBean.activeView eq 'lessons'}">
+                    <f:setPropertyActionListener value="lessons" target="#{sessionBean.activeView}"/>
+                    <f:setPropertyActionListener value="#{true}" target="#{menuBean.showMenu}"/>
+                </p:menuitem>
+                <p:menuitem value="#{msg['option.studentMode']}"
+                            update="@([id$=wrapper])"
+                            icon="fa fa-fw fa-male"
+                            actionListener="#{studentModeBean.initStudentMode(null, null)}"
+                            disabled="#{sessionBean.activeView eq 'studentMode'}">
+                    <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+                    <f:setPropertyActionListener value="studentMode" target="#{sessionBean.activeView}"/>
+                    <f:setPropertyActionListener value="#{lessonsBean.getFirstLesson()}" target="#{lessonModeBean.lesson}"/>
+                </p:menuitem>
+            </p:submenu>
+
+            <p:menuitem value="#{msg['menu.show.lessons']}" icon="fa fa-fw fa-calendar"
                         actionListener="#{menuBean.changeView('lessons')}" update="@([id$=views])"
-                        rendered="#{sessionBean.connected}">
+                        rendered="#{sessionBean.connected}" disabled="#{sessionBean.activeView eq 'lessons'}">
                 <f:actionListener binding="#{registrationModeBean.clear()}"/>
             </p:menuitem>
 
@@ -110,6 +181,31 @@
                 <p:resetInput target=":lessonInfoForm:lessonDetail"/>
             </p:menuitem>
 
+            <p:menuitem value="#{msg['option.registrationMode']}"
+                        update="@([id$=wrapper])"
+                        icon="fa fa-fw fa-rss"
+                        actionListener="#{registrationModeBean.initLesson(lessonsBean.getFirstLesson())}"
+                        disabled="#{(lessonsBean.getFirstLesson() eq null or sessionBean.activeView eq 'registrationMode')}">
+                <f:setPropertyActionListener value="registrationMode" target="#{sessionBean.activeView}"/>
+                <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+            </p:menuitem>
+            <p:menuitem value="#{msg['option.lesson']}"
+                        update="@([id$=wrapper])"
+                        icon="fa fa-fw fa-dedent"
+                        actionListener="#{shortLessonModeBean.initRegistration(lessonsBean.getFirstLesson())}"
+                        disabled="#{(lessonsBean.getFirstLesson() eq null or sessionBean.activeView eq 'shortLessonMode')}">
+                <f:setPropertyActionListener value="shortLessonMode" target="#{sessionBean.activeView}"/>
+                <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+            </p:menuitem>
+            <p:menuitem value="#{msg['option.studentMode']}"
+                        update="@([id$=wrapper])"
+                        icon="fa fa-fw fa-male"
+                        actionListener="#{studentModeBean.initStudentMode(null, null)}"
+                        disabled="#{sessionBean.activeView eq 'studentMode'}">
+                <f:setPropertyActionListener value="#{false}" target="#{menuBean.showMenu}"/>
+                <f:setPropertyActionListener value="studentMode" target="#{sessionBean.activeView}"/>
+                <f:setPropertyActionListener value="#{lessonsBean.getFirstLesson()}" target="#{lessonModeBean.lesson}"/>
+            </p:menuitem>
         </p:menubar>
     </h:form>
 </ui:composition>
