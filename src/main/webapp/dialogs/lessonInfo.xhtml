@@ -45,24 +45,15 @@
 
                     <p:outputLabel for="lessonType" value="#{msg['lessonInfo.type']}"/>
                     <h:outputText value="#{msg[lessonBean.lesson.type.key]}" rendered="#{not lessonBean.createMode}" />
-                    <p:inplace rendered="#{lessonBean.createMode}">
-                        <f:facet name="output">
-                            <h:outputText value="#{msg[lessonBean.lesson.type.key]}"
-                                          rendered="#{lessonBean.lesson.type ne null}"/>
-                            <h:outputText value="#{msg['select.lessonType']}"
-                                          rendered="#{lessonBean.lesson.type eq null}"/>
-                        </f:facet>
-                        <f:facet name="input">
-                            <p:selectOneButton id="lessonType" value="#{lessonBean.lesson.type}"
-                                               converter="lessonTypeConverter"
-                                               required="true"
-                                               styleClass="type">
-                                <f:selectItems value="#{lessonBean.lessonTypes}" var="type" itemLabel="#{msg[type.key]}"
-                                               itemValue="#{type}"/>
-                                <p:ajax update=":lessonInfoForm:lessonDetail"/>
-                            </p:selectOneButton>
-                        </f:facet>
-                    </p:inplace>
+                    <p:selectOneButton id="lessonType" value="#{lessonBean.lesson.type}"
+                                       rendered="#{lessonBean.createMode}"
+                                       converter="lessonTypeConverter"
+                                       required="true"
+                                       styleClass="type">
+                        <f:selectItems value="#{lessonBean.lessonTypes}" var="type" itemLabel="#{msg[type.key]}"
+                                       itemValue="#{type}"/>
+                        <p:ajax update=":lessonInfoForm:lessonDetail"/>
+                    </p:selectOneButton>
 
                     <p:outputLabel for="group" value="#{msg['lessonInfo.group']}"
                                    rendered="#{lessonBean.lesson.type ne null and lessonBean.lesson.type.code ne 1}"/>
@@ -87,22 +78,12 @@
                     </p:calendar>
 
                     <p:outputLabel for="schedule" value="#{msg['lessonInfo.schedule']}"/>
-                    <p:inplace>
-                        <f:facet name="output">
-                            <h:outputText value="#{lessonBean.lesson.schedule.caption}"
-                                          rendered="#{lessonBean.lesson.schedule ne null}"/>
-                            <h:outputText value="#{msg['select.schedule']}"
-                                          rendered="#{lessonBean.lesson.schedule eq null}"/>
-                        </f:facet>
-                        <f:facet name="input">
-                            <p:selectOneButton id="schedule" value="#{lessonBean.lesson.schedule}"
-                                               converter="entityConverter" required="true" styleClass="time">
-                                <f:selectItems value="#{sessionBean.schedules}" var="schedule"
-                                               itemLabel="#{schedule.begin}"/>
-                                <p:ajax update=":lessonInfoForm:lessonDetail"/>
-                            </p:selectOneButton>
-                        </f:facet>
-                    </p:inplace>
+                    <p:selectOneButton id="schedule" value="#{lessonBean.lesson.schedule}"
+                                       converter="entityConverter" required="true" styleClass="time">
+                        <f:selectItems value="#{sessionBean.schedules}" var="schedule"
+                                       itemLabel="#{schedule.begin}"/>
+                        <p:ajax update=":lessonInfoForm:lessonDetail"/>
+                    </p:selectOneButton>
 
                     <p:outputLabel for="description" value="#{msg['lessonInfo.description']}"/>
                     <p:inputTextarea id="description" value="#{lessonBean.lesson.description}">

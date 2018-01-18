@@ -609,7 +609,7 @@ body {
 }
 
 #lessonModeForm .lesson-student-info {
-    display: block;
+    /*display: block;*/
     bottom: 18px;
     position: relative;
     margin-left: 10px;

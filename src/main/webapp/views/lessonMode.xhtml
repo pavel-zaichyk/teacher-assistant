@@ -264,7 +264,7 @@
                         <p:outputLabel
                             styleClass="block uppercase font-size-10pt #{lesson.type eq 'PRACTICAL' ? 'blue' : ''} #{lesson.id eq lessonModeBean.currentLesson.id ? 'dark-red' : ''}"
                             value="#{msg['label.'.concat(lesson.type.key)]}"/>
-                        <p:outputLabel styleClass="inline-block v-align-top">
+                        <p:outputLabel styleClass="inline-block v-align-top #{lesson.id eq lessonModeBean.currentLesson.id ? 'dark-red' : ''}">
                             <h:outputText styleClass="font-size-9pt block"
                                           value="#{utility.getLessonCount(lesson.lesson)}"/>
                         </p:outputLabel>
