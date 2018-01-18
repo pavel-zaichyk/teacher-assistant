@@ -31,7 +31,7 @@ public class StreamDAO {
 
         try (Session session = DBSessionFactory.getSession()) {
             LOGGER.info("Start loading Streams from database.");
-            Query query = session.createQuery(queryString.toString());
+            Query query = session.createQuery(queryString.toString() + " order by name");
             return query.getResultList();
         } catch (RuntimeException e) {
             LOGGER.error(e.getMessage(), e);

@@ -50,7 +50,7 @@ public class LessonBean implements Serializable {
 
     public void exit() {
         lesson = null;
-        update("views");
+        update("wrapper");
         closeDialog("lessonDialog");
     }
 
@@ -89,7 +89,6 @@ public class LessonBean implements Serializable {
         } else {
             EntityDAO.save(lesson);
         }
-        exit();
     }
 
 }

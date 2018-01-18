@@ -67,6 +67,8 @@
                         update="@([id$=wrapper])"
                         actionListener="#{studentModeBean.initStudentMode(student.student, shortLessonModeBean.lesson.lesson.stream)}">
                         <f:setPropertyActionListener value="studentMode" target="#{sessionBean.activeView}"/>
+                        <f:setPropertyActionListener value="#{shortLessonModeBean.lesson.lesson}"
+                                                     target="#{lessonModeBean.lesson}"/>
                     </p:commandLink>
                     <p:outputLabel id="noteStudent" styleClass="float-right"
                                    rendered="#{student.student.notes.size() gt 0}">

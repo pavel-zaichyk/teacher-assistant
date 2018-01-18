@@ -609,7 +609,7 @@ body {
 }
 
 #lessonModeForm .lesson-student-info {
-    display: block;
+    /*display: block;*/
     bottom: 18px;
     position: relative;
     margin-left: 10px;
@@ -845,4 +845,33 @@ body {
 .filter > div {
     margin-right: 10px;
     margin-bottom: 10px;
+}
+
+/* lessonInfoForm */
+#lessonInfoForm .type {
+    width: 320px;
+}
+
+#lessonInfoForm .type div {
+    width: 150px;
+    margin: 2px;
+}
+
+#lessonInfoForm .type span {
+    width: 150px;
+    padding: 2px;
+}
+
+#lessonInfoForm .time {
+    width: 320px;
+}
+
+#lessonInfoForm .time div {
+    width: 60px;
+    margin: 2px;
+}
+
+#lessonInfoForm .time span {
+    width: 60px;
+    padding: 2px;
 }
