@@ -1,6 +1,7 @@
 package com.grsu.teacherassistant.beans;
 
 import com.grsu.teacherassistant.beans.utility.SessionBean;
+import com.grsu.teacherassistant.constants.Constants;
 import com.grsu.teacherassistant.dao.EntityDAO;
 import com.grsu.teacherassistant.dao.LessonDAO;
 import com.grsu.teacherassistant.entities.*;
@@ -13,6 +14,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 import static com.grsu.teacherassistant.utils.FacesUtils.closeDialog;
@@ -31,6 +33,7 @@ public class LessonBean implements Serializable {
 
     private Lesson lesson;
     private boolean createMode;
+    private boolean allPresent;
 
     private final List<LessonType> lessonTypes =
         new ArrayList<>(Arrays.asList(LessonType.LECTURE, LessonType.PRACTICAL, LessonType.LAB, LessonType.EXAM));
@@ -50,6 +53,7 @@ public class LessonBean implements Serializable {
 
     public void exit() {
         lesson = null;
+        allPresent = false;
         update("wrapper");
         closeDialog("lessonDialog");
     }
@@ -81,6 +85,11 @@ public class LessonBean implements Serializable {
                 StudentLesson sc = new StudentLesson();
                 sc.setStudent(student);
                 sc.setLesson(lesson);
+                if (allPresent) {
+                    sc.setRegistered(true);
+                    sc.setRegistrationType(Constants.REGISTRATION_TYPE_MANUAL);
+                    sc.setRegistrationTime(LocalTime.now());
+                }
                 studentLessons.add(sc);
             }
             EntityDAO.add(new ArrayList<>(studentLessons));
