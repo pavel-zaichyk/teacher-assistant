@@ -90,6 +90,9 @@
                         <p:ajax update=":lessonInfoForm:lessonDetail"/>
                     </p:inputTextarea>
 
+                    <h:selectBooleanCheckbox id="allPresent" value="#{lessonBean.allPresent}" disabled="#{not lessonBean.createMode}"/>
+                    <p:outputLabel for="allPresent" value="#{msg['lessonInfo.allPresent']}"/>
+
                 </p:panelGrid>
 
                 <p:outputPanel>
