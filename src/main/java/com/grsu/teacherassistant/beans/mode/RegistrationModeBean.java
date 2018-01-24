@@ -328,18 +328,18 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             pushStudentDesktopNotification();
             LOGGER.info("Student registered");
             LOGGER.info("<== processStudent(); registered = true" + (System.currentTimeMillis() - t));
-            if (reRegistration) {
-                return SerialStatus.WARN;
-            } else {
-                return SerialStatus.INFO;
-            }
+            return SerialStatus.INFO;
         } else {
             selectStudent(student);
             FacesUtils.push("/register", new PushMessage(processedStudent.getCardUid()));
             pushStudentDesktopNotification();
             LOGGER.info("Student not registered");
             LOGGER.info("<== processStudent(); registered = false; " + (System.currentTimeMillis() - t));
-            return SerialStatus.ERROR;
+            if (reRegistration) {
+                return SerialStatus.WARN;
+            } else {
+                return SerialStatus.ERROR;
+            }
         }
     }
 
