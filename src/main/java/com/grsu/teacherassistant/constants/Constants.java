@@ -10,6 +10,7 @@ public final class Constants {
     public final static String SERIAL_STATUS_OL = "status: ol";
     public final static String SERIAL_STATUS_ER = "status: er";
     public final static String SERIAL_STATUS_EL = "status: el";
+    public final static String SERIAL_STATUS_DBL = "status: dbl";
 
     //BEANS
     public final static String GROUPS_DELIMITER = ",<br/>";

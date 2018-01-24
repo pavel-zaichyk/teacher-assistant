@@ -2,6 +2,7 @@ package com.grsu.teacherassistant.utils;
 
 import com.grsu.teacherassistant.beans.utility.SerialBean;
 import com.grsu.teacherassistant.serial.SerialListener;
+import com.grsu.teacherassistant.serial.SerialStatus;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
@@ -20,20 +21,29 @@ public class SerialUtils {
 	private static final String EXCEPTION_PORT_NOT_FOUND = "Port not found";
 	private static final String EXCEPTION_PORT_BUSY = "Port busy";
 
-    public static void sendResponse(SerialPort serialPort, boolean success, boolean soundEnabled) throws SerialPortException {
+    public static void sendResponse(SerialPort serialPort, SerialStatus status, boolean soundEnabled) throws SerialPortException {
         final long t = System.currentTimeMillis();
-        LOGGER.info("==> sendResponse(); success = " + success + "; soundEnabled = " + soundEnabled);
-        if (success && soundEnabled) {
-            serialPort.writeString(SERIAL_STATUS_OK);
+        LOGGER.info("==> sendResponse(); status = " + status + "; soundEnabled = " + soundEnabled);
+        if (SerialStatus.INFO.equals(status)) {
+            if (soundEnabled) {
+                serialPort.writeString(SERIAL_STATUS_OK);
+            }
+            if (!soundEnabled) {
+                serialPort.writeString(SERIAL_STATUS_OL);
+            }
         }
-        if (success && !soundEnabled) {
-            serialPort.writeString(SERIAL_STATUS_OL);
+        if (SerialStatus.ERROR.equals(status)) {
+            if (soundEnabled) {
+                serialPort.writeString(SERIAL_STATUS_ER);
+            }
+            if (!soundEnabled) {
+                serialPort.writeString(SERIAL_STATUS_EL);
+            }
         }
-        if (!success && soundEnabled) {
-            serialPort.writeString(SERIAL_STATUS_ER);
-        }
-        if (!success && !soundEnabled) {
-            serialPort.writeString(SERIAL_STATUS_EL);
+        if (SerialStatus.WARN.equals(status)) {
+            if (soundEnabled) {
+                serialPort.writeString(SERIAL_STATUS_DBL);
+            }
         }
         LOGGER.info("<== sendResponse()" + (System.currentTimeMillis() - t));
     }
