@@ -42,7 +42,7 @@ public class SerialUtils {
         }
         if (SerialStatus.WARN.equals(status)) {
             if (soundEnabled) {
-                serialPort.writeString(SERIAL_STATUS_DBL);
+                serialPort.writeString(SERIAL_STATUS_DB);
             }
         }
         LOGGER.info("<== sendResponse()" + (System.currentTimeMillis() - t));
