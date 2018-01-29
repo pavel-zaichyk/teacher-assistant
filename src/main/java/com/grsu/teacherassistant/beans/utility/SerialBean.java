@@ -1,5 +1,6 @@
 package com.grsu.teacherassistant.beans.utility;
 
+import com.grsu.teacherassistant.serial.SerialStatus;
 import com.grsu.teacherassistant.utils.FacesUtils;
 import com.grsu.teacherassistant.utils.LocaleUtils;
 import com.grsu.teacherassistant.utils.SerialUtils;
@@ -26,7 +27,7 @@ public class SerialBean implements Serializable {
 	private SerialListenerBean currentListener;
 
 
-	public boolean process(String uid, String name) {
+	public SerialStatus process(String uid, String name) {
         LOGGER.info("==> process(); uid = " + uid);
         return currentListener.process(uid, name);
 	}

@@ -12,6 +12,7 @@ import com.grsu.teacherassistant.models.LessonStudentModel;
 import com.grsu.teacherassistant.models.LessonType;
 import com.grsu.teacherassistant.models.Mark;
 import com.grsu.teacherassistant.push.resources.PushMessage;
+import com.grsu.teacherassistant.serial.SerialStatus;
 import com.grsu.teacherassistant.utils.EntityUtils;
 import com.grsu.teacherassistant.utils.FacesUtils;
 import lombok.Data;
@@ -173,16 +174,16 @@ public class StudentModeBean implements Serializable, SerialListenerBean {
     }
 
     @Override
-    public boolean process(String uid, String name) {
+    public SerialStatus process(String uid, String name) {
         Student student = EntityUtils.getPersonByUid(sessionBean.getStudents(), uid);
         if (student != null) {
             initStudentMode(student, null);
 
             FacesUtils.push("/register", new PushMessage(uid));
-            return true;
+            return SerialStatus.INFO;
         } else {
             LOGGER.info("Student not registered. Reason: Uid[ " + uid + " ] not exist in database.");
-            return false;
+            return SerialStatus.ERROR;
         }
     }
 

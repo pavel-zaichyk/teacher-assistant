@@ -7,6 +7,7 @@ import com.grsu.teacherassistant.dao.GroupDAO;
 import com.grsu.teacherassistant.entities.Group;
 import com.grsu.teacherassistant.entities.Student;
 import com.grsu.teacherassistant.push.resources.PushMessage;
+import com.grsu.teacherassistant.serial.SerialStatus;
 import com.grsu.teacherassistant.utils.FacesUtils;
 import lombok.Data;
 import org.primefaces.model.DualListModel;
@@ -83,10 +84,10 @@ public class StudentBean implements Serializable, SerialListenerBean {
     }
 
     @Override
-    public boolean process(String uid, String name) {
+    public SerialStatus process(String uid, String name) {
         student.setCardUid(uid);
         FacesUtils.push("/register", new PushMessage(uid));
-        return true;
+        return SerialStatus.INFO;
     }
 
     public void startRecord() {

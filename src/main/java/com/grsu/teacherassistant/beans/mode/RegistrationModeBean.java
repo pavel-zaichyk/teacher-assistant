@@ -9,6 +9,7 @@ import com.grsu.teacherassistant.dao.StudentDAO;
 import com.grsu.teacherassistant.entities.*;
 import com.grsu.teacherassistant.models.*;
 import com.grsu.teacherassistant.push.resources.PushMessage;
+import com.grsu.teacherassistant.serial.SerialStatus;
 import com.grsu.teacherassistant.utils.EntityUtils;
 import com.grsu.teacherassistant.utils.FacesUtils;
 import com.grsu.teacherassistant.utils.LocaleUtils;
@@ -249,7 +250,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
     }
 
     @Override
-    public boolean process(String uid, String name) {
+    public SerialStatus process(String uid, String name) {
         final long t = System.currentTimeMillis();
         LOGGER.info("==> process(); uid = " + uid);
         reRegistration = false;
@@ -260,7 +261,6 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             if (student != null) {
                 reRegistration = true;
                 LOGGER.info("Student not registered. Reason: Uid[ " + uid + " ] already registered.");
-//				return false;
             } else {
                 student = EntityUtils.getPersonByUid(allStudents, uid);
             }
@@ -287,7 +287,7 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
         return processStudent(student);
     }
 
-    private boolean processStudent(Student student) {
+    private SerialStatus processStudent(Student student) {
         final long t = System.currentTimeMillis();
         LOGGER.info("==> processStudent();");
         if (!reRegistration && !studentNotExist) {
@@ -328,14 +328,18 @@ public class RegistrationModeBean implements Serializable, SerialListenerBean {
             pushStudentDesktopNotification();
             LOGGER.info("Student registered");
             LOGGER.info("<== processStudent(); registered = true" + (System.currentTimeMillis() - t));
-            return true;
+            return SerialStatus.INFO;
         } else {
             selectStudent(student);
             FacesUtils.push("/register", new PushMessage(processedStudent.getCardUid()));
             pushStudentDesktopNotification();
             LOGGER.info("Student not registered");
             LOGGER.info("<== processStudent(); registered = false; " + (System.currentTimeMillis() - t));
-            return false;
+            if (reRegistration) {
+                return SerialStatus.WARN;
+            } else {
+                return SerialStatus.ERROR;
+            }
         }
     }
 
